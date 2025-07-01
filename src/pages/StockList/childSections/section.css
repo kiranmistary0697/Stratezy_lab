@@ -1,0 +1,37 @@
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  
+  .hide-scrollbar {
+    scrollbar-width: none; 
+  }
+  
+  
+  .hide-scrollbar {
+    -ms-overflow-style: none; 
+  }
+  
+
+  
+/* .custom-scrollbar {
+    scrollbar-width: thin; 
+    scrollbar-color: #000 #f1f1f1; 
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 3px; 
+    height: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #4a90e2;
+    border-radius: 4px; 
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  } */
+  
+

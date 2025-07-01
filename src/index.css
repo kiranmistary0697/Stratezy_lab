@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.apexcharts-tooltip {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #000000;
+  border: none !important;
+}
+.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+  background: #ffffff;
+  color: #000000;
+}
+
+.custom-select {
+  width: var(
+    --custom-width,
+    368px
+  ); /* Default to 368px, allows overriding with --custom-width */
+  font-size: 14px;
+  background-color: white;
+  border: 1px solid #e0e1e4 !important; /* Default border */
+  border-radius: 1px !important;
+  outline: none;
+}
+.custom-select .MuiOutlinedInput-notchedOutline {
+  border: 1px solid #e0e1e4 !important; /* Default border */
+}
+
+.custom-select:hover .MuiOutlinedInput-notchedOutline {
+  border: 1px solid #e0e1e4 !important; /* Darker border on hover */
+}
+
+.custom-select.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border: none !important; /* Highlighted blue border on focus */
+}
+
+.custom-select .MuiSvgIcon-root {
+  color: #888 !important; /* Custom dropdown icon color */
+}
+
+.button {
+  text-transform: none !important;
+}
+
+.css-qc8ft2-MuiTooltip-tooltip {
+  max-width: none !important;
+}
+.css-uxg07t-MuiTimeline-root {
+  padding: 0px !important;
+}
+.css-1ms7hib-MuiTimelineItem-root {
+  min-height: 0px !important;
+}
+.css-w6t25c-MuiTypography-root-MuiTimelineContent-root {
+  padding: 10px 16px !important;
+}
+.css-6bjaxx-MuiTypography-root-MuiTimelineContent-root {
+  font-family: "Inter" !important;
+}
+.css-ed6tk1-MuiPaper-root {
+  height: 189px;
+}
+.css-1uent87-MuiButtonBase-root-MuiButton-root {
+  text-transform: none !important;
+}
+
+.css-1xl2wv5-MuiButtonBase-root-MuiButton-root {
+  text-transform: none !important;
+  border-radius: 10px !important;
+}
+
+.css-10rxp8z-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  box-shadow: none !important;
+}
+
+.MuiTooltip-popper[data-popper-placement*="right"]
+  .css-7t6a5e-MuiTooltip-tooltip {
+  margin-left: -215px !important;
+}

@@ -1,0 +1,1727 @@
+{
+  "data": {
+    "stockBundle": [
+      {
+        "id": "2",
+        "name": "adx_dip_gt_dim",
+        "type": "Dynamic"
+      },
+      {
+        "id": "15",
+        "name": "adx_dip_lt_dim",
+        "type": "Dynamic"
+      },
+      {
+        "id": "16",
+        "name": "adx_greater_than",
+        "type": "Static"
+      },
+      {
+        "name": "atrltfilter",
+        "type": "Static"
+      },
+      {
+        "name": "breakout_dn",
+        "type": "Static"
+      },
+      {
+        "name": "breakout_up",
+        "type": "Static"
+      },
+      {
+        "name": "candle_bearish_engulfing",
+        "type": "Static"
+      },
+      {
+        "name": "candle_bearish_harami_cross",
+        "type": "Static"
+      },
+      {
+        "name": "candle_bullish_engulfing",
+        "type": "Static"
+      },
+      {
+        "name": "candle_bullish_harami",
+        "type": "Static"
+      },
+      {
+        "name": "candle_bullish_harami_cross",
+        "type": "Static"
+      },
+      {
+        "name": "candle_bullish_kicking",
+        "type": "Static"
+      },
+      {
+        "name": "candle_dark_cloud_cover",
+        "type": "Static"
+      },
+      {
+        "name": "candle_evening_star",
+        "type": "Static"
+      },
+      {
+        "name": "candle_falling_three",
+        "type": "Static"
+      },
+      {
+        "name": "candle_hammer",
+        "type": "Static"
+      },
+      {
+        "name": "candle_hangingman",
+        "type": "Static"
+      },
+      {
+        "name": "candle_morning_star",
+        "type": "Static"
+      },
+      {
+        "name": "candle_piercing_line",
+        "type": "Static"
+      },
+      {
+        "name": "candle_rising_three",
+        "type": "Static"
+      },
+      {
+        "name": "candle_three_black_crow",
+        "type": "Static"
+      },
+      {
+        "name": "candle_three_outside_down",
+        "type": "Static"
+      },
+      {
+        "name": "candle_three_outside_up",
+        "type": "Static"
+      },
+      {
+        "name": "candle_three_white_soldiers",
+        "type": "Static"
+      },
+      {
+        "name": "candle_upside_gap_two_crows",
+        "type": "Static"
+      },
+      {
+        "name": "closing_up_since_last_n_days",
+        "type": "Static"
+      },
+      {
+        "name": "commodity_channel_index_greater_than",
+        "type": "Static"
+      },
+      {
+        "name": "commodity_channel_index_less_than",
+        "type": "Static"
+      },
+      {
+        "name": "drawdowngtfilter",
+        "type": "Static"
+      },
+      {
+        "name": "golden_cross",
+        "type": "Static"
+      },
+      {
+        "name": "macd_gt_sig",
+        "type": "Static"
+      },
+      {
+        "name": "macd_lt_sig",
+        "type": "Static"
+      },
+      {
+        "name": "mfi_greater_than",
+        "type": "Static"
+      },
+      {
+        "name": "mfi_less_than",
+        "type": "Static"
+      },
+      {
+        "name": "momboy",
+        "type": "Static"
+      },
+      {
+        "name": "momniftyboy",
+        "type": "Static"
+      },
+      {
+        "name": "momsdevbuy",
+        "type": "Static"
+      },
+      {
+        "name": "moving_average_crossover",
+        "type": "Static"
+      },
+      {
+        "name": "mvbuy",
+        "type": "Static"
+      },
+      {
+        "name": "nifty100_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "nifty200_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "nifty500_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "nifty50_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "nifty_tracker",
+        "type": "Static"
+      },
+      {
+        "name": "nifty_tracker_var",
+        "type": "Static"
+      },
+      {
+        "name": "niftyallcap_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "niftylargemidcap400_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "niftymidcap100_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "niftymidcap150_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "niftymidcap50_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "niftynext50_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "niftysmallcap100_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "niftysmallcap250_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "niftysmallcap50_stocklist",
+        "type": "Static"
+      },
+      {
+        "name": "pivotfilterr2",
+        "type": "Static"
+      },
+      {
+        "name": "pivotfilters1",
+        "type": "Static"
+      },
+      {
+        "name": "pivotfilters2",
+        "type": "Static"
+      },
+      {
+        "name": "price_greater_than_bollinger_band_upper",
+        "type": "Static"
+      },
+      {
+        "name": "price_greater_than_pivot_resistence_1",
+        "type": "Static"
+      },
+      {
+        "name": "price_gt_ema",
+        "type": "Static"
+      },
+      {
+        "name": "price_less_than_bollinger_band_lower",
+        "type": "Static"
+      },
+      {
+        "name": "price_lt_ema",
+        "type": "Static"
+      },
+      {
+        "name": "pricegt",
+        "type": "Static"
+      },
+      {
+        "name": "pricelt",
+        "type": "Static"
+      },
+      {
+        "name": "roc_or_momentum_greater_than",
+        "type": "Static"
+      },
+      {
+        "name": "roc_or_momentum_less_than",
+        "type": "Static"
+      },
+      {
+        "name": "rsi_gt",
+        "type": "Static"
+      },
+      {
+        "name": "rsi_lt",
+        "type": "Static"
+      },
+      {
+        "name": "stochastic_k_greater_than_d",
+        "type": "Static"
+      },
+      {
+        "name": "stochastic_k_less_than_d",
+        "type": "Static"
+      },
+      {
+        "name": "stocklist_tradeval_gt_10cr",
+        "type": "Static"
+      },
+      {
+        "name": "stockslist_tradeval_gt",
+        "type": "Static"
+      },
+      {
+        "name": "stockslist_tradeval_gt_1_cr",
+        "type": "Static"
+      },
+      {
+        "name": "trade_bullsbearspower",
+        "type": "Static"
+      },
+      {
+        "name": "tradevaluegtfilter",
+        "type": "Static"
+      },
+      {
+        "name": "tradevalueltfilter",
+        "type": "Static"
+      },
+      {
+        "name": "trend_percentile",
+        "type": "Static"
+      },
+      {
+        "name": "trix_gt_sig",
+        "type": "Static"
+      },
+      {
+        "name": "trix_lt_sig",
+        "type": "Static"
+      },
+      {
+        "name": "tsi_greater_than",
+        "type": "Static"
+      },
+      {
+        "name": "tsi_greater_than_signal",
+        "type": "Static"
+      },
+      {
+        "name": "tsi_less_than",
+        "type": "Static"
+      },
+      {
+        "name": "tsi_less_than_signal",
+        "type": "Static"
+      },
+      {
+        "name": "ultimate_oscillator_greater_than",
+        "type": "Static"
+      },
+      {
+        "name": "ultimate_oscillator_less_than",
+        "type": "Static"
+      },
+      {
+        "name": "volratio",
+        "type": "Static"
+      },
+      {
+        "name": "williamspercentager_greater_than",
+        "type": "Static"
+      },
+      {
+        "name": "williamspercentager_less_than",
+        "type": "Static"
+      },
+      {
+        "name": "Neww Static Stock",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "sbin",
+            "id": "49d3"
+          },
+          {
+            "name": "titan",
+            "id": "de93"
+          },
+          {
+            "name": "pnb",
+            "id": "5519"
+          }
+        ]
+      },
+      {
+        "name": "New Static stockkkkk",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "sbin",
+            "id": "49d3"
+          },
+          {
+            "name": "titan",
+            "id": "de93"
+          },
+          {
+            "name": "pnb",
+            "id": "5519"
+          }
+        ]
+      },
+      {
+        "name": "hello alll",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "pfc",
+            "id": "2055"
+          },
+          {
+            "name": "sbin",
+            "id": "49d3"
+          },
+          {
+            "name": "ambujacem",
+            "id": "957c"
+          },
+          {
+            "name": "itc",
+            "id": "f848"
+          },
+          {
+            "name": "pnb",
+            "id": "5519"
+          }
+        ]
+      },
+      {
+        "name": "hjhjvhj",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "bajfinance",
+            "id": "238b"
+          },
+          {
+            "name": "pnb",
+            "id": "5519"
+          },
+          {
+            "name": "itc",
+            "id": "f848"
+          }
+        ]
+      },
+      {
+        "name": "hhhhnnh",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "titan",
+            "id": "de93"
+          },
+          {
+            "name": "sbin",
+            "id": "49d3"
+          },
+          {
+            "name": "ambujacem",
+            "id": "957c"
+          }
+        ]
+      },
+      {
+        "name": "rere",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "pfc",
+            "id": "2055"
+          },
+          {
+            "name": "dlf",
+            "id": "f62f"
+          },
+          {
+            "name": "titan",
+            "id": "de93"
+          }
+        ]
+      },
+      {
+        "name": "kjkjhkhkh",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "pfc",
+            "id": "2055"
+          },
+          {
+            "name": "bajfinance",
+            "id": "238b"
+          },
+          {
+            "name": "titan",
+            "id": "de93"
+          },
+          {
+            "name": "ambujacem",
+            "id": "957c"
+          },
+          {
+            "name": "sbin",
+            "id": "49d3"
+          }
+        ]
+      },
+      {
+        "name": "new stock",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "sbin",
+            "id": "49d3"
+          },
+          {
+            "name": "titan",
+            "id": "de93"
+          },
+          {
+            "name": "canbk",
+            "id": "25a3"
+          }
+        ]
+      },
+      {
+        "name": "bvbv",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "sbin",
+            "id": "49d3"
+          },
+          {
+            "name": "dlf",
+            "id": "f62f"
+          }
+        ]
+      },
+      {
+        "name": "ddd",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "bajfinance",
+            "id": "238b"
+          },
+          {
+            "name": "dlf",
+            "id": "f62f"
+          }
+        ]
+      },
+      {
+        "name": "new stock",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "techm",
+            "id": "a8aa"
+          },
+          {
+            "name": "bajfinance",
+            "id": "238b"
+          },
+          {
+            "name": "pfc",
+            "id": "2055"
+          },
+          {
+            "name": "titan",
+            "id": "de93"
+          }
+        ]
+      },
+      {
+        "name": "test save",
+        "type": "Static",
+        "selectedStock": [
+          {
+            "name": "naukri",
+            "id": "ede2"
+          },
+          {
+            "name": "pfc",
+            "id": "2055"
+          },
+          {
+            "name": "bajfinance",
+            "id": "238b"
+          }
+        ]
+      }
+    ],
+    "tradeRulesBuyRule": [
+      {
+        "id": "1",
+        "name": "momboy"
+      },
+      {
+        "name": "momniftyboy"
+      },
+      {
+        "name": "momsdevbuy"
+      },
+      {
+        "name": "mvbuy"
+      },
+      {
+        "name": "trade_bullsbearspower"
+      },
+      {
+        "name": "trade_filter_macd"
+      },
+      {
+        "name": "trade_filter_mfi"
+      },
+      {
+        "name": "trade_filter_mfi_ohlc"
+      },
+      {
+        "name": "trade_filter_mfi_trix"
+      },
+      {
+        "name": "trade_filter_ohlc"
+      },
+      {
+        "name": "trade_filter_rsi"
+      },
+      {
+        "name": "trade_filter_trix"
+      }
+    ],
+    "tradeRulesSellRule": [
+      {
+        "id": "11",
+        "name": "momboy"
+      },
+      {
+        "id": "12",
+        "name": "momniftyboy"
+      },
+      {
+        "name": "momsdevbuy"
+      },
+      {
+        "name": "mvbuy"
+      },
+      {
+        "name": "trade_bullsbearspower"
+      },
+      {
+        "name": "trade_filter_macd"
+      },
+      {
+        "name": "trade_filter_mfi"
+      },
+      {
+        "name": "trade_filter_mfi_ohlc"
+      },
+      {
+        "name": "trade_filter_mfi_trix"
+      },
+      {
+        "name": "trade_filter_ohlc"
+      },
+      {
+        "name": "trade_filter_rsi"
+      },
+      {
+        "name": "trade_filter_trix"
+      }
+    ],
+    "traderSequence": [
+      {
+        "id": "7",
+        "name": "order_drawdown_relative"
+      },
+      {
+        "id": "8",
+        "name": "order_drawdown_relative_var"
+      },
+      {
+        "id": "9",
+        "name": "order_gain"
+      },
+      {
+        "id": "10",
+        "name": "order_price_change"
+      }
+    ],
+    "stockEntryExitEntry": [
+      {
+        "id": "5",
+        "name": "entry_penny_stock"
+      }
+    ],
+    "stockEntryExitExit": [
+      {
+        "id": "6",
+        "name": "entry_penny_stock"
+      }
+    ],
+    "portfolioSizing": [
+      {
+        "id": "13",
+        "name": "psizing_atr_volatility"
+      },
+      {
+        "id": "14",
+        "name": "psizing_fixed_stoploss"
+      },
+      {
+        "id": "15",
+        "name": "psizing_volatility"
+      }
+    ],
+    "marketEntryExitEntry": [
+      {
+        "id": "3",
+        "name": "adx_entry_exit"
+      },
+      {
+        "name": "trend_percentile"
+      }
+    ],
+    "marketEntryExitExit": [
+      {
+        "id": "4",
+        "name": "adx_entry_exit"
+      },
+      {
+        "name": "trend_percentile"
+      }
+    ]
+  },
+  "strategyTable": [
+    {
+      "id": "930f37c2-9c73-428e-a6bd-eb22391c093d",
+      "name": "hello all ",
+      "description": "byyy",
+      "version": "v1",
+      "createdOn": "13th May 2025",
+      "status": "Complete",
+      "summary": "Strategy Overview",
+      "isDemo": false,
+      "stockBundle": {
+        "name": "adx_dip_lt_dim",
+        "type": "Dynamic",
+        "stocks": [
+          {
+            "fieldName": "AND",
+            "stockFilter": "adx_dip_gt_dim",
+            "adesc": ["ADX period"],
+            "args": ["27"],
+            "type": "Dynamic"
+          }
+        ],
+        "adesc": ["ADX period"],
+        "args": ["27"]
+      },
+      "tradeRules": {
+        "buyRule": {
+          "ruleName": "momboy",
+          "rule": [],
+          "adesc": ["period 1", "period 2"],
+          "args": ["39", "47"]
+        },
+        "sellRule": {
+          "ruleName": "momboy",
+          "rule": [],
+          "adesc": ["period 1", "period 2"],
+          "args": ["39", "47"]
+        }
+      },
+      "marketEntryExit": {
+        "entry": {
+          "name": "adx_entry_exit",
+          "adesc": ["period", "upper level", "lower level"],
+          "args": ["20", "10", "-30"]
+        },
+        "exit": {
+          "name": "adx_entry_exit",
+          "adesc": ["period", "upper level", "lower level"],
+          "args": ["20", "10", "-30"]
+        }
+      },
+      "stockEntryExit": {
+        "entry": {
+          "name": "entry_penny_stock",
+          "type": "",
+          "adesc": ["Penny stock price limit"],
+          "args": ["10"],
+          "stockEntry": [
+            {
+              "fieldName": "AND",
+              "stockFilter": "entry_penny_stock",
+              "adesc": ["Penny stock price limit"],
+              "args": ["10"]
+            }
+          ]
+        },
+        "exit": {
+          "name": "entry_penny_stock",
+          "type": "",
+          "adesc": ["Penny stock price limit"],
+          "args": ["10"],
+          "stockEntry": [
+            {
+              "fieldName": "AND",
+              "stockFilter": "entry_penny_stock",
+              "adesc": ["Penny stock price limit"],
+              "args": ["10"]
+            }
+          ]
+        }
+      },
+      "tradeSequence": [
+        {
+          "name": "order_drawdown_relative"
+        }
+      ],
+      "portfolioSizing": {
+        "selectedPortfolio": "psizing_atr_volatility",
+        "portfolioRisk": "20",
+        "maxInvestment": "20",
+        "minInvestment": "20",
+        "adesc": [
+          "Volatility period (days)",
+          "Multiplying factor for volatility"
+        ],
+        "args": ["10", "1"]
+      }
+    },
+    {
+      "id": "09705393-b9f4-45ea-be44-90c4b56defb0",
+      "name": "hello all",
+      "description": "byy",
+      "version": "v1",
+      "createdOn": "13th May 2025",
+      "status": "Complete",
+      "summary": "Strategy Overview",
+      "isDemo": false,
+      "stockBundle": {
+        "name": "adx_dip_gt_dim",
+        "type": "Dynamic",
+        "stocks": [
+          {
+            "fieldName": "AND",
+            "stockFilter": "adx_dip_gt_dim",
+            "adesc": ["ADX period"],
+            "args": ["27"],
+            "type": "Dynamic"
+          }
+        ],
+        "adesc": ["ADX period"],
+        "args": ["27"]
+      },
+      "tradeRules": {
+        "buyRule": {
+          "ruleName": "momboy",
+          "rule": [],
+          "adesc": ["period 1", "period 2"],
+          "args": ["39", "47"]
+        },
+        "sellRule": {
+          "ruleName": "momboy",
+          "rule": [],
+          "adesc": ["period 1", "period 2"],
+          "args": ["39", "47"]
+        }
+      },
+      "marketEntryExit": {
+        "entry": {
+          "name": "adx_entry_exit",
+          "adesc": ["period", "upper level", "lower level"],
+          "args": ["20", "10", "-30"]
+        },
+        "exit": {
+          "name": "adx_entry_exit",
+          "adesc": ["period", "upper level", "lower level"],
+          "args": ["20", "10", "-30"]
+        }
+      },
+      "stockEntryExit": {
+        "entry": {
+          "name": "entry_penny_stock",
+          "type": "",
+          "adesc": ["Penny stock price limit"],
+          "args": ["10"],
+          "stockEntry": [
+            {
+              "fieldName": "AND",
+              "stockFilter": "entry_penny_stock",
+              "adesc": ["Penny stock price limit"],
+              "args": ["10"]
+            }
+          ]
+        },
+        "exit": {
+          "name": "entry_penny_stock",
+          "type": "",
+          "adesc": ["Penny stock price limit"],
+          "args": ["10"],
+          "stockEntry": [
+            {
+              "fieldName": "AND",
+              "stockFilter": "entry_penny_stock",
+              "adesc": ["Penny stock price limit"],
+              "args": ["10"]
+            }
+          ]
+        }
+      },
+      "tradeSequence": [
+        {
+          "name": "order_drawdown_relative"
+        }
+      ],
+      "portfolioSizing": {
+        "selectedPortfolio": "psizing_atr_volatility",
+        "portfolioRisk": "20",
+        "maxInvestment": "30",
+        "minInvestment": "10",
+        "adesc": [
+          "Volatility period (days)",
+          "Multiplying factor for volatility"
+        ],
+        "args": ["10", "1"]
+      }
+    },
+    {
+      "id": "0a9777b1-3593-4ae3-84c7-cd594f8d4eee",
+      "name": "hello mew",
+      "description": "buu",
+      "version": "v1",
+      "createdOn": "15th May 2025",
+      "status": "Complete",
+      "summary": "Strategy Overview",
+      "isDemo": false,
+      "stockBundle": {
+        "name": "adx_dip_gt_dim",
+        "type": "Dynamic",
+        "stocks": [
+          {
+            "fieldName": "AND",
+            "stockFilter": "adx_dip_lt_dim",
+            "adesc": ["ADX period"],
+            "args": ["27"],
+            "type": "Dynamic"
+          }
+        ],
+        "adesc": ["ADX period"],
+        "args": ["27"]
+      },
+      "tradeRules": {
+        "buyRule": {
+          "ruleName": "momboy",
+          "adesc": ["period 1", "period 2"],
+          "args": ["39", "47"]
+        },
+        "sellRule": {
+          "ruleName": "momboy",
+          "adesc": ["period 1", "period 2"],
+          "args": ["39", "47"]
+        }
+      },
+      "marketEntryExit": {
+        "entry": {
+          "name": "adx_entry_exit",
+          "adesc": ["period", "upper level", "lower level"],
+          "args": ["20", "10", "-30"]
+        },
+        "exit": {
+          "name": "adx_entry_exit",
+          "adesc": ["period", "upper level", "lower level"],
+          "args": ["20", "10", "-30"]
+        }
+      },
+      "stockEntryExit": {
+        "entry": {
+          "name": "entry_penny_stock",
+          "type": "",
+          "adesc": ["Penny stock price limit"],
+          "args": ["10"]
+        },
+        "exit": {
+          "name": "entry_penny_stock",
+          "type": "",
+          "adesc": ["Penny stock price limit"],
+          "args": ["10"]
+        }
+      },
+      "tradeSequence": [
+        {
+          "name": "order_drawdown_relative"
+        }
+      ],
+      "portfolioSizing": {
+        "selectedPortfolio": "psizing_atr_volatility",
+        "portfolioRisk": "20",
+        "maxInvestment": "30",
+        "minInvestment": "20",
+        "adesc": [
+          "Volatility period (days)",
+          "Multiplying factor for volatility"
+        ],
+        "args": ["10", "1"]
+      }
+    }
+  ],
+  "backtestTable": [
+    {
+      "id": "b1711305-bbf5-4aec-83af-e5f448edcbb2",
+      "requestId": "5215-29548-60023",
+      "initialCapital": "₹ 30000",
+      "version": "v1",
+      "timeFrame": "09/05/25 to 09/05/25",
+      "strategyName": "hello all ",
+      "createdAt": "09/05/2025",
+      "status": "Complete",
+      "avgAnnual": "NA",
+      "avgGrowth": "NA",
+      "totalnumber": "NA",
+      "netProfit": "NA",
+      "investedPrincipal": "NA",
+      "maxAccountValue": "NA",
+      "avgProfitTrade": "NA"
+    },
+    {
+      "id": "097d9b50-c745-4ac5-af1c-9454cea42158",
+      "requestId": "1672-45689-29592",
+      "initialCapital": "₹ 300",
+      "version": "v1",
+      "timeFrame": "09/05/25 to 09/05/25",
+      "strategyName": "hello all ",
+      "createdAt": "09/05/2025",
+      "status": "Complete",
+      "avgAnnual": "NA",
+      "avgGrowth": "NA",
+      "totalnumber": "NA",
+      "netProfit": "NA",
+      "investedPrincipal": "NA",
+      "maxAccountValue": "NA",
+      "avgProfitTrade": "NA"
+    },
+    {
+      "id": "c8a0a944-6e04-467b-add7-2c0089977dcc",
+      "requestId": "6508-49605-46312",
+      "initialCapital": "₹ 3000",
+      "version": "v1",
+      "timeFrame": "09/05/25 to 09/05/25",
+      "strategyName": "hello save",
+      "createdAt": "09/05/2025",
+      "status": "Complete",
+      "avgAnnual": "NA",
+      "avgGrowth": "NA",
+      "totalnumber": "NA",
+      "netProfit": "NA",
+      "investedPrincipal": "NA",
+      "maxAccountValue": "NA",
+      "avgProfitTrade": "NA"
+    },
+    {
+      "id": "ae16d5ce-9a51-49f3-9b88-dabc0682eb3d",
+      "requestId": "1181-86849-35878",
+      "initialCapital": "₹ 2000",
+      "version": "v1",
+      "timeFrame": "09/05/25 to 09/05/25",
+      "strategyName": "new strategy ",
+      "createdAt": "09/05/2025",
+      "status": "Complete",
+      "avgAnnual": "NA",
+      "avgGrowth": "NA",
+      "totalnumber": "NA",
+      "netProfit": "NA",
+      "investedPrincipal": "NA",
+      "maxAccountValue": "NA",
+      "avgProfitTrade": "NA"
+    },
+    {
+      "id": "6831b606-9fb0-457e-932f-4e4f056f73b9",
+      "requestId": "2171-94009-39794",
+      "initialCapital": "₹ 500000",
+      "version": "v1",
+      "timeFrame": "12/05/25 to 12/05/25",
+      "strategyName": "hello save",
+      "createdAt": "12/05/2025",
+      "status": "Complete",
+      "avgAnnual": "NA",
+      "avgGrowth": "NA",
+      "totalnumber": "NA",
+      "netProfit": "NA",
+      "investedPrincipal": "NA",
+      "maxAccountValue": "NA",
+      "avgProfitTrade": "NA"
+    }
+  ],
+  "deployTable": [
+    {
+      "id": "76ce7c07-c4a9-45f5-9dd4-15153f795492",
+      "name": "hello all ",
+      "deplyoyId": "785d2bed-caad-4b9f-938c-8039010bb67d",
+      "status": "Active",
+      "createdOn": "09/05/2025",
+      "Brokerage": "AngelOne",
+      "amount": "555"
+    },
+    {
+      "id": "b613ac40-af33-4ee6-92b0-85688dc7632f",
+      "name": "edwasdsadf",
+      "deplyoyId": "09bf234d-f0e3-485f-a4f0-ce56f1aaeb72",
+      "status": "Active",
+      "createdOn": "09/05/2025",
+      "Brokerage": "AngelOne",
+      "amount": "6565"
+    },
+    {
+      "id": "76ce7c07-c4a9-45f5-9dd4-15153f795492",
+      "name": "hello all ",
+      "deplyoyId": "23995d43-fcd9-4ce9-95b4-4d3bee44bfae",
+      "status": "Active",
+      "createdOn": "09/05/2025",
+      "Brokerage": "AngelOne",
+      "amount": "555"
+    },
+    {
+      "id": "76ce7c07-c4a9-45f5-9dd4-15153f795492",
+      "name": "hello all ",
+      "deplyoyId": "1d0d6462-be39-4d1f-9bdc-0fd4f300fc20",
+      "status": "Active",
+      "createdOn": "09/05/2025",
+      "Brokerage": "AngelOne",
+      "amount": "555"
+    },
+    {
+      "id": "76ce7c07-c4a9-45f5-9dd4-15153f795492",
+      "name": "hello all ",
+      "deplyoyId": "5ddd6975-1bd8-473d-bc36-e7c7815aee10",
+      "status": "Active",
+      "createdOn": "09/05/2025",
+      "Brokerage": "AngelOne",
+      "amount": "555"
+    },
+    {
+      "id": "27c93b39-5e62-48f4-8d6f-e1ec620f6342",
+      "name": "hello save",
+      "deplyoyId": "eecf5ac6-a405-4250-b1e9-a387e15d694b",
+      "status": "Active",
+      "createdOn": "09/05/2025",
+      "Brokerage": "Zerodha",
+      "amount": "2000"
+    },
+    {
+      "id": "478e9b6d-da9a-4cae-a6c1-b10d1c9079b9",
+      "name": "save drft",
+      "deplyoyId": "a3779e9f-b483-4323-98bd-5f4c7865cb90",
+      "status": "Active",
+      "createdOn": "10/05/2025",
+      "Brokerage": "Zerodha",
+      "amount": "6333"
+    },
+    {
+      "id": "7842c1a6-b5e5-4753-bbb3-f3a84bc37dd0",
+      "name": "new strategy ",
+      "deplyoyId": "c98550d3-6e3c-4630-8e00-2a85f0353ae2",
+      "status": "Active",
+      "createdOn": "09/05/2025",
+      "Brokerage": "Zerodha",
+      "amount": "2000"
+    },
+    {
+      "id": "478e9b6d-da9a-4cae-a6c1-b10d1c9079b9",
+      "name": "save drft",
+      "deplyoyId": "14bf1f31-8a40-45ca-8e0a-3ee452edfe0e",
+      "status": "Active",
+      "createdOn": "12/05/2025",
+      "Brokerage": "Zerodha",
+      "amount": "2000"
+    }
+  ],
+  "selectTable": [
+    {
+      "adesc": ["period 1", "period 2"],
+      "args": ["39", "47"],
+      "shortFuncName": "momboy",
+      "num_arg": 2,
+      "id": "1"
+    },
+    {
+      "shortFuncName": "adx_dip_gt_dim",
+      "num_arg": 1,
+      "args": ["27"],
+      "adesc": ["ADX period"],
+      "id": "2"
+    },
+    {
+      "id": "3",
+      "shortFuncName": "adx_entry_exit",
+      "num_arg": 3,
+      "args": ["20", "10", "-30"],
+      "adesc": ["period", "upper level", "lower level"]
+    },
+    {
+      "id": "4",
+      "shortFuncName": "adx_entry_exit",
+      "num_arg": 3,
+      "args": ["20", "10", "-30"],
+      "adesc": ["period", "upper level", "lower level"]
+    },
+    {
+      "id": "5",
+      "shortFuncName": "entry_penny_stock",
+      "num_arg": 1,
+      "args": ["10"],
+      "adesc": ["Penny stock price limit"]
+    },
+    {
+      "id": "6",
+      "shortFuncName": "entry_penny_stock",
+      "num_arg": 1,
+      "args": ["10"],
+      "adesc": ["Penny stock price limit"]
+    },
+    {
+      "id": "7",
+      "shortFuncName": "order_drawdown_relative",
+      "num_arg": 2,
+      "args": ["80", "80"],
+      "adesc": ["Drawdown Period 1", "SUM period"]
+    },
+    {
+      "id": "8",
+      "shortFuncName": "order_drawdown_relative_var",
+      "num_arg": 3,
+      "args": ["80", "80", "400"],
+      "adesc": ["Drawdown Period 1", "SUM period", "Max drawdown period"]
+    },
+    {
+      "id": "9",
+      "shortFuncName": "order_gain",
+      "num_arg": 3,
+      "args": ["400", "80", "-1"],
+      "adesc": [
+        "Max drawdown Period",
+        "Drawdown period",
+        "multiplication factor"
+      ]
+    },
+    {
+      "id": "10",
+      "shortFuncName": "order_price_change",
+      "num_arg": 3,
+      "args": ["400", "80", "-1"],
+      "adesc": [
+        "Max drawdown Period",
+        "Drawdown period",
+        "multiplication factor"
+      ]
+    },
+    {
+      "adesc": ["period 1", "period 2"],
+      "args": ["39", "47"],
+      "shortFuncName": "momboy",
+      "num_arg": 2,
+      "id": "11"
+    },
+    {
+      "adesc": ["period 1"],
+      "args": ["39"],
+      "shortFuncName": "momniftyboy",
+      "num_arg": 1,
+      "id": "12"
+    },
+    {
+      "adesc": [
+        "Volatility period (days)",
+        "Multiplying factor for volatility"
+      ],
+      "args": ["10", "1"],
+      "shortFuncName": "psizing_atr_volatility",
+      "num_arg": 2,
+      "id": "13"
+    },
+    {
+      "adesc": ["Multiplying factor for volatility"],
+      "args": ["10"],
+      "shortFuncName": "psizing_fixed_stoploss",
+      "num_arg": 1,
+      "id": "14"
+    },
+    {
+      "shortFuncName": "adx_dip_lt_dim",
+      "num_arg": 1,
+      "args": ["27"],
+      "adesc": ["ADX period"],
+      "id": "15"
+    }
+  ],
+  "staticStock": [
+    {
+      "name": "naukri",
+      "id": "ede2"
+    },
+    {
+      "name": "pfc",
+      "id": "2055"
+    },
+    {
+      "name": "sbin",
+      "id": "49d3"
+    },
+    {
+      "name": "bajfinance",
+      "id": "238b"
+    },
+    {
+      "name": "titan",
+      "id": "de93"
+    },
+    {
+      "name": "dlf",
+      "id": "f62f"
+    },
+    {
+      "name": "ambujacem",
+      "id": "957c"
+    },
+    {
+      "name": "pnb",
+      "id": "5519"
+    },
+    {
+      "name": "itc",
+      "id": "f848"
+    },
+    {
+      "name": "tcs",
+      "id": "ca98"
+    },
+    {
+      "name": "lt",
+      "id": "c8ac"
+    },
+    {
+      "name": "tataconsum",
+      "id": "b10b"
+    },
+    {
+      "name": "reliance",
+      "id": "48ef"
+    },
+    {
+      "name": "hcltech",
+      "id": "d783"
+    },
+    {
+      "name": "jswsteel",
+      "id": "560b"
+    },
+    {
+      "name": "bankbaroda",
+      "id": "6258"
+    },
+    {
+      "name": "ltim",
+      "id": "f60f"
+    },
+    {
+      "name": "shreecem",
+      "id": "6f00"
+    },
+    {
+      "name": "ultracemco",
+      "id": "6395"
+    },
+    {
+      "name": "hal",
+      "id": "58ff"
+    },
+    {
+      "name": "siemens",
+      "id": "83b0"
+    },
+    {
+      "name": "powergrid",
+      "id": "3504"
+    },
+    {
+      "name": "bhel",
+      "id": "9bbd"
+    },
+    {
+      "name": "infy",
+      "id": "db22"
+    },
+    {
+      "name": "recltd",
+      "id": "7bcd"
+    },
+    {
+      "name": "trent",
+      "id": "119f"
+    },
+    {
+      "name": "bhartiartl",
+      "id": "02ee"
+    },
+    {
+      "name": "canbk",
+      "id": "25a3"
+    },
+    {
+      "name": "tatamotors",
+      "id": "dd82"
+    },
+    {
+      "name": "wipro",
+      "id": "4c75"
+    },
+    {
+      "name": "techm",
+      "id": "a8aa"
+    },
+    {
+      "name": "ntpc",
+      "id": "ab40"
+    },
+    {
+      "name": "hindunilvr",
+      "id": "0978"
+    },
+    {
+      "name": "gail",
+      "id": "5aa4"
+    },
+    {
+      "name": "apollohosp",
+      "id": "0438"
+    },
+    {
+      "name": "m&m",
+      "id": "e98d"
+    },
+    {
+      "name": "motherson",
+      "id": "9bea"
+    },
+    {
+      "name": "torntpharm",
+      "id": "a960"
+    },
+    {
+      "name": "grasim",
+      "id": "08f4"
+    },
+    {
+      "name": "abb",
+      "id": "ba9a"
+    },
+    {
+      "name": "icicibank",
+      "id": "d4fb"
+    },
+    {
+      "name": "adanient",
+      "id": "2a22"
+    },
+    {
+      "name": "adaniports",
+      "id": "5548"
+    },
+    {
+      "name": "havells",
+      "id": "a1b6"
+    },
+    {
+      "name": "bel",
+      "id": "09a9"
+    },
+    {
+      "name": "bajajfinsv",
+      "id": "a10f"
+    },
+    {
+      "name": "eichermot",
+      "id": "efb9"
+    },
+    {
+      "name": "coalindia",
+      "id": "976a"
+    },
+    {
+      "name": "maruti",
+      "id": "56ce"
+    },
+    {
+      "name": "indigo",
+      "id": "04f2"
+    },
+    {
+      "name": "irctc",
+      "id": "3a9a"
+    },
+    {
+      "name": "indusindbk",
+      "id": "1be0"
+    },
+    {
+      "name": "asianpaint",
+      "id": "cf57"
+    },
+    {
+      "name": "icicigi",
+      "id": "8d28"
+    },
+    {
+      "name": "ioc",
+      "id": "92c7"
+    },
+    {
+      "name": "tatasteel",
+      "id": "f902"
+    },
+    {
+      "name": "hdfclife",
+      "id": "f37a"
+    },
+    {
+      "name": "icicipruli",
+      "id": "f32f"
+    },
+    {
+      "name": "drreddy",
+      "id": "bd14"
+    },
+    {
+      "name": "atgl",
+      "id": "df95"
+    },
+    {
+      "name": "dabur",
+      "id": "ba68"
+    },
+    {
+      "name": "sunpharma",
+      "id": "e145"
+    },
+    {
+      "name": "kotakbank",
+      "id": "9b15"
+    },
+    {
+      "name": "shriramfin",
+      "id": "c9c7"
+    },
+    {
+      "name": "nestleind",
+      "id": "56a7"
+    },
+    {
+      "name": "lodha",
+      "id": "09c1"
+    },
+    {
+      "name": "ongc",
+      "id": "7e68"
+    },
+    {
+      "name": "cipla",
+      "id": "d802"
+    },
+    {
+      "name": "tatapower",
+      "id": "69ee"
+    },
+    {
+      "name": "bpcl",
+      "id": "c190"
+    },
+    {
+      "name": "tvsmotor",
+      "id": "efdb"
+    },
+    {
+      "name": "lici",
+      "id": "51c3"
+    },
+    {
+      "name": "pidilitind",
+      "id": "1a4e"
+    },
+    {
+      "name": "britannia",
+      "id": "043d"
+    },
+    {
+      "name": "godrejcp",
+      "id": "9745"
+    },
+    {
+      "name": "boschltd",
+      "id": "81fd"
+    },
+    {
+      "name": "sbilife",
+      "id": "63de"
+    },
+    {
+      "name": "jindalstel",
+      "id": "9ea7"
+    },
+    {
+      "name": "hindalco",
+      "id": "8b88"
+    },
+    {
+      "name": "vedl",
+      "id": "7990"
+    },
+    {
+      "name": "zyduslife",
+      "id": "4480"
+    },
+    {
+      "name": "unitdspr",
+      "id": "fe5b"
+    },
+    {
+      "name": "irfc",
+      "id": "b2ee"
+    },
+    {
+      "name": "heromotoco",
+      "id": "7452"
+    },
+    {
+      "name": "divislab",
+      "id": "1bd1"
+    },
+    {
+      "name": "cholafin",
+      "id": "4b37"
+    },
+    {
+      "name": "axisbank",
+      "id": "873f"
+    },
+    {
+      "name": "unionbank",
+      "id": "7115"
+    },
+    {
+      "name": "hdfcbank",
+      "id": "f37d"
+    },
+    {
+      "name": "jiofin",
+      "id": "d886"
+    },
+    {
+      "name": "bajajhldng",
+      "id": "2ee4"
+    },
+    {
+      "name": "dmart",
+      "id": "ae52"
+    },
+    {
+      "name": "bajaj-auto",
+      "id": "ebe8"
+    },
+    {
+      "name": "nhpc",
+      "id": "055a"
+    },
+    {
+      "name": "zomato",
+      "id": "a11d"
+    },
+    {
+      "name": "jswenergy",
+      "id": "d10f"
+    },
+    {
+      "name": "vbl",
+      "id": "2697"
+    },
+    {
+      "name": "adanipower",
+      "id": "5c34"
+    },
+    {
+      "name": "adaniensol",
+      "id": "99c0"
+    },
+    {
+      "name": "adanigreen",
+      "id": "4419"
+    }
+  ]
+}

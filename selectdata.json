@@ -1,0 +1,42 @@
+{
+  "stockBundle": [
+    { "name": "MV Dynamic Stock Filter", "type": "Dynamic" },
+    { "name": "mv_buy", "type": "Dynamic" },
+    { "name": "Static Pharma Stocks", "type": "Static" },
+    { "name": "Static Dynamic Stock Filter", "type": "Static" }
+  ],
+
+  "tradeRule": [
+    { "name": "Trade Rule 1" },
+    { "name": "Trade Rule 2" },
+    { "name": "Trade Rule 3" },
+    { "name": "Trade Rule 4" }
+  ],
+
+  "traderSequence": [
+    { "name": "MV Dynamic Stock Filter" },
+    { "name": "mv_buy" },
+    { "name": "Static Pharma Stocks" },
+    { "name": "Static Dynamic Stock Filter" }
+  ],
+
+  "stockEntryExit": [
+    { "name": "Stock Entry & Exit 1" },
+    { "name": "Stock Entry & Exit 2" },
+    { "name": "Stock Entry & Exit 3" },
+    { "name": "Stock Entry & Exit 4" }
+  ],
+
+  "portfolioSizing": [
+    { "name": "psizing_fixed_stoploss" },
+    { "name": "psizing_atr_volatility" },
+    { "name": "psizing_volatility" }
+  ],
+
+  "marketEntryExit": [
+    { "name": "Market Entry & Exit 1" },
+    { "name": "Market Entry & Exit 2" },
+    { "name": "Market Entry & Exit 3" },
+    { "name": "Market Entry & Exit 4" }
+  ]
+}

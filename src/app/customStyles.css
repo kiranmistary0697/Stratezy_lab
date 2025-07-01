@@ -1,0 +1,11 @@
+/* Increase the z-index of the DatePicker popper */
+.date-picker-popper {
+    z-index: 1000 !important;
+  }
+  
+  /* Set a lower z-index for the AceEditor */
+  .ace-editor {
+    position: relative;
+    z-index: 1;
+  }
+  
