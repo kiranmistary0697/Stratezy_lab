@@ -14,13 +14,14 @@ const stepKeywordMap = [
   { label: "Stock Entry & Exit", keywords: ["exit", "entry"] },
   { label: "Portfolio Sizing", keywords: ["psizing"] },
   { label: "Market Entry & Exit", keywords: ["gexit", "gentry"] },
-  { label: "Trade Execution", keywords: ["ulying"] },
+  { label: "Trade Execution", keywords: [] },
 ];
 
 const BacktestTimeLine = ({ backtestProcess }) => {
   const completed = backtestProcess?.completedStage || [];
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md")); // ≥960 px
+
   return (
     <Box
       className="justify-center items-center space-y-8"
@@ -36,7 +37,10 @@ const BacktestTimeLine = ({ backtestProcess }) => {
         alternativeLabel={isMdUp}
       >
         {stepKeywordMap.map(({ label, keywords }, index) => {
-          const isCompleted = keywords.some((k) => completed.includes(k));
+          const isCompleted =
+            label === "Trade Execution"
+              ? backtestProcess?.status === "COMPLETED"
+              : keywords.some((k) => completed.includes(k));
 
           return (
             <Step key={label}>

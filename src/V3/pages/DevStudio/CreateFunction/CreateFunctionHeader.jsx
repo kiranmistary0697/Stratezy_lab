@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, CircularProgress, Tooltip, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HeaderButton from "../../../common/Table/HeaderButton";
 
@@ -12,6 +12,8 @@ const CreateFunctionHeader = ({
   id,
   systemDefine,
   isVerify = false,
+  isSaving,
+  handleVerify = () => {},
 }) => {
   const [isCancleStrategy, setIsCancleStrategy] = useState(false);
 
@@ -95,6 +97,14 @@ const CreateFunctionHeader = ({
             }}
           >
             Cancel
+          </HeaderButton>
+        )}
+        {isVerify && (
+          <HeaderButton variant="contained" onClick={handleVerify}>
+            {isSaving && (
+              <CircularProgress color="inherit" size={18} thickness={4} />
+            )}
+            Verify
           </HeaderButton>
         )}
         {!id && (

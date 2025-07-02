@@ -34,6 +34,10 @@ const CreateFunction = () => {
   const [getStrategyData] = useLazyGetQuery();
   const [verifyStock] = usePostMutation();
 
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+  const [isSaving, setIsSaving] = useState(false);
   const [openStockModal, setOpenStockModal] = useState(false);
   const { search, state } = useLocation();
   const [stockList, setStockList] = useState([]);
@@ -42,12 +46,38 @@ const CreateFunction = () => {
   const [internalData, setInternalData] = useState(null);
   const [openAddFunctionModal, setOpenAddFunctionModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
+
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(),
+    startDate: oneMonthAgo,
     endDate: new Date(),
     key: "selection",
   });
+  const [xAxisInput, setXAxisInput] = useState("");
+  const [yAxisInput, setYAxisInput] = useState("");
+  const [code, setCode] = useState("");
+  const [triggerVerify, setTriggerVerify] = useState(false);
+
   //yyyy-mm-dd
+  const [argsData, setArgsData] = useState([{ name: "", value: "" }]);
+
+  const handleAddArgsData = () => {
+    setArgsData((pre) => [...pre, { name: "", value: "" }]);
+  };
+
+  const handleDeleteArgsData = (index) => {
+    const deletedData = argsData.filter((_, i) => index !== i);
+    setArgsData(deletedData);
+  };
+
+  const handleArgsDataChange = (index, field, value) => {
+    setArgsData((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const resetArgsData = () => {
+    setArgsData([{ name: "", value: "" }]);
+  };
 
   const queryParams = new URLSearchParams(search);
 
@@ -93,6 +123,7 @@ const CreateFunction = () => {
   }, []);
 
   const handleVerifyStock = async ({ xAxis, yAxis }) => {
+    setIsSaving(true);
     try {
       const { data } = await verifyStock({
         endpoint: `command/chart/request`,
@@ -104,7 +135,7 @@ const CreateFunction = () => {
           chartRule: {
             ruleType: "CHART_RULE",
             ruleSubType: "CUSTOM_RULE",
-            customRule: "{c = close(); return c;}",
+            customRule: code,
           },
           varList1: xAxis,
           varList2: yAxis,
@@ -119,6 +150,8 @@ const CreateFunction = () => {
       setOpenStockModal(false);
     } catch (error) {
       console.error("Failed to verify stock:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -288,17 +321,20 @@ const CreateFunction = () => {
     <>
       {openStockModal && (
         <VerfiyStockModal
+          title="Verify Stock"
           isOpen={openStockModal}
-          handleClose={() => {
-            setOpenStockModal(false);
-          }}
-          title={"Verify on a Stock"}
+          handleClose={() => setOpenStockModal(false)}
           stockList={stockList}
           dateRange={dateRange}
           setDateRange={setDateRange}
           selectedStock={selectedStock}
           setSelectedStock={setSelectedStock}
+          xAxisInput={xAxisInput}
+          setXAxisInput={setXAxisInput}
+          yAxisInput={yAxisInput}
+          setYAxisInput={setYAxisInput}
           handleVerifyStock={handleVerifyStock}
+          isSaving={isSaving}
         />
       )}
       {openAddFunctionModal && (
@@ -307,10 +343,11 @@ const CreateFunction = () => {
           handleClose={() => {
             setOpenAddFunctionModal(false);
           }}
-          // onSave={handleSaveFunction}
-          // isSaving={isSaving}
+          code={code}
           selectedFunction={selectedFunction}
           title={"Create Function"}
+          argsData={argsData}
+          resetArgsData={resetArgsData}
         />
       )}
 
@@ -359,7 +396,14 @@ const CreateFunction = () => {
                 lg: 8,
               }}
             >
-              <EditorFunction />
+              <EditorFunction
+                code={code}
+                setCode={setCode}
+                argsData={argsData}
+                handleAddArgsData={handleAddArgsData}
+                handleDeleteArgsData={handleDeleteArgsData}
+                handleArgsDataChange={handleArgsDataChange}
+              />
             </Grid2>
 
             {/* Stock Bundle Step - Full Width on Small Screens, Half on Medium+, 6.7/12 on Large+ */}
@@ -374,6 +418,10 @@ const CreateFunction = () => {
                 handleChange={() => {
                   setOpenAddFunctionModal(true);
                 }}
+                handleVerify={() => {
+                  setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
+                }}
+                isSaving={isSaving}
                 // systemDefine={stockData?.userDefined}
                 // id={id}
               />
@@ -392,12 +440,19 @@ const CreateFunction = () => {
                   }}
                 >
                   <VerifyOnStock
-                    // title="Verify on Stock"
+                    stockList={stockList}
                     dateRange={dateRange}
                     setDateRange={setDateRange}
-                    stockList={stockList}
                     selectedStock={selectedStock}
                     setSelectedStock={setSelectedStock}
+                    xAxisInput={xAxisInput}
+                    setXAxisInput={setXAxisInput}
+                    yAxisInput={yAxisInput}
+                    setYAxisInput={setYAxisInput}
+                    handleVerifyStock={handleVerifyStock}
+                    isSaving={isSaving}
+                    triggerVerify={triggerVerify}
+                    setTriggerVerify={setTriggerVerify}
                   />
                 </Grid2>
                 <Grid2

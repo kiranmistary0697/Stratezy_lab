@@ -118,8 +118,10 @@ export const VERIFY_SUB_TITLE_TOOLTIP = "Verify Function";
 export const VERIFY_STOCK_TITLE = "Verify on Stock";
 export const VERIFY_STOCK_TOOLTIP = "Verify on Stock";
 
-export const PrimaryAxis = "Primary Y-Axis";
-export const PrimaryXAxis = "Primary X-Axis";
+export const PrimaryYAxis = "Primary Y-Axis";
+export const SecondaryYAxis = "Secondary Y-Axis";
 export const TimelineAxis = "Timeline";
 
 export const ARGUMENTS_TOOLTIP = "Arguments";
+
+export const PRIMITIVES_TOOLTIP = "Primitives";

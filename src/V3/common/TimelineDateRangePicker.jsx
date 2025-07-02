@@ -1,6 +1,5 @@
-// components/common/TimelineDateRangePicker.jsx
 import { useState } from "react";
-import { TextField, Popover } from "@mui/material";
+import { TextField, Popover, Typography, Box } from "@mui/material";
 import { DateRange } from "react-date-range";
 import moment from "moment";
 import { enGB } from "date-fns/locale";
@@ -8,15 +7,13 @@ import { enGB } from "date-fns/locale";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-const TimelineDateRangePicker = ({ range, onChange }) => {
+const TimelineDateRangePicker = ({
+  range,
+  onChange,
+  error = false,
+  errorMessage = "",
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  // const [range, setRange] = useState([
-  //   {
-  //     startDate: new Date(),
-  //     endDate: new Date(),
-  //     key: "selection",
-  //   },
-  // ]);
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,22 +23,19 @@ const TimelineDateRangePicker = ({ range, onChange }) => {
     setAnchorEl(null);
   };
 
-  // const handleChange = (item) => {
-  //   setRange([item.selection]);
-  // };
-
   const formattedRange = `${moment(range.startDate).format(
     "DD/MM/YYYY"
   )} - ${moment(range.endDate).format("DD/MM/YYYY")}`;
 
   return (
-    <>
+    <Box>
       <TextField
         fullWidth
         onClick={handleOpen}
         value={formattedRange}
         InputProps={{ readOnly: true }}
         size="small"
+        error={error}
         sx={{
           border: "1px solid #E0E1E4",
           borderRadius: "4px",
@@ -51,6 +45,14 @@ const TimelineDateRangePicker = ({ range, onChange }) => {
           },
         }}
       />
+      {error && (
+        <Typography
+          variant="caption"
+          sx={{ color: "error.main", mt: "4px", ml: "2px" }}
+        >
+          {errorMessage}
+        </Typography>
+      )}
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
@@ -62,10 +64,11 @@ const TimelineDateRangePicker = ({ range, onChange }) => {
           moveRangeOnFirstSelection={false}
           ranges={[range]}
           showDateDisplay={false}
-          locale={enGB} // 👈 FIXED: explicitly pass locale
+          locale={enGB}
+          maxDate={new Date()}
         />
       </Popover>
-    </>
+    </Box>
   );
 };
 

@@ -3,7 +3,7 @@ import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import HeaderButton from "../../../common/Table/HeaderButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const EditHeader = ({ stockData, handleChange = () => {} }) => {
+const EditHeader = ({ stockData, handleChange = () => {}, isDuplicate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(false);
 
@@ -21,7 +21,7 @@ const EditHeader = ({ stockData, handleChange = () => {} }) => {
       <div className="flex flex-col gap-3">
         <Box className="flex items-center gap-2">
           <div className="text-xl font-semibold leading-tight text-neutral-950">
-            {stockData?.func}
+            {isDuplicate ? `${stockData?.func} duplicate` : stockData?.func}
           </div>
         </Box>
         <div className="text-[14px] font-normal leading-tight text-[#666666]">

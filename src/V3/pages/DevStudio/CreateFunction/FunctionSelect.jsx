@@ -44,8 +44,11 @@ const FunctionSelect = ({
   });
 
   const getDefaultValues = () => ({
-    filterRule:
-      stockData?.filter && stockData?.stockList ? ["Static"] : ["Dynamic"],
+    filterRule: stockData
+      ? stockData?.filter && stockData?.stockList
+        ? ["Static"]
+        : ["Dynamic"]
+      : [],
     tradeRule: stockData?.buysell ? ["Buy", "Sell"] : [],
     stockEntryExit: [
       ...(stockData?.entry ? ["Entry"] : []),

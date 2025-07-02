@@ -7,16 +7,18 @@ import {
   Typography,
   Autocomplete,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import TimelineDateRangePicker from "../../../common/TimelineDateRangePicker";
 import ModalButton from "../../../common/Table/ModalButton";
 import {
-  PrimaryAxis,
-  PrimaryXAxis,
+  PrimaryYAxis,
+  SecondaryYAxis,
   TimelineAxis,
   VERIFY_SUB_TITLE_TOOLTIP,
 } from "../../../../constants/CommonText";
+import moment from "moment";
 
 const VerfiyStockModal = ({
   title,
@@ -27,12 +29,26 @@ const VerfiyStockModal = ({
   setDateRange,
   selectedStock,
   setSelectedStock,
+  xAxisInput,
+  setXAxisInput,
+  yAxisInput,
+  setYAxisInput,
+  isSaving,
   handleVerifyStock = () => {},
 }) => {
-  const [xAxisInput, setXAxisInput] = useState("a,b");
-  const [yAxisInput, setYAxisInput] = useState("d,f");
+  const [dateRangeError, setDateRangeError] = useState(false);
 
   const handlePlotGraph = () => {
+    const start = moment(dateRange.startDate).startOf("day");
+    const end = moment(dateRange.endDate).startOf("day");
+
+    if (start.isSame(end)) {
+      setDateRangeError(true);
+      return;
+    }
+
+    setDateRangeError(false);
+
     const xAxisArray = xAxisInput
       .split(",")
       .map((s) => s.trim())
@@ -41,6 +57,7 @@ const VerfiyStockModal = ({
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
+
     handleVerifyStock({ xAxis: xAxisArray, yAxis: yAxisArray });
   };
 
@@ -88,7 +105,7 @@ const VerfiyStockModal = ({
           </Tooltip>
         </Box>
 
-        {/* Body Content */}
+        {/* Body */}
         <Box
           sx={{ display: "flex", flexDirection: "column", gap: "20px", mt: 4 }}
         >
@@ -146,7 +163,7 @@ const VerfiyStockModal = ({
             }
           />
 
-          {/* Visualization */}
+          {/* Visualization Section */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <Typography
               sx={{
@@ -159,6 +176,7 @@ const VerfiyStockModal = ({
               Visualisation
             </Typography>
 
+            {/* Timeline Picker */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Typography
@@ -202,61 +220,16 @@ const VerfiyStockModal = ({
 
               <TimelineDateRangePicker
                 range={dateRange}
-                onChange={(r) => setDateRange(r)}
+                onChange={(r) => {
+                  setDateRange(r);
+                  setDateRangeError(false); // reset error on change
+                }}
+                error={dateRangeError}
+                errorMessage="Start date and end date cannot be the same."
               />
             </Box>
 
-            {/* X-axis */}
-            <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <Typography
-                  sx={{
-                    fontWeight: 500,
-                    fontSize: "14px",
-                    color: "#0A0A0A",
-                    fontFamily: "Inter",
-                  }}
-                >
-                  Primary X axis
-                </Typography>
-                <Tooltip
-                  title={PrimaryXAxis}
-                  placement="right-end"
-                  componentsProps={{
-                    tooltip: {
-                      sx: {
-                        padding: "16px",
-                        background: "#FFFFFF",
-                        color: "#666666",
-                        boxShadow: "0px 8px 16px 0px #7B7F8229",
-                        fontFamily: "Inter",
-                        fontWeight: 400,
-                        fontSize: "14px",
-                        lineHeight: "20px",
-                      },
-                    },
-                  }}
-                >
-                  <InfoOutlinedIcon
-                    sx={{
-                      color: "#666666",
-                      width: "17px",
-                      height: "17px",
-                      cursor: "pointer",
-                    }}
-                  />
-                </Tooltip>
-              </Box>
-
-              <TextField
-                fullWidth
-                placeholder="e.g. Attribute1, Attribute2"
-                value={xAxisInput}
-                onChange={(e) => setXAxisInput(e.target.value)}
-              />
-            </Box>
-
-            {/* Y-axis */}
+            {/* X Axis */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <Typography
@@ -270,7 +243,7 @@ const VerfiyStockModal = ({
                   Primary Y axis
                 </Typography>
                 <Tooltip
-                  title={PrimaryAxis}
+                  title={PrimaryYAxis}
                   placement="right-end"
                   componentsProps={{
                     tooltip: {
@@ -297,14 +270,61 @@ const VerfiyStockModal = ({
                   />
                 </Tooltip>
               </Box>
+              <TextField
+                fullWidth
+                placeholder="e.g. Attribute1, Attribute2"
+                value={xAxisInput}
+                onChange={(e) => setXAxisInput(e.target.value)}
+              />
+            </Box>
 
+            {/* Y Axis */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <Typography
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    color: "#0A0A0A",
+                    fontFamily: "Inter",
+                  }}
+                >
+                  Secondary Y axis
+                </Typography>
+                <Tooltip
+                  title={SecondaryYAxis}
+                  placement="right-end"
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        padding: "16px",
+                        background: "#FFFFFF",
+                        color: "#666666",
+                        boxShadow: "0px 8px 16px 0px #7B7F8229",
+                        fontFamily: "Inter",
+                        fontWeight: 400,
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                      },
+                    },
+                  }}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      color: "#666666",
+                      width: "17px",
+                      height: "17px",
+                      cursor: "pointer",
+                    }}
+                  />
+                </Tooltip>
+              </Box>
               <TextField
                 fullWidth
                 placeholder="e.g. Attribute3, Attribute4"
                 value={yAxisInput}
                 onChange={(e) => setYAxisInput(e.target.value)}
               />
-
               <Typography
                 sx={{
                   fontWeight: 500,
@@ -319,12 +339,23 @@ const VerfiyStockModal = ({
           </Box>
         </Box>
 
-        {/* Footer Buttons */}
+        {/* Footer */}
         <div className="flex gap-5 justify-center items-center w-full mt-[30px]">
-          <ModalButton variant="secondary" onClick={handleClose}>
+          <ModalButton
+            variant="secondary"
+            disabled={isSaving}
+            onClick={handleClose}
+          >
             Close
           </ModalButton>
-          <ModalButton variant="primary" onClick={handlePlotGraph}>
+          <ModalButton
+            variant="primary"
+            disabled={isSaving}
+            onClick={handlePlotGraph}
+          >
+            {isSaving && (
+              <CircularProgress color="inherit" size={18} thickness={4} />
+            )}
             Plot Graph
           </ModalButton>
         </div>

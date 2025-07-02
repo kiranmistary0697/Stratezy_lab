@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import AceEditor from "react-ace";
+
 import { Box, Button, TextField, Tooltip, Typography } from "@mui/material";
-import MonacoEditor from "react-monaco-editor";
+
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
 const StyledLabel = ({ children }) => (
   <>
@@ -14,38 +17,19 @@ const StyledLabel = ({ children }) => (
     >
       {children}
     </Typography>
-    {/* <Tooltip
-      title={PrimaryAxis}
-      placement="right-end"
-      componentsProps={{
-        tooltip: {
-          sx: {
-            padding: "16px",
-            background: "#FFFFFF",
-            color: "#666666",
-            boxShadow: "0px 8px 16px 0px #7B7F8229",
-            fontFamily: "Inter",
-            fontWeight: 400,
-            fontSize: "14px",
-            lineHeight: "20px",
-          },
-        },
-      }}
-    >
-      <InfoOutlinedIcon
-        sx={{
-          color: "#666666",
-          width: "17px",
-          height: "17px",
-          cursor: "pointer",
-        }}
-      />
-    </Tooltip> */}
   </>
 );
 
-const EditorFunction = ({ stockData }) => {
-  const [code, setCode] = useState(stockData?.rule || "");
+const EditorFunction = ({
+  stockData,
+  code,
+  setCode = () => {},
+  editUserData = false,
+  argsData,
+  handleAddArgsData,
+  handleDeleteArgsData,
+  handleArgsDataChange,
+}) => {
   const [showArgs, setShowArgs] = useState(false); // toggles the side panel
 
   const handleEditorDidMount = (editor, monaco) => {
@@ -70,15 +54,22 @@ const EditorFunction = ({ stockData }) => {
           transition: "width 0.3s",
         }}
       >
-        <MonacoEditor
-          width="100%"
-          height="500"
-          language="javascript"
-          theme="vs-dark"
+        <AceEditor
+          mode="c_cpp"
+          theme="monokai"
+          name="code-editor"
           value={code}
-          options={options}
           onChange={handleChange}
-          editorDidMount={handleEditorDidMount}
+          width="100%"
+          height="600px"
+          fontSize={16}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            showLineNumbers: true,
+            tabSize: 2,
+          }}
+          readOnly={editUserData}
         />
       </Box>
 
@@ -96,49 +87,147 @@ const EditorFunction = ({ stockData }) => {
 
           <Box className="flex gap-4 mt-4" sx={{ alignItems: "center" }}>
             <Box sx={{ minWidth: "150px" }}>
-              {stockData?.adesc.map((item, index) => {
+              {argsData.map((item, index) => {
                 const labelIndex = `@@${index + 1} Name`;
                 return (
                   <Box
                     key={index}
                     className="flex gap-4 mt-4"
-                    sx={{ alignItems: "center" }}
+                    sx={{ alignItems: "center", width: "max-content" }}
                   >
-                    <Box sx={{ minWidth: "150px" }}>
-                      <StyledLabel>{labelIndex}</StyledLabel>
-                      <TextField
-                        defaultValue=""
-                        value={item}
-                        fullWidth
-                        margin="normal"
-                      />
-                    </Box>
-                  </Box>
-                );
-              })}
-            </Box>
+                    <Box
+                      sx={{ minWidth: "150px", display: "flex", gap: "1rem" }}
+                    >
+                      <Box>
+                        <Box className="flex gap-2.5 items-center">
+                          <StyledLabel>{labelIndex}</StyledLabel>
+                          <Tooltip
+                            title={labelIndex}
+                            placement="right-end"
+                            componentsProps={{
+                              tooltip: {
+                                sx: {
+                                  padding: "16px",
+                                  background: "#FFFFFF",
+                                  color: "#666666",
+                                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                                  fontFamily: "Inter",
+                                  fontWeight: 400,
+                                  fontSize: "14px",
+                                  lineHeight: "20px",
+                                },
+                              },
+                            }}
+                          >
+                            <InfoOutlinedIcon
+                              sx={{
+                                color: "#666666",
+                                width: "17px",
+                                height: "17px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </Tooltip>
+                        </Box>
 
-            <Box sx={{ minWidth: "150px" }}>
-              {stockData?.args.map((item, index) => {
-                return (
-                  <Box
-                    key={index}
-                    className="flex gap-4 mt-4"
-                    sx={{ alignItems: "center" }}
-                  >
-                    <Box sx={{ minWidth: "150px" }}>
-                      <StyledLabel>Default Value</StyledLabel>
-                      <TextField
-                        defaultValue=""
-                        value={item}
-                        fullWidth
-                        margin="normal"
-                      />
+                        <TextField
+                          value={item.name}
+                          fullWidth
+                          margin="normal"
+                          onChange={(e) =>
+                            handleArgsDataChange(index, "name", e.target.value)
+                          }
+                        />
+                      </Box>
+
+                      <Box>
+                        <Box className="flex gap-2.5 items-center justify-between">
+                          <Box className="flex gap-2.5 items-center">
+                            <StyledLabel>Default Value</StyledLabel>
+                            <Tooltip
+                              title={"Default Value"}
+                              placement="right-end"
+                              componentsProps={{
+                                tooltip: {
+                                  sx: {
+                                    padding: "16px",
+                                    background: "#FFFFFF",
+                                    color: "#666666",
+                                    boxShadow: "0px 8px 16px 0px #7B7F8229",
+                                    fontFamily: "Inter",
+                                    fontWeight: 400,
+                                    fontSize: "14px",
+                                    lineHeight: "20px",
+                                  },
+                                },
+                              }}
+                            >
+                              <InfoOutlinedIcon
+                                sx={{
+                                  color: "#666666",
+                                  width: "17px",
+                                  height: "17px",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </Tooltip>
+                          </Box>
+
+                          {index > 0 && (
+                            <Box
+                              sx={{
+                                color: "transparent",
+                                cursor: "pointer",
+                                marginBottom: "0px",
+                                display: "flex",
+                                flexDirection: "row-reverse",
+                              }}
+                            >
+                              <DeleteOutlineOutlinedIcon
+                                sx={{
+                                  color: "red",
+                                  cursor: "pointer",
+                                  height: "0.85em",
+                                }}
+                                onClick={() => handleDeleteArgsData(index)}
+                              />
+                            </Box>
+                          )}
+                        </Box>
+                        <TextField
+                          value={item.value}
+                          fullWidth
+                          margin="normal"
+                          onChange={(e) =>
+                            handleArgsDataChange(index, "value", e.target.value)
+                          }
+                        />
+                      </Box>
                     </Box>
                   </Box>
                 );
               })}
             </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "8px",
+            }}
+          >
+            <Typography
+              onClick={handleAddArgsData}
+              sx={{
+                fontSize: "14px",
+                color: "#3D69D3",
+                fontFamily: "Inter",
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
+              + Add More
+            </Typography>
           </Box>
 
           {/* Row 2 */}

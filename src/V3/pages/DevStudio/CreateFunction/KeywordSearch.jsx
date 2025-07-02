@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField, Tooltip, Typography } from "@mui/material";
+
 import KeywordItem from "./KeywordItem";
+
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { PRIMITIVES_TOOLTIP } from "../../../../constants/CommonText";
 
 const KeywordSearch = ({ keywordData }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,10 +17,37 @@ const KeywordSearch = ({ keywordData }) => {
 
   return (
     <Box className="flex flex-col py-5  border-t border-b border-l border-zinc-200 m-2">
-      <Box className="flex justify-center">
+      <Box className="flex gap-2.5 justify-center items-center">
         <div className="text-[16px] font-semibold leading-tight text-neutral-950">
           Primitives
         </div>
+        <Tooltip
+          title={PRIMITIVES_TOOLTIP}
+          placement="right-end"
+          componentsProps={{
+            tooltip: {
+              sx: {
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+              },
+            },
+          }}
+        >
+          <InfoOutlinedIcon
+            sx={{
+              color: "#666666",
+              width: "17px",
+              height: "17px",
+              cursor: "pointer",
+            }}
+          />
+        </Tooltip>
       </Box>
 
       <Box className="flex flex-col w-full text-sm leading-none text-stone-500">

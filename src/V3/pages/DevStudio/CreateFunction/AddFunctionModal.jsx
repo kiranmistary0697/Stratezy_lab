@@ -14,7 +14,17 @@ import { usePostMutation } from "../../../../slices/api";
 import { tagTypes } from "../../../tagTypes";
 import { useNavigate } from "react-router-dom";
 
-const AddFunctionModal = ({ isOpen, handleClose, title, selectedFunction }) => {
+const AddFunctionModal = ({
+  isOpen,
+  handleClose,
+  title,
+  selectedFunction,
+  stockData,
+  code,
+  isDuplicate = false,
+  argsData,
+  resetArgsData,
+}) => {
   const navigate = useNavigate();
   const [verifyNewStock] = usePostMutation();
   const [saveNewStock] = usePostMutation();
@@ -23,25 +33,37 @@ const AddFunctionModal = ({ isOpen, handleClose, title, selectedFunction }) => {
 
   const formik = useFormik({
     initialValues: {
-      functionName: "",
-      descriptionName: "",
+      functionName: isDuplicate
+        ? `${stockData?.shortFuncName}_duplicate`
+        : stockData?.shortFuncName || "",
+      descriptionName: stockData?.desc || "",
     },
     validationSchema: Yup.object({
-      functionName: Yup.string().required("Name is required"),
+      functionName: Yup.string()
+        .required("Function Name is required")
+        .matches(/^[a-zA-Z0-9_]+$/, "Whitespace is not permitted"),
       descriptionName: Yup.string().required("Description is required"),
     }),
     //stock-analysis-function/verify
     onSubmit: async (values) => {
+      const receivedArgs = argsData
+        .filter((data) => data.value !== "")
+        .map(({ value }) => `${value}`);
+
+      const receivedAdesc = argsData
+        .filter((data) => data.name !== "")
+        .map(({ name }) => `${name}`);
+
       setIsSaving(true);
       const payload = {
         func: values.functionName,
-        rule: "{c = close(); return c;}",
+        rule: code,
         exchange: "nse",
         num_arg: 0,
         equation: `/config/library/${values.functionName}`,
         desc: values.descriptionName,
-        args: [],
-        adesc: [],
+        args: receivedArgs || [],
+        adesc: receivedAdesc || [],
         filter: selectedFunction?.filterRule || false,
         buysell: selectedFunction?.tradeRule || false,
         entry: selectedFunction?.entry || false,
@@ -82,6 +104,7 @@ const AddFunctionModal = ({ isOpen, handleClose, title, selectedFunction }) => {
         console.error("Failed to save stock:", error);
         // Optional: Show error feedback to the user
       } finally {
+        resetArgsData();
         setIsSaving(false);
       }
     },

@@ -7,7 +7,7 @@ const GlobalFunctionActionMenu = ({
   isEditButton = false,
   isDeleteButton = false,
   handleEdit = () => {},
-
+  handleDuplicate = () => {},
   id,
   handleDelete,
   isDeployStrategy,
@@ -62,11 +62,7 @@ const GlobalFunctionActionMenu = ({
               marginBottom: "5px",
               fontFamily: "Inter",
             }}
-            onClick={() => {
-              setOpenDuplicateModal(true);
-              setIsId(id);
-              handleClose();
-            }}
+            onClick={handleDuplicate}
           >
             Duplicate
           </MenuItem>

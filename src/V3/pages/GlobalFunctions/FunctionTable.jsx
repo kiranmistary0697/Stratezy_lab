@@ -5,6 +5,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   Menu,
   MenuItem,
@@ -12,6 +15,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import {
+  Settings as SettingsIcon,
+  CheckBox as CheckBoxIcon,
+  CheckBoxOutlineBlank as CheckBoxOutlinedIcon,
+} from "@mui/icons-material";
 import Badge from "../../common/Badge";
 import CustomFilterPanel from "../Strategies/ViewStrategy/ViewModal/CustomFilterPanel";
 
@@ -54,6 +62,10 @@ const FunctionTable = ({ query }) => {
   const [isDelete, setIsDelete] = useState(false);
   const [deleteRow, setDeleteRow] = useState({});
 
+  const [hiddenColumns, setHiddenColumns] = useState([]);
+  const [popoverAnchor, setPopoverAnchor] = useState(null);
+  const [activeFilter, setActiveFilter] = useState(null);
+
   const open = Boolean(openDropdown);
 
   const fetchStockDetails = async () => {
@@ -82,10 +94,24 @@ const FunctionTable = ({ query }) => {
     }
   };
 
-  const handleCreateStrategy = (id) => {
-    navigate(`/DevStudio/create-function?id=${id}`);
+  const handlePopoverOpen = (event, type) => {
+    event.stopPropagation();
+    setPopoverAnchor(event.currentTarget);
+    setActiveFilter(type);
   };
 
+  const handlePopoverClose = () => {
+    setPopoverAnchor(null);
+    setActiveFilter(null);
+  };
+
+  const handleColumnToggle = (field) => {
+    setHiddenColumns((prev) =>
+      prev.includes(field)
+        ? prev.filter((col) => col !== field)
+        : [...prev, field]
+    );
+  };
   const handleRowClick = ({ row }) => {
     navigate(`/Devstudio/edit-function?name=${row.shortFuncName}`);
   };
@@ -100,6 +126,48 @@ const FunctionTable = ({ query }) => {
 
   const handleStatusFilterChange = (filterData) => {
     setSelectedStatuses(filterData.value || []);
+  };
+
+  const popoverContent = () => {
+    if (!activeFilter) return null;
+
+    switch (activeFilter) {
+      case "column":
+        return (
+          <FormGroup sx={{ padding: 2 }}>
+            <Typography
+              sx={{
+                fontFamily: "Inter",
+                fontWeight: 500,
+                fontSize: "14px",
+                lineHeight: "120%",
+                letterSpacing: "0%",
+                color: "#0A0A0A",
+              }}
+            >
+              Select Column
+            </Typography>
+            {columns
+              .filter(({ field }) => !["moreActions"].includes(field))
+              .map((col) => (
+                <FormControlLabel
+                  key={col.field}
+                  control={
+                    <Checkbox
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxIcon />}
+                      checked={!hiddenColumns.includes(col.field)}
+                      onChange={() => handleColumnToggle(col.field)}
+                    />
+                  }
+                  label={col.headerName}
+                />
+              ))}
+          </FormGroup>
+        );
+      default:
+        return null;
+    }
   };
 
   const openPopover = Boolean(anchorEl);
@@ -457,6 +525,14 @@ const FunctionTable = ({ query }) => {
       filterable: false,
       disableColumnMenu: true,
       headerClassName: "no-resize-header", // for CSS override
+      renderHeader: () => (
+        <IconButton
+          size="small"
+          onClick={(e) => handlePopoverOpen(e, "column")}
+        >
+          <SettingsIcon fontSize="small" />
+        </IconButton>
+      ),
       renderCell: ({ row }) => {
         const isRemove = row?.userDefined;
         return (
@@ -473,13 +549,19 @@ const FunctionTable = ({ query }) => {
             handleEdit={() =>
               navigate(`/Devstudio/edit-function?name=${row.shortFuncName}`)
             }
-            handleDuplicate={() => setOpenDuplicateModal(true)}
+            handleDuplicate={() =>
+              navigate(
+                `/Devstudio/edit-function?name=${row.shortFuncName}&duplicate=true`
+              )
+            }
           />
         );
       },
     },
   ];
-
+  const visibleColumns = columns.filter(
+    (col) => !hiddenColumns.includes(col.field)
+  );
   return (
     <>
       {openDuplicateModal && (
@@ -499,6 +581,15 @@ const FunctionTable = ({ query }) => {
           description="This action is irreversible. Once deleted, the function and all its data cannot be recovered."
         />
       )}
+      <Popover
+        open={Boolean(popoverAnchor)}
+        anchorEl={popoverAnchor}
+        onClose={handlePopoverClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        // transformOrigin={{ vertical: "top", horizontal: "left" }}
+      >
+        {popoverContent()}
+      </Popover>
       <Box
         className={`${classes.filterModal} flex`}
         sx={{
@@ -512,7 +603,7 @@ const FunctionTable = ({ query }) => {
       >
         <DataGrid
           rows={filteredRows}
-          columns={columns}
+          columns={visibleColumns}
           filterModel={filterModel}
           onRowClick={handleRowClick}
           onFilterModelChange={setFilterModel}
