@@ -23,7 +23,6 @@ const AddFunctionModal = ({
   code,
   isDuplicate = false,
   argsData,
-  resetArgsData,
 }) => {
   const navigate = useNavigate();
   const [verifyNewStock] = usePostMutation();
@@ -59,7 +58,7 @@ const AddFunctionModal = ({
         func: values.functionName,
         rule: code,
         exchange: "nse",
-        num_arg: 0,
+        num_arg: receivedArgs.length || 0,
         equation: `/config/library/${values.functionName}`,
         desc: values.descriptionName,
         args: receivedArgs || [],
@@ -104,7 +103,6 @@ const AddFunctionModal = ({
         console.error("Failed to save stock:", error);
         // Optional: Show error feedback to the user
       } finally {
-        resetArgsData();
         setIsSaving(false);
       }
     },

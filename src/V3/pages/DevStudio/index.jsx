@@ -75,10 +75,6 @@ const CreateFunction = () => {
     );
   };
 
-  const resetArgsData = () => {
-    setArgsData([{ name: "", value: "" }]);
-  };
-
   const queryParams = new URLSearchParams(search);
 
   const id = queryParams.get("name");
@@ -125,7 +121,11 @@ const CreateFunction = () => {
   const handleVerifyStock = async ({ xAxis, yAxis }) => {
     setIsSaving(true);
     try {
-      const { data } = await verifyStock({
+      const argsDataValue = argsData
+        .map((data) => (data.value.trim() !== "" ? Number(data.value) : null))
+        .filter((data) => data !== null && !isNaN(data));
+
+      const verifyStockPayload = {
         endpoint: `command/chart/request`,
         payload: {
           exchange: "nse",
@@ -135,14 +135,18 @@ const CreateFunction = () => {
           chartRule: {
             ruleType: "CHART_RULE",
             ruleSubType: "CUSTOM_RULE",
-            customRule: code,
+            customRule:
+              "global{cond =0;ocond1=0;}{c = close(0);p = old(c, @@1);p1 = old(c, 2);p2 = old(c, 3);cnd = (p < p1) && (p1 < (0.98 * p2));cond1 = not((c < 0.98 * p) || ((c < p) && ((p < 0.98*p1) || cnd)));ocond1 = old(cond1,0); b = emaseqsdevbuy(10,30,50,80);cond = (cond1 && b);return cond;}",
+            funcArgs: argsDataValue,
           },
           varList1: xAxis,
           varList2: yAxis,
         },
 
         tags: [tagTypes.VERIFY_STOCK],
-      }).unwrap();
+      };
+
+      const { data } = await verifyStock(verifyStockPayload).unwrap();
 
       const dataMap = data["chartResMap"];
       const preparedData = prepareData(dataMap);
@@ -347,7 +351,6 @@ const CreateFunction = () => {
           selectedFunction={selectedFunction}
           title={"Create Function"}
           argsData={argsData}
-          resetArgsData={resetArgsData}
         />
       )}
 
