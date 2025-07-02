@@ -58,6 +58,9 @@ const FunctionSelect = ({
       ...(stockData?.gentry ? ["Entry"] : []),
       ...(stockData?.gexit ? ["Exit"] : []),
     ],
+    portfolioSizing: stockData?.psizing ? ["Portfolio Sizing"] : [],
+    tradeSequence: stockData?.sort ? ["Trade Sequence"] : [],
+    utility: stockData?.ulying ? ["Utility"] : [],
   });
 
   useEffect(() => {
@@ -97,6 +100,11 @@ const FunctionSelect = ({
       }
       if (selectedValues.globalEntryExit.includes("Exit")) {
         updatedFunction.gexit = true;
+      }
+    }
+    if (Array.isArray(selectedValues.filterRule)) {
+      if (selectedValues.filterRule.includes("Static")) {
+        updatedFunction.stockList = true;
       }
     }
 

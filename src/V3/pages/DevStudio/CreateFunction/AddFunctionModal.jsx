@@ -70,13 +70,13 @@ const AddFunctionModal = ({
         psizing: selectedFunction?.portfolioSizing || false,
         gentry: selectedFunction?.gentry || false,
         gexit: selectedFunction?.gexit || false,
-        sort: false,
+        sort: selectedFunction?.tradeSequence || false,
         ulying: selectedFunction?.utility || false,
         candle_stick: false,
         future_rule: false,
         cacheable: false,
         static: false,
-        stockList: false,
+        stockList: selectedFunction?.stockList || false,
       };
 
       try {

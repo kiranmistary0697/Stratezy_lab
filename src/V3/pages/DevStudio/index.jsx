@@ -135,8 +135,7 @@ const CreateFunction = () => {
           chartRule: {
             ruleType: "CHART_RULE",
             ruleSubType: "CUSTOM_RULE",
-            customRule:
-              "global{cond =0;ocond1=0;}{c = close(0);p = old(c, @@1);p1 = old(c, 2);p2 = old(c, 3);cnd = (p < p1) && (p1 < (0.98 * p2));cond1 = not((c < 0.98 * p) || ((c < p) && ((p < 0.98*p1) || cnd)));ocond1 = old(cond1,0); b = emaseqsdevbuy(10,30,50,80);cond = (cond1 && b);return cond;}",
+            customRule: code,
             funcArgs: argsDataValue,
           },
           varList1: xAxis,

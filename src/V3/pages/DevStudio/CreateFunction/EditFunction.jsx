@@ -133,7 +133,9 @@ const EditFunction = () => {
     setIsSaving(true);
     try {
       const argsDataValue = argsData
-        .map((data) => (data.value.trim() !== "" ? Number(data.value) : null))
+        .map((data) =>
+          String(data.value).trim() !== "" ? Number(data.value) : null
+        )
         .filter((data) => data !== null && !isNaN(data));
 
       const verifyStockPayload = {
@@ -146,8 +148,7 @@ const EditFunction = () => {
           chartRule: {
             ruleType: "CHART_RULE",
             ruleSubType: "CUSTOM_RULE",
-            customRule:
-              "global{cond =0;ocond1=0;}{c = close(0);p = old(c, @@1);p1 = old(c, 2);p2 = old(c, 3);cnd = (p < p1) && (p1 < (0.98 * p2));cond1 = not((c < 0.98 * p) || ((c < p) && ((p < 0.98*p1) || cnd)));ocond1 = old(cond1,0); b = emaseqsdevbuy(10,30,50,80);cond = (cond1 && b);return cond;}",
+            customRule: code,
             funcArgs: argsDataValue,
           },
           varList1: xAxis,
@@ -379,9 +380,7 @@ const EditFunction = () => {
           handleClose={() => {
             setOpenAddFunctionModal(false);
           }}
-          // onSave={handleSaveFunction}
-          // isSaving={isSaving}
-          // selectedFunction={selectedFunction}
+          selectedFunction={selectedFunction}
           code={code}
           stockData={stockData}
           title={"Create Function"}
@@ -405,6 +404,7 @@ const EditFunction = () => {
             stockData={stockData}
             editUserData={editUserData}
             id={id}
+            setSelectedFunction={setSelectedFunction}
           />
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
           <CreateFunctionHeader
