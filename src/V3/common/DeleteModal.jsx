@@ -23,35 +23,40 @@ const DeleteModal = ({
     >
       <DialogContent className="space-y-2 !p-[30px]">
         <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <Typography
-            sx={{
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "20px",
-              lineHeight: "120%",
-              letterSpacing: "0px",
-              color: "#0A0A0A",
-            }}
-          >
-            {title}
-          </Typography>
-          {name && (
-            <Typography variant="body1" className="text-blue-600 font-semibold">
-              {name}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <Typography
+              sx={{
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "20px",
+                lineHeight: "120%",
+                letterSpacing: "0px",
+                color: "#0A0A0A",
+              }}
+            >
+              {title}
             </Typography>
-          )}
-          <Typography
-            sx={{
-              fontFamily: "Inter",
-              fontWeight: 400,
-              fontSize: "14px",
-              lineHeight: "20px",
-              letterSpacing: "0px",
-              color: "#666666",
-            }}
-          >
-            {description}
-          </Typography>
+            {name && (
+              <Typography
+                variant="body1"
+                className="text-blue-600 font-semibold"
+              >
+                {name}
+              </Typography>
+            )}
+            <Typography
+              sx={{
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                letterSpacing: "0px",
+                color: "#666666",
+              }}
+            >
+              {description}
+            </Typography>
+          </Box>
 
           <div className="flex gap-5 justify-center items-center w-full max-md:px-5 max-md:py-0 max-sm:flex-col max-sm:px-4 max-sm:py-0">
             <ModalButton variant="primary" onClick={handleClose}>

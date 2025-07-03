@@ -94,7 +94,7 @@ const AddCapital = ({
             disabled={loading}
             onClick={handleClose}
           >
-            Cancle
+            Cancel
           </ModalButton>
           <ModalButton variant="primary" loading={loading} onClick={onSave}>
             {loading && (

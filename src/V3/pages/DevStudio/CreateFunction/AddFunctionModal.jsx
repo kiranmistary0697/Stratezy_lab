@@ -189,7 +189,7 @@ const AddFunctionModal = ({
               disabled={isSaving}
               onClick={handleClose}
             >
-              Cancle
+              Cancel
             </ModalButton>
 
             <ModalButton

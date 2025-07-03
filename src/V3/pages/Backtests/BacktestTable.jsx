@@ -445,7 +445,8 @@ const BacktestTable = () => {
         headerName: "Net Profit",
         minWidth: 140,
         flex: 1,
-        valueGetter: (_, row) => row.backtestSummary?.["Net profit"] ?? "0",
+        valueGetter: (_, row) =>
+          row.netProfit ? parseFloat(row.netProfit) : 0,
         renderCell: (params) => (
           <span>{params.row.backtestSummary?.["Net profit"] || "0"}</span>
         ),
@@ -456,7 +457,7 @@ const BacktestTable = () => {
         minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
-          row.backtestSummary?.["avg annual profit"] || "-",
+          row.avgAnnualProfit ? parseFloat(row.avgAnnualProfit) : 0,
         renderCell: (params) => (
           <span className="text-[#666666]">
             {params.row.backtestSummary?.["avg annual profit"] || "-"}
@@ -469,7 +470,9 @@ const BacktestTable = () => {
         minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
-          row.backtestSummary?.["Total number of trades"] ?? "0",
+          row.backtestSummary?.["Total number of trades"]
+            ? parseFloat(row.backtestSummary["Total number of trades"])
+            : 0,
         renderCell: (params) => (
           <span className="text-[#666666]">
             {params.row.backtestSummary?.["Total number of trades"] || "0"}

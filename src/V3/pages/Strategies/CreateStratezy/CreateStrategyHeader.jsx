@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import * as _ from "lodash";
 import { Box, Tooltip, Typography } from "@mui/material";
 
-import CancleStrategyModal from "../Modal/CancleStrategyModal";
+import CancelStrategyModal from "../Modal/CancelStrategyModal";
 import CustomizedDialogs from "../Modal/DuplicateStrategyModal";
 
 import HeaderButton from "../../../common/Table/HeaderButton";
@@ -11,7 +11,7 @@ import { CREATE_STRATEGY_BTN_TOOLTIP } from "../../../../constants/CommonText";
 import WarningPopupModal from "./WarningPopupModal";
 
 const CreateStrategyHeader = ({ onNext, step, formik, id, strategyName }) => {
-  const [isCancleStrategy, setIsCancleStrategy] = useState(false);
+  const [isCancelStrategy, setIsCancelStrategy] = useState(false);
   const [isOpenSaveDraft, setIsOpenSaveDraft] = useState(false);
   const [saveActionType, setSaveActionType] = useState("draft"); // 'draft' | 'create'
   const [isWarning, setIsWarning] = useState(false);
@@ -46,10 +46,10 @@ const CreateStrategyHeader = ({ onNext, step, formik, id, strategyName }) => {
   return (
     <>
       {/* Cancel Modal */}
-      <CancleStrategyModal
-        isOpen={isCancleStrategy}
-        handleClose={() => setIsCancleStrategy(false)}
-        isCancle
+      <CancelStrategyModal
+        isOpen={isCancelStrategy}
+        handleClose={() => setIsCancelStrategy(false)}
+        isCancel
       />
       {isWarning && (
         <WarningPopupModal
@@ -111,7 +111,7 @@ const CreateStrategyHeader = ({ onNext, step, formik, id, strategyName }) => {
         <nav className="flex flex-col md:flex-row gap-3 text-sm font-medium text-blue-600 w-full md:w-auto">
           <HeaderButton
             variant="primary"
-            onClick={() => setIsCancleStrategy(true)}
+            onClick={() => setIsCancelStrategy(true)}
           >
             Cancel
           </HeaderButton>

@@ -1,8 +1,7 @@
 import { Checkbox, FormControlLabel, FormGroup, Paper } from "@mui/material";
-import { useState } from "react";
-import Badge from "../../../../common/Badge";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlinedIcon from "@mui/icons-material/CheckBoxOutlined";
+import Badge from "../../../../common/Badge";
 
 const CustomFilterPanel = ({
   data = [],
@@ -12,20 +11,17 @@ const CustomFilterPanel = ({
   dataKey = "",
   isVersion = false,
   isStatus = false,
+  selectedValues = [],
 }) => {
-  const [selectedValues, setSelectedValues] = useState([]);
-
-  const handleChange = (event, dataKey) => {
+  const handleChange = (event, dataKeyValue) => {
     const newSelected = event.target.checked
-      ? [...selectedValues, dataKey]
-      : selectedValues.filter((val) => val !== dataKey);
-
-    setSelectedValues(newSelected);
+      ? [...new Set([...selectedValues, dataKeyValue])]
+      : selectedValues.filter((val) => val !== dataKeyValue);
 
     applyValue({
       field: fieldName,
       operator: "in",
-      value: newSelected.length > 0 ? newSelected : [],
+      value: newSelected,
     });
   };
 
@@ -41,7 +37,7 @@ const CustomFilterPanel = ({
             const isChecked = selectedValues.includes(item[dataKey]);
             return (
               <FormControlLabel
-                className="custom-select "
+                className="custom-select"
                 key={key}
                 control={
                   <Checkbox

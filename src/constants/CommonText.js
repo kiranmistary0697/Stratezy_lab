@@ -125,3 +125,5 @@ export const TimelineAxis = "Timeline";
 export const ARGUMENTS_TOOLTIP = "Arguments";
 
 export const PRIMITIVES_TOOLTIP = "Primitives";
+
+export const PLOT_GRAPH_TOOLTIP = "Plot Graph";

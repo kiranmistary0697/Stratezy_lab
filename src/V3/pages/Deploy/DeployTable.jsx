@@ -89,20 +89,6 @@ const DeployTable = ({
       handleCreateStrategy(params.row.reqId, params.row.name);
   };
 
-  // const fetchAllData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const { data } = await getDeployData({
-  //       endpoint: "deploy/strategy/findall",
-  //       tags: [tagTypes.GET_DEPLOY],
-  //     }).unwrap();
-  //     setRows(data);
-  //   } catch (error) {
-  //     console.error("Failed to fetch data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const confirmDelete = async () => {
     try {
@@ -112,6 +98,7 @@ const DeployTable = ({
           exchangeId: rowToDelete.exchange,
           strategyName: rowToDelete.name,
           brokerage: rowToDelete.brokerage,
+          version: rowToDelete.version,
         },
         tags: [tagTypes.GET_DEPLOY],
       }).unwrap();
@@ -315,6 +302,8 @@ const DeployTable = ({
         headerName: "Initial Capital",
         minWidth: 170,
         flex: 1,
+        valueGetter: (_, row) =>
+          row.initialCapital ? parseFloat(row.initialCapital) : 0,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
             {params.row.initialCapital || "-"}
@@ -326,6 +315,10 @@ const DeployTable = ({
         headerName: "Current Capital",
         minWidth: 170,
         flex: 1,
+        valueGetter: (_, row) =>
+          row.currentCapital && row.currentCapital !== "N/A"
+            ? parseFloat(row.currentCapital)
+            : 0,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
             {params.row.currentCapital || "-"}
@@ -337,6 +330,8 @@ const DeployTable = ({
         headerName: "Average Profit",
         minWidth: 170,
         flex: 1,
+        valueGetter: (_, row) =>
+          row.avgAnProfit ? parseFloat(row.avgAnProfit) : 0,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
             {params.row.avgAnProfit || "-"}
@@ -348,6 +343,8 @@ const DeployTable = ({
         headerName: "Average Profit Per Trade",
         minWidth: 170,
         flex: 1,
+        valueGetter: (_, row) =>
+          row.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
             {params.row.avgProfitPerTrade || "-"}
@@ -359,6 +356,8 @@ const DeployTable = ({
         headerName: "Max Drawdown",
         minWidth: 170,
         flex: 1,
+        valueGetter: (_, row) =>
+          row.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
             {params.row.maxDrawdown || "-"}
@@ -370,6 +369,8 @@ const DeployTable = ({
         headerName: "Net Profit",
         minWidth: 170,
         flex: 1,
+        valueGetter: (_, row) =>
+          row.netProfit ? parseFloat(row.netProfit) : 0,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
             {params.row.netProfit || "-"}
@@ -449,6 +450,7 @@ const DeployTable = ({
                 name: params.row.name,
                 exchange: params.row.exchange,
                 brokerage: params.row.brokerage,
+                version: params.row.version,
               });
             }}
             isDeleteButton

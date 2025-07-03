@@ -1,4 +1,5 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+/* eslint-disable react/display-name */
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Box,
@@ -145,6 +146,7 @@ const Tradetable = forwardRef((props, ref) => {
       headerName: "Buy Price",
       minWidth: 200,
       flex: 1,
+      valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
       renderCell: (params) => (
         <Typography
           sx={{
@@ -175,6 +177,7 @@ const Tradetable = forwardRef((props, ref) => {
       headerName: "Sell Price",
       minWidth: 200,
       flex: 1,
+      valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
       renderCell: (params) => (
         <Typography
           sx={{
@@ -190,6 +193,7 @@ const Tradetable = forwardRef((props, ref) => {
       headerName: "Quantity",
       minWidth: 200,
       flex: 1,
+      valueGetter: (_, row) => (row.number ? parseFloat(row.number) : 0),
       renderCell: (params) => (
         <Typography
           sx={{
@@ -205,6 +209,8 @@ const Tradetable = forwardRef((props, ref) => {
       headerName: "Investment",
       minWidth: 200,
       flex: 1,
+      valueGetter: (_, row) =>
+        row.investment ? parseFloat(row.investment) : 0,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -235,6 +241,7 @@ const Tradetable = forwardRef((props, ref) => {
       headerName: "Principal",
       minWidth: 200,
       flex: 1,
+      valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
       renderCell: (params) => (
         <Typography
           sx={{
@@ -265,6 +272,7 @@ const Tradetable = forwardRef((props, ref) => {
       headerName: "Annual Profit",
       minWidth: 200,
       flex: 1,
+      valueGetter: (_, row) => (row.annualPrf ? parseFloat(row.annualPrf) : 0),
       renderCell: (params) => (
         <Typography
           sx={{
@@ -280,6 +288,7 @@ const Tradetable = forwardRef((props, ref) => {
       headerName: "Net Profit",
       minWidth: 200,
       flex: 1,
+      valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
       renderCell: (params) => (
         <Typography
           sx={{
@@ -295,6 +304,7 @@ const Tradetable = forwardRef((props, ref) => {
       headerName: "Profit %",
       minWidth: 200,
       flex: 1,
+      valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
       renderCell: (params) => (
         <Typography
           sx={{

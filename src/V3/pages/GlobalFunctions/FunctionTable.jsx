@@ -54,8 +54,11 @@ const FunctionTable = ({ query }) => {
 
   const [filterModel, setFilterModel] = useState({ items: [] });
   const [selectedStatuses, setSelectedStatuses] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(false);
+  const [selectedSubStatuses, setSelectedSubStatuses] = useState([]);
+  const [selectedCreatedBy, setSelectedCreatedBy] = useState([]);
+  const [typeAnchorEl, setTypeAnchorEl] = useState(null);
+  const [subTypeAnchorEl, setSubTypeAnchorEl] = useState(null);
+  const [createdByAnchor, setCreatedByAnchor] = useState(null);
   const [openDuplicateModal, setOpenDuplicateModal] = useState(false);
 
   const [rows, setRows] = useState([]);
@@ -65,8 +68,6 @@ const FunctionTable = ({ query }) => {
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
-
-  const open = Boolean(openDropdown);
 
   const fetchStockDetails = async () => {
     try {
@@ -112,20 +113,47 @@ const FunctionTable = ({ query }) => {
         : [...prev, field]
     );
   };
+
   const handleRowClick = ({ row }) => {
     navigate(`/Devstudio/edit-function?name=${row.shortFuncName}`);
   };
 
-  const handleStatusFilterOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  // Separate handler for type filter
+  const handleTypeFilterOpen = (event) => {
+    setTypeAnchorEl(event.currentTarget);
   };
 
-  const handleStatusFilterClose = () => {
-    setAnchorEl(null);
+  const handleTypeFilterClose = () => {
+    setTypeAnchorEl(null);
+  };
+
+  // Separate handler for subType filter
+  const handleSubTypeFilterOpen = (event) => {
+    setSubTypeAnchorEl(event.currentTarget);
+  };
+
+  const handleCreatedByFilterOpen = (event) => {
+    setCreatedByAnchor(event.currentTarget);
+  };
+
+  const handleCreatedByFilterClose = () => {
+    setCreatedByAnchor(null);
+  };
+
+  const handleSubTypeFilterClose = () => {
+    setSubTypeAnchorEl(null);
   };
 
   const handleStatusFilterChange = (filterData) => {
     setSelectedStatuses(filterData.value || []);
+  };
+
+  const handleSubTypeFilterChange = (filterData) => {
+    setSelectedSubStatuses(filterData.value || []);
+  };
+
+  const handleCreatedByFilterChange = (filterData) => {
+    setSelectedCreatedBy(filterData.value || []);
   };
 
   const popoverContent = () => {
@@ -170,11 +198,6 @@ const FunctionTable = ({ query }) => {
     }
   };
 
-  const openPopover = Boolean(anchorEl);
-
-  // const normalizedQuery = String(query).toLowerCase();
-  // const searchableFields = ["functionName"];
-
   const tableRows = (rows?.flat() || [])
     .sort((a, b) => a.symbol?.localeCompare(b.symbol || "") ?? 0)
     .map((item, index) => ({
@@ -197,18 +220,29 @@ const FunctionTable = ({ query }) => {
   );
 
   const filteredRows = searchedRows.filter((row) => {
-    if (effectiveStatuses.length === 0) return true;
+    if (
+      effectiveStatuses.length === 0 &&
+      selectedSubStatuses.length === 0 &&
+      selectedCreatedBy.length === 0
+    )
+      return true;
 
     const rowTypes = [];
+    const rowSubTypes = [];
+    const rowCreatedBy = [];
 
     if (row.filter && row.stockList) {
-      rowTypes.push("Static");
+      rowSubTypes.push("Static");
     } else {
-      rowTypes.push("Dynamic");
+      rowSubTypes.push("Dynamic");
     }
 
     if (row.filter) rowTypes.push("Stock Filter");
-    if (row.buysell) rowTypes.push("Trade Rule");
+    if (row.buysell) {
+      rowTypes.push("Trade Rule");
+      rowSubTypes.push("Buy");
+      rowSubTypes.push("Sell");
+    }
 
     if (row.gentry && row.gexit) {
       rowTypes.push("Global Entry & Exit");
@@ -226,7 +260,20 @@ const FunctionTable = ({ query }) => {
 
     if (row.psizing) rowTypes.push("Portfolio Sizing");
 
-    return effectiveStatuses.some((type) => rowTypes.includes(type));
+    rowCreatedBy.push(row.userDefined ? "User" : "System");
+
+    const matchesType =
+      effectiveStatuses.length === 0 ||
+      effectiveStatuses.some((type) => rowTypes.includes(type));
+    const matchesSubType =
+      selectedSubStatuses.length === 0 ||
+      selectedSubStatuses.some((subType) => rowSubTypes.includes(subType));
+
+    const matchCreatedBy =
+      selectedCreatedBy.length === 0 ||
+      selectedCreatedBy.some((type) => rowCreatedBy.includes(type));
+
+    return matchesType && matchesSubType && matchCreatedBy;
   });
 
   const handleDelete = async () => {
@@ -236,6 +283,7 @@ const FunctionTable = ({ query }) => {
         tags: [tagTypes.GET_FILTERTYPE],
       }).unwrap();
     } catch (error) {
+      console.error("Failed to delete:", error);
     } finally {
       fetchStockDetails();
       setIsDelete(false);
@@ -245,26 +293,25 @@ const FunctionTable = ({ query }) => {
   useEffect(() => {
     fetchStockDetails();
   }, []);
+
   const columns = [
     {
       field: "shortFuncName",
       headerName: "Function Name",
       minWidth: 280,
       flex: 1,
-      renderCell: (params) => {
-        return (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              cursor: "pointer",
-            }}
-          >
-            <span>{params.row.shortFuncName}</span>
-          </div>
-        );
-      },
+      renderCell: (params) => (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            cursor: "pointer",
+          }}
+        >
+          <span>{params.row.shortFuncName}</span>
+        </div>
+      ),
     },
     {
       field: "type",
@@ -285,14 +332,14 @@ const FunctionTable = ({ query }) => {
           >
             Type
           </span>
-          <IconButton size="small" onClick={handleStatusFilterOpen}>
+          <IconButton size="small" onClick={handleTypeFilterOpen}>
             <FilterListIcon fontSize="small" />
           </IconButton>
 
           <Popover
-            open={openPopover}
-            anchorEl={anchorEl}
-            onClose={handleStatusFilterClose}
+            open={Boolean(typeAnchorEl)}
+            anchorEl={typeAnchorEl}
+            onClose={handleTypeFilterClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "left" }}
           >
@@ -312,22 +359,16 @@ const FunctionTable = ({ query }) => {
               applyValue={handleStatusFilterChange}
               title="Select Type"
               dataKey="status"
+              selectedValues={selectedStatuses}
             />
           </Popover>
         </Box>
       ),
-
       renderCell: ({ row }) => {
         const badges = [];
 
-        if (row.filter) {
-          badges.push("Stock Filter");
-        }
-
-        if (row.buysell) {
-          badges.push("Trade Rule");
-        }
-
+        if (row.filter) badges.push("Stock Filter");
+        if (row.buysell) badges.push("Trade Rule");
         if (row.gentry && row.gexit) {
           badges.push("Global Entry & Exit");
         } else if (row.gentry) {
@@ -335,7 +376,6 @@ const FunctionTable = ({ query }) => {
         } else if (row.gexit) {
           badges.push("Global Exit");
         }
-
         if (row.entry && row.exit) {
           badges.push("Stock Entry & Exit");
         } else if (row.entry) {
@@ -343,10 +383,7 @@ const FunctionTable = ({ query }) => {
         } else if (row.exit) {
           badges.push("Stock Exit");
         }
-
-        if (row.psizing) {
-          badges.push("Portfolio Sizing");
-        }
+        if (row.psizing) badges.push("Portfolio Sizing");
 
         return (
           <Box
@@ -358,20 +395,19 @@ const FunctionTable = ({ query }) => {
               height: "100%",
             }}
           >
-            {badges.map((label, idx) => {
-              return label ? (
+            {badges.length > 0 ? (
+              badges.map((label, idx) => (
                 <Badge key={idx} variant="version">
                   <span>{label}</span>
                 </Badge>
-              ) : (
-                "NA"
-              );
-            })}
+              ))
+            ) : (
+              <span>NA</span>
+            )}
           </Box>
         );
       },
     },
-
     {
       field: "subType",
       headerName: "Sub Type",
@@ -391,14 +427,13 @@ const FunctionTable = ({ query }) => {
           >
             Sub Type
           </span>
-          <IconButton size="small" onClick={handleStatusFilterOpen}>
+          <IconButton size="small" onClick={handleSubTypeFilterOpen}>
             <FilterListIcon fontSize="small" />
           </IconButton>
-
           <Popover
-            open={openPopover}
-            anchorEl={anchorEl}
-            onClose={handleStatusFilterClose}
+            open={Boolean(subTypeAnchorEl)}
+            anchorEl={subTypeAnchorEl}
+            onClose={handleSubTypeFilterClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "left" }}
           >
@@ -410,9 +445,10 @@ const FunctionTable = ({ query }) => {
                 { status: "Sell" },
               ]}
               fieldName="status"
-              applyValue={handleStatusFilterChange}
-              title="Select Type"
+              applyValue={handleSubTypeFilterChange}
+              title="Select Sub Type"
               dataKey="status"
+              selectedValues={selectedSubStatuses}
             />
           </Popover>
         </Box>
@@ -425,7 +461,6 @@ const FunctionTable = ({ query }) => {
         } else {
           badges.push("Dynamic");
         }
-
         if (row.buysell) {
           badges.push("Buy");
           badges.push("Sell");
@@ -441,15 +476,15 @@ const FunctionTable = ({ query }) => {
               height: "100%",
             }}
           >
-            {badges.map((label, idx) => {
-              return label ? (
+            {badges.length > 0 ? (
+              badges.map((label, idx) => (
                 <Badge key={idx} variant="version">
                   <span>{label}</span>
                 </Badge>
-              ) : (
-                "NA"
-              );
-            })}
+              ))
+            ) : (
+              <span>NA</span>
+            )}
           </Box>
         );
       },
@@ -459,6 +494,41 @@ const FunctionTable = ({ query }) => {
       headerName: "Created By",
       minWidth: 150,
       flex: 1,
+      renderHeader: () => (
+        <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <span
+            style={{
+              fontFamily: "Inter",
+              fontWeight: 600,
+              fontSize: "12px",
+              lineHeight: "100%",
+              letterSpacing: "0px",
+              color: "#666666",
+            }}
+          >
+            Created By
+          </span>
+          <IconButton size="small" onClick={handleCreatedByFilterOpen}>
+            <FilterListIcon fontSize="small" />
+          </IconButton>
+          <Popover
+            open={Boolean(createdByAnchor)}
+            anchorEl={createdByAnchor}
+            onClose={handleCreatedByFilterClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "left" }}
+          >
+            <CustomFilterPanel
+              data={[{ status: "System" }, { status: "User" }]}
+              fieldName="status"
+              applyValue={handleCreatedByFilterChange}
+              title="Select Created By"
+              dataKey="status"
+              selectedValues={selectedCreatedBy}
+            />
+          </Popover>
+        </Box>
+      ),
       renderCell: (params) => (
         <Typography
           sx={{
@@ -477,7 +547,6 @@ const FunctionTable = ({ query }) => {
         </Typography>
       ),
     },
-
     {
       field: "desc",
       headerName: "Description",
@@ -516,7 +585,6 @@ const FunctionTable = ({ query }) => {
         );
       },
     },
-
     {
       field: "moreActions",
       headerName: "",
@@ -541,9 +609,7 @@ const FunctionTable = ({ query }) => {
             isDuplicateButton
             isEditButton={isRemove}
             handleDelete={() => {
-              setDeleteRow({
-                name: row.func,
-              });
+              setDeleteRow({ name: row.func });
               setIsDelete(true);
             }}
             handleEdit={() =>
@@ -559,9 +625,11 @@ const FunctionTable = ({ query }) => {
       },
     },
   ];
+
   const visibleColumns = columns.filter(
     (col) => !hiddenColumns.includes(col.field)
   );
+
   return (
     <>
       {openDuplicateModal && (
@@ -586,7 +654,6 @@ const FunctionTable = ({ query }) => {
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        // transformOrigin={{ vertical: "top", horizontal: "left" }}
       >
         {popoverContent()}
       </Popover>
@@ -597,8 +664,8 @@ const FunctionTable = ({ query }) => {
           border: "1px solid #E0E0E0",
           backgroundColor: "white",
           width: "100%",
-          height: "auto", // Set a max height for scrolling
-          overflow: "auto", // Enable scrolling when content overflows
+          height: "auto",
+          overflow: "auto",
         }}
       >
         <DataGrid

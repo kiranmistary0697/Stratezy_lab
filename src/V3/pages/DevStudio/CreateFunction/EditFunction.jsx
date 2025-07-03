@@ -29,6 +29,7 @@ import {
 import AddFunctionModal from "./AddFunctionModal";
 import moment from "moment";
 import Plot from "react-plotly.js";
+import EditorFunctionModal from "../../Strategies/Modal/EditorFunctionModal";
 
 const EditFunction = () => {
   const theme = useTheme();
@@ -62,6 +63,7 @@ const EditFunction = () => {
   const [code, setCode] = useState("");
   const [triggerVerify, setTriggerVerify] = useState(false);
   const [argsData, setArgsData] = useState([{ name: "", value: "" }]);
+  const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
 
   const queryParams = new URLSearchParams(search);
   const id = queryParams.get("name");
@@ -389,6 +391,21 @@ const EditFunction = () => {
         />
       )}
 
+      {isFunctionDialogOpen && (
+        <EditorFunctionModal
+          isOpen={isFunctionDialogOpen}
+          handleClose={() => setIsFunctionDialogOpen(false)}
+          code={code}
+          setCode={setCode}
+          argsData={argsData}
+          handleAddArgsData={handleAddArgsData}
+          handleDeleteArgsData={handleDeleteArgsData}
+          handleArgsDataChange={handleArgsDataChange}
+          setIsFunctionDialogOpen={setIsFunctionDialogOpen}
+          keywordData={keywordData}
+        />
+      )}
+
       <div className="sm:h-[calc(100vh-100px)] bg-[#f0f0f0]  overflow-auto p-8">
         <div className="bg-white h-auto">
           <EditHeader
@@ -432,7 +449,7 @@ const EditFunction = () => {
                 lg: 4,
               }}
             >
-              <KeywordSearch keywordData={keywordData} />
+              <KeywordSearch keywordData={keywordData} fullHeight={false} />
             </Grid2>
             <Grid2
               item
@@ -452,6 +469,7 @@ const EditFunction = () => {
                   handleAddArgsData={handleAddArgsData}
                   handleDeleteArgsData={handleDeleteArgsData}
                   handleArgsDataChange={handleArgsDataChange}
+                  setIsFunctionDialogOpen={setIsFunctionDialogOpen}
                 />
               )}
             </Grid2>

@@ -57,6 +57,7 @@ const KeywordItem = ({ name, description, isDefault, caption, usage }) => {
                   padding: "8px 12px",
                   marginBottom: "5px",
                   fontFamily: "Inter",
+                  height: "20px"
                 }}
                 onClick={() => {
                   setIsView(true);

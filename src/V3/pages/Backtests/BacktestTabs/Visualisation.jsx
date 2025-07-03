@@ -7,12 +7,14 @@ import {
   Typography,
   useTheme,
   CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import Plot from "react-plotly.js";
 import { useLazyGetQuery } from "../../../../slices/api";
 import { tagTypes } from "../../../tagTypes";
+import { PLOT_GRAPH_TOOLTIP } from "../../../../constants/CommonText";
 
 const chartOptions = [
   { value: "capital", label: "Capital" },
@@ -157,9 +159,28 @@ const Visualisation = ({ id }) => {
               <label className="text-xs font-semibold text-neutral-950">
                 Plot Graph
               </label>
-              <InfoOutlinedIcon
-                sx={{ color: "#666666", width: "17px", height: "17px" }}
-              />
+              <Tooltip
+                title={PLOT_GRAPH_TOOLTIP}
+                placement="right-end"
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      padding: "16px",
+                      background: "#FFFFFF",
+                      color: "#666666",
+                      boxShadow: "0px 8px 16px 0px #7B7F8229",
+                      fontFamily: "Inter",
+                      fontWeight: 400,
+                      fontSize: "14px",
+                      lineHeight: "20px",
+                    },
+                  },
+                }}
+              >
+                <InfoOutlinedIcon
+                  sx={{ color: "#666666", width: "17px", height: "17px" }}
+                />
+              </Tooltip>
             </Box>
             <Select
               aria-label="Select chart type"

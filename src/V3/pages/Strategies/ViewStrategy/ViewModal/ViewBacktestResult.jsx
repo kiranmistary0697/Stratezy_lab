@@ -394,7 +394,13 @@ const ViewBacktestResult = ({
         headerName: "Net Profit",
         minWidth: 140,
         flex: 1,
-        valueGetter: (_, row) => row.backtestSummary?.["Net profit"] || "0",
+        valueGetter: (_, row) =>
+          parseFloat(
+            row.backtestSummary?.["Net profit"]?.slice(
+              0,
+              row.backtestSummary?.["Net profit"].indexOf(" ") + 1
+            )
+          ) || 0,
         renderCell: (params) => (
           <span>{params.row.backtestSummary?.["Net profit"] || "0"}</span>
         ),
@@ -405,7 +411,12 @@ const ViewBacktestResult = ({
         minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
-          row.backtestSummary?.["avg annual profit"] || "-",
+          parseFloat(
+            row.backtestSummary?.["avg annual profit"]?.slice(
+              0,
+              row.backtestSummary?.["avg annual profit"].indexOf(" ") + 1
+            )
+          ) || 0,
         renderCell: (params) => (
           <span>
             {params.row.backtestSummary?.["avg annual profit"] || "-"}
@@ -418,7 +429,7 @@ const ViewBacktestResult = ({
         minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
-          row.backtestSummary?.["Total number of trades"] ?? "0",
+          parseFloat(row.backtestSummary?.["Total number of trades"]) || 0,
         renderCell: (params) => (
           <span>
             {params.row.backtestSummary?.["Total number of trades"] || "0"}

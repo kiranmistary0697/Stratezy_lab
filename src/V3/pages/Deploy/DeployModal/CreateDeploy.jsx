@@ -64,23 +64,6 @@ const CreateDeploy = ({
       id: index + 1,
       ...strategy,
     })) || [];
-  // Fetch deployment data if `id` exists
-  // useEffect(() => {
-  //   const fetchDeployData = async () => {
-  //     if (!id) return;
-  //     try {
-  //       const { data } = await getDeployData({
-  //         endpoint: `deployTable/${id}`,
-  //         tags: [tagTypes.GET_DEPLOY],
-  //       }).unwrap();
-  //       setDeploy(data);
-  //     } catch (error) {
-  //       console.error("Failed to fetch deploy data:", error);
-  //     }
-  //   };
-
-  //   fetchDeployData();
-  // }, [id]);
 
   // Initial values for Formik
   const initialValues = {
@@ -106,6 +89,8 @@ const CreateDeploy = ({
         const strategyName = deployStrategy?.name || values.selectedStock?.name;
         const exchange = "NSE";
         const brokerage = values.selectedBrokerage?.name || "";
+        const version =
+          deployStrategy?.version || values.selectedStock?.version;
 
         await createDeploy({
           endpoint: `strategy/deploy`,
@@ -125,7 +110,7 @@ const CreateDeploy = ({
         // fetchStrategies();
 
         await activeData({
-          endpoint: `deploy/strategy/activate?name=${strategyName}&exchange=${exchange}&brokerage=${brokerage}&activate=true`,
+          endpoint: `deploy/strategy/activate?name=${strategyName}&exchange=${exchange}&brokerage=${brokerage}&version=${version}&activate=true`,
           tags: [tagTypes.DEPLOY, tagTypes.GET_DEPLOY],
         }).unwrap();
         fetchAllData();

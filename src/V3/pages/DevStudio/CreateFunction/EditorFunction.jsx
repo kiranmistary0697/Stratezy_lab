@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import AceEditor from "react-ace";
 
-import { Box, Button, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, TextField, Tooltip, Typography } from "@mui/material";
 
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 
 const StyledLabel = ({ children }) => (
   <>
@@ -29,20 +30,12 @@ const EditorFunction = ({
   handleAddArgsData,
   handleDeleteArgsData,
   handleArgsDataChange,
+  setIsFunctionDialogOpen,
 }) => {
   const [showArgs, setShowArgs] = useState(false); // toggles the side panel
 
-  const handleEditorDidMount = (editor, monaco) => {
-    editor.focus();
-  };
-
   const handleChange = (newValue, e) => {
     setCode(newValue);
-  };
-
-  const options = {
-    selectOnLineNumbers: true,
-    automaticLayout: true,
   };
 
   return (
@@ -83,7 +76,17 @@ const EditorFunction = ({
             borderLeft: "1px solid #ddd",
           }}
         >
-          <Typography className="subheader">Arguments</Typography>
+          <Typography
+            sx={{
+              fontSize: "16px",
+              color: "#0A0A0A",
+              fontFamily: "Inter",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Arguments
+          </Typography>
 
           <Box className="flex gap-4 mt-4" sx={{ alignItems: "center" }}>
             <Box sx={{ minWidth: "150px" }}>
@@ -235,18 +238,56 @@ const EditorFunction = ({
       )}
 
       {/* View Button */}
-      <Typography
-        variant="contained"
-        size="small"
-        onClick={() => setShowArgs(!showArgs)}
+      <Box
         className={
           showArgs
             ? "text-[#3D69D3] absolute top-3 right-10 z-10 cursor-pointer "
             : "text-white absolute top-3 right-10 z-10 cursor-pointer "
         }
+        sx={{ height: "28px", width: "129px" }}
       >
-        {showArgs ? "Hide Arguments" : "View Arguments"}
-      </Typography>
+        {showArgs ? (
+          <Typography
+            onClick={() => setShowArgs(!showArgs)}
+            sx={{
+              fontFamily: "Inter",
+              fontSize: "14px",
+              fontWeight: 500,
+            }}
+          >
+            Hide Arguments
+          </Typography>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              gap: "8px",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography
+              onClick={() => setShowArgs(!showArgs)}
+              sx={{
+                fontFamily: "Inter",
+                fontSize: "12px",
+                fontWeight: 400,
+              }}
+            >
+              View Arguments
+            </Typography>
+            <span>
+              <OpenInFullIcon
+                fontSize="small"
+                sx={{
+                  cursor: "pointer",
+                }}
+                onClick={() => setIsFunctionDialogOpen(true)}
+              />
+            </span>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };

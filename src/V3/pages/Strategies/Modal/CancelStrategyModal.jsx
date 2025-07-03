@@ -9,10 +9,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import ModalButton from "../../../common/Table/ModalButton";
 import CustomizedDialogs from "./DuplicateStrategyModal";
 
-const CancleStrategyModal = ({
+const CancelStrategyModal = ({
   isOpen,
   handleClose = () => {},
-  isCancle = false,
+  isCancel = false,
 }) => {
   const [openDraftModal, setOpenDraftModal] = useState(false);
   return (
@@ -22,7 +22,7 @@ const CancleStrategyModal = ({
         textButton="Save"
         isOpen={openDraftModal}
         handleClose={() => setOpenDraftModal(false)} // FIX: Pass function
-        isCancle={isCancle}
+        isCancel={isCancel}
       />
       <div>
         <Dialog
@@ -77,4 +77,4 @@ const CancleStrategyModal = ({
   );
 };
 
-export default CancleStrategyModal;
+export default CancelStrategyModal;

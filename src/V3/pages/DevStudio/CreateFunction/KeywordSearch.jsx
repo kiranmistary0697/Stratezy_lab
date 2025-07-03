@@ -6,7 +6,7 @@ import KeywordItem from "./KeywordItem";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { PRIMITIVES_TOOLTIP } from "../../../../constants/CommonText";
 
-const KeywordSearch = ({ keywordData }) => {
+const KeywordSearch = ({ keywordData, fullHeight = false }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredKeywords = keywordData?.filter(
@@ -62,7 +62,10 @@ const KeywordSearch = ({ keywordData }) => {
         />
       </Box>
 
-      <Box className="flex flex-col w-full pl-2 mt-3" sx={{ height: 400 }}>
+      <Box
+        className="flex flex-col w-full pl-2 mt-3"
+        sx={{ height: fullHeight ? 700 : 400 }}
+      >
         {/* Search input */}
 
         {/* Scrollable keyword list */}

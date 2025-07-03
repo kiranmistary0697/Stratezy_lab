@@ -39,10 +39,20 @@ const displayErrorMessage = (error) => {
   toast.error(errorMessage);
 };
 
-const transformResponse = (response) => {
-  return {
-    data: response,
-  };
+// const transformResponse = (response) => {
+//   return {
+//     data: response,
+//   };
+// };
+
+//modified transformResponse to handle text and JSON response as we defined in RTK Query
+const transformResponse = (responseText) => {
+  try {
+    const parsed = JSON.parse(responseText);
+    return { data: parsed };
+  } catch {
+    return { data: { message: responseText } };
+  }
 };
 
 const onQueryStarted = async (
@@ -72,6 +82,7 @@ export const api = createApi({
   tagTypes: [...Object.values(tagTypes)],
   baseQuery: fetchBaseQuery({
     baseUrl: BACKEND_BASE_URL,
+    responseHandler: "text",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("authToken");
 

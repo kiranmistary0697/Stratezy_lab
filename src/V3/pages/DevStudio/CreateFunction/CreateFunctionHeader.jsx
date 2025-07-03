@@ -15,10 +15,10 @@ const CreateFunctionHeader = ({
   isSaving,
   handleVerify = () => {},
 }) => {
-  const [isCancleStrategy, setIsCancleStrategy] = useState(false);
+  const [isCancelStrategy, setIsCancelStrategy] = useState(false);
 
   return (
-    <Box className="flex flex-col md:flex-row items-center justify-between w-full p-4 gap-4 md:gap-10">
+    <Box className="flex flex-col md:flex-row items-center justify-between w-full p-6 gap-4 md:gap-10">
       {/* Title Section */}
       <Box
         className={`flex flex-col items-center md:items-start ${
@@ -27,7 +27,7 @@ const CreateFunctionHeader = ({
       >
         <Box
           className={`flex items-center gap-2.5 ${
-            isFunction ? "justify-center w-full" : ""
+            isFunction ? " w-full" : ""
           }`}
         >
           <Typography
@@ -93,7 +93,7 @@ const CreateFunctionHeader = ({
           <HeaderButton
             variant="primary"
             onClick={() => {
-              setIsCancleStrategy(true);
+              setIsCancelStrategy(true);
             }}
           >
             Cancel
