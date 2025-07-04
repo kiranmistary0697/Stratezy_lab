@@ -28,12 +28,10 @@ import {
   STOCK_BUNDLE_TITLE,
   STOCK_SUB_TITLE,
 } from "../../../../constants/CommonText";
-import { useRouterBlocker } from "../../../hooks/useRouterBlocker";
-import WarningPopupModal from "./WarningPopupModal";
 
 const LOCAL_STORAGE_KEY = "stockFilters";
 
-const StockBundleStep = ({ isView, formik = {} }) => {
+const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
   const dispatch = useDispatch();
   const { stockBundle } = useSelector((state) => ({
     stockBundle: state.Stock.stockBundle,
@@ -50,13 +48,6 @@ const StockBundleStep = ({ isView, formik = {} }) => {
   const [activeStockIndex, setActiveStockIndex] = useState(null);
   const [openAddStockModal, setOpenAddStockModal] = useState(null);
   const [viewStockList, setViewStockList] = useState("");
-
-  const [isDirty, setIsDirty] = useState(false);
-
-  // Hook to block navigation if unsaved changes exist
-  const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
-    when: isDirty,
-  });
 
   // Load from Redux or fetch stock filter options
   useEffect(() => {
@@ -180,18 +171,6 @@ const StockBundleStep = ({ isView, formik = {} }) => {
 
   return (
     <>
-      {showPrompt && (
-        <WarningPopupModal
-          isOpen={showPrompt}
-          handleClose={cancelNavigation}
-          title="Warning"
-          name="Strategy"
-          description="There are some unsaved changes. Are you sure you want to leave this page?"
-          buttonText="Yes"
-          handleConfirm={confirmNavigation}
-        />
-      )}
-
       {isCreateStock && (
         <CreateStock
           isOpen={isCreateStock}

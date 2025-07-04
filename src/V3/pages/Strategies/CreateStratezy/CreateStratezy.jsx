@@ -12,11 +12,18 @@ import StockEntryExit from "../StockEntryExit/StockEntryExit";
 import TraderSequence from "../TraderSequence/TraderSequence";
 import PortfolioSizing from "../PortfolioSizing/PortfolioSizing";
 import CreateStrategyHeader from "./CreateStrategyHeader";
+import { useRouterBlocker } from "../../../hooks/useRouterBlocker";
+import WarningPopupModal from "./WarningPopupModal";
 
 const CreateStrategy = () => {
   useLabTitle("Create Strategies");
 
   const [step, setStep] = useState(0); // Start from step 0
+  const [isDirty, setIsDirty] = useState(false);
+
+  const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
+    when: isDirty,
+  });
 
   const validationByStep = [
     {
@@ -199,51 +206,67 @@ const CreateStrategy = () => {
   };
 
   return (
-    <div className="sm:h-[calc(100vh-100px)]  overflow-auto p-8">
-      <div className="bg-white border border-[#E0E1E4] h-full">
-        <CreateStrategyHeader
-          onNext={goNext}
-          onBack={goBack}
-          step={step}
-          formik={formik}
+    <>
+      {showPrompt && (
+        <WarningPopupModal
+          isOpen={showPrompt}
+          handleClose={cancelNavigation}
+          title="Unsaved Changes"
+          description="You have unsaved changes. Are you sure you want to leave this page? Your changes will be lost if you don’t save them."
+          buttonText="Yes"
+          handleConfirm={confirmNavigation}
         />
+      )}
 
-        <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
+      <div className="sm:h-[calc(100vh-100px)]  overflow-auto p-8">
+        <div className="bg-white border border-[#E0E1E4] h-full">
+          <CreateStrategyHeader
+            onNext={goNext}
+            onBack={goBack}
+            step={step}
+            formik={formik}
+          />
 
-        <Grid2
-          container
-          spacing={2}
-          className="w-full  h-[calc(100%-76px)] overflow-auto px-4"
-        >
+          <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
+
           <Grid2
-            className="p-5 md:border-r md:border-r-zinc-200"
-            item
-            size={{
-              xs: 12,
-              md: 6,
-              lg: 4,
-            }}
+            container
+            spacing={2}
+            className="w-full  h-[calc(100%-76px)] overflow-auto px-4"
           >
-            <TimeLineStock
-              isView
-              values={formik.values}
-              step={step}
-              goToStep={goToStep}
-            />
+            <Grid2
+              className="p-5 md:border-r md:border-r-zinc-200"
+              item
+              size={{
+                xs: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <TimeLineStock
+                isView
+                values={formik.values}
+                step={step}
+                goToStep={goToStep}
+              />
+            </Grid2>
+            <Grid2
+              item
+              size={{
+                xs: 12,
+                md: 6,
+                lg: 8,
+              }}
+            >
+              <CurrentStepComponent
+                setIsDirty={setIsDirty}
+                formik={formik}
+              />
+            </Grid2>
           </Grid2>
-          <Grid2
-            item
-            size={{
-              xs: 12,
-              md: 6,
-              lg: 8,
-            }}
-          >
-            <CurrentStepComponent formik={formik} />
-          </Grid2>
-        </Grid2>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

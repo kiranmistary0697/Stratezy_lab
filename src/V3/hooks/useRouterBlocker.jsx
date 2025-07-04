@@ -1,6 +1,6 @@
 // useRouterBlocker.js
 import { useEffect, useRef, useState } from "react";
-import history from "../../Histroy/histroy";
+import { history } from "../../Histroy/histroy";
 
 export const useRouterBlocker = ({ when }) => {
   const [showPrompt, setShowPrompt] = useState(false);

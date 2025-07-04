@@ -31,7 +31,7 @@ import {
 
 const LOCAL_STORAGE_KEY = "tradeSequence";
 
-const TraderSequence = ({ isView, formik, id }) => {
+const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
   const CustomPopper = (props) => (
     <Popper
       {...props}
@@ -89,6 +89,7 @@ const TraderSequence = ({ isView, formik, id }) => {
   const handleChange = async (index, key, value) => {
     const updated = [...values.tradeSequence];
     updated[index][key] = value?.shortFuncName;
+    setIsDirty(true);
 
     // If a new filter name is selected, fetch args/adesc
     if (key === "name") {

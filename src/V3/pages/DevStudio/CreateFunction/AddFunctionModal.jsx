@@ -7,12 +7,14 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
-import ModalButton from "../../../common/Table/ModalButton";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 import { usePostMutation } from "../../../../slices/api";
 import { tagTypes } from "../../../tagTypes";
-import { useNavigate } from "react-router-dom";
+
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+import ModalButton from "../../../common/Table/ModalButton";
 
 const AddFunctionModal = ({
   isOpen,
@@ -89,13 +91,17 @@ const AddFunctionModal = ({
         if (!verifyResponse?.data?.success) {
           return;
         }
-
         // Save only if verification succeeded
         await saveNewStock({
           endpoint: "stock-analysis-function/save",
           payload,
           tags: [tagTypes.GET_FILTERTYPE],
         }).unwrap();
+
+        localStorage.removeItem("argsData");
+        localStorage.removeItem("editorFunctionCode");
+        localStorage.removeItem("selectedValues");
+        localStorage.removeItem("selectedTypes");
 
         handleClose();
         navigate("/Globalfunctions");

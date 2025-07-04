@@ -38,7 +38,7 @@ import CallMadeIcon from "@mui/icons-material/CallMade";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
 const LOCAL_STORAGE_KEY = "portfolioSizing-saved";
-const PortfolioSizing = ({ isView, formik, id }) => {
+const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -116,6 +116,7 @@ const PortfolioSizing = ({ isView, formik, id }) => {
   }, [values.portfolioSizing]);
 
   const handleChangeStockBundle = async (key, value) => {
+    setIsDirty(true);
     if (key === "name") {
       try {
         const { data } = await getStrategyData({

@@ -36,7 +36,7 @@ import StockConfigModal from "../CreateStratezy/StockConfigModal";
 const LOCAL_STORAGE_KEY_ENTRY = "marketEntryExit.entry";
 const LOCAL_STORAGE_KEY_EXIT = "marketEntryExit.exit";
 
-const MarketEntryExit = ({ isView, formik, id }) => {
+const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -118,6 +118,7 @@ const MarketEntryExit = ({ isView, formik, id }) => {
   }, [values?.marketEntryExit?.exit]);
 
   const handleChangeMarketEntry = async (key, value) => {
+    setIsDirty(true);
     if (key === "name") {
       try {
         const { data } = await getStrategyData({
@@ -138,6 +139,7 @@ const MarketEntryExit = ({ isView, formik, id }) => {
     }
   };
   const handleChangeMarketExit = async (key, value) => {
+    setIsDirty(true);
     if (key === "name") {
       try {
         const { data } = await getStrategyData({

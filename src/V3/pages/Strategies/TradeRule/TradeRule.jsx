@@ -29,7 +29,7 @@ import { useNavigate } from "react-router-dom";
 
 const LOCAL_STORAGE_KEY = "tradeRules.buyRule";
 
-const TradeRule = ({ formik, isView, id }) => {
+const TradeRule = ({ formik, isView, id, setIsDirty }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -80,6 +80,7 @@ const TradeRule = ({ formik, isView, id }) => {
   }, [values.tradeRules]);
 
   const handleChangeStockBundle = async (key, value) => {
+    setIsDirty(true);
     if (key === "name") {
       try {
         const { data } = await getStrategyData({

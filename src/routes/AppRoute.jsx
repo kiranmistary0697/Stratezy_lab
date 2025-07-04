@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import LayoutV2 from "../Layouts/LayoutV2";
 import Homepage from "../V2/pages/Homepage";
 import Products from "../V2/pages/Products";
@@ -11,7 +11,6 @@ import PrivacyPolicy from "../V2/pages/PrivacyPolicy";
 import RiskDisclosure from "../V2/pages/RiskDisclosure";
 import ContextWrapper from "../V2/contexts/ContextWrapper";
 import AdditionalDetails from "../V2/pages/AdditionalDetails";
-import AppContent from "../app/AppContent.jsx";
 import Plan from "../app/Plan.jsx";
 import ProtectedRoute from "../V2/components/core/Auth/ProtectedRoute.jsx";
 import routes from "../V2/constants/Routes.js";
@@ -37,7 +36,6 @@ import EditFunction from "../V3/pages/DevStudio/CreateFunction/EditFunction.jsx"
 
 export default function AppRoute() {
   return (
-    <BrowserRouter>
       <Routes>
         {/* Route for v2 layout */}
         <Route element={<ContextWrapper />}>
@@ -193,6 +191,5 @@ export default function AppRoute() {
           </Route>
         </Route>
       </Routes>
-    </BrowserRouter>
   );
 }

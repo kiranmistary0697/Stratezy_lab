@@ -23,6 +23,8 @@ import ViewOtherVersion from "../ViewStrategy/ViewModal/ViewOtherVersion";
 import ViewBacktestResult from "../ViewStrategy/ViewModal/ViewBacktestResult";
 import { useDispatch } from "react-redux";
 import { setBacktestData } from "../../../../slices/page/reducer";
+import WarningPopupModal from "../CreateStratezy/WarningPopupModal";
+import { useRouterBlocker } from "../../../hooks/useRouterBlocker";
 
 const EditStrategy = () => {
   useLabTitle("Edit Strategy");
@@ -56,6 +58,11 @@ const EditStrategy = () => {
   const [rowToDelete, setRowToDelete] = useState(null);
   const [isDeployCreate, setIsDeployCreate] = useState(false);
   const [deployName, setDeployName] = useState({});
+  const [isDirty, setIsDirty] = useState(false);
+
+  const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
+    when: isDirty,
+  });
 
   const title =
     tabIndex === 0
@@ -440,6 +447,17 @@ const EditStrategy = () => {
   };
   return (
     <>
+      {showPrompt && (
+        <WarningPopupModal
+          isOpen={showPrompt}
+          handleClose={cancelNavigation}
+          title="Unsaved Changes"
+          description="You have unsaved changes. Are you sure you want to leave this page? Your changes will be lost if you don’t save them."
+          buttonText="Yes"
+          handleConfirm={confirmNavigation}
+        />
+      )}
+
       <div className="sm:h-[calc(100vh-87px)]  overflow-auto p-8">
         <div className="bg-white border border-[#E0E1E4] h-full">
           {view ? (
@@ -514,9 +532,14 @@ const EditStrategy = () => {
                     formik={formik}
                     id={id}
                     isView={demoStrategy === "true"}
+                    setIsDirty={setIsDirty}
                   />
                 ) : (
-                  <CurrentStepComponent formik={formik} id={id} />
+                  <CurrentStepComponent
+                    formik={formik}
+                    id={id}
+                    setIsDirty={setIsDirty}
+                  />
                 )}
               </Grid2>
             </Grid2>

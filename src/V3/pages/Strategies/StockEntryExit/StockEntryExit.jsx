@@ -36,7 +36,7 @@ import {
 const STORAGE_KEY_ENTRY = "stockEntry";
 const STORAGE_KEY_EXIT = "stockExit";
 
-const StockEntryExit = ({ formik, isView, id }) => {
+const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -109,6 +109,7 @@ const StockEntryExit = ({ formik, isView, id }) => {
   const handleFilterChange = async (type, index, key, value) => {
     const updated = [...values.stockEntryExit[type]];
     updated[index][key] = value?.shortFuncName;
+    setIsDirty(true);
 
     if (key === "name") {
       try {

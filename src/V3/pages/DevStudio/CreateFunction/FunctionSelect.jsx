@@ -43,11 +43,14 @@ const FunctionSelect = ({
     globalEntryExit: [],
   });
 
+  // Helper function to get default values from stockData
   const getDefaultValues = () => ({
     filterRule: stockData
       ? stockData?.filter && stockData?.stockList
         ? ["Static"]
-        : ["Dynamic"]
+        : stockData?.filter
+        ? ["Dynamic"]
+        : []
       : [],
     tradeRule: stockData?.buysell ? ["Buy", "Sell"] : [],
     stockEntryExit: [
@@ -63,21 +66,61 @@ const FunctionSelect = ({
     utility: stockData?.ulying ? ["Utility"] : [],
   });
 
+  // Initialize selectedTypes and selectedValues based on stockData when id or stockData changes
   useEffect(() => {
-    const defaultValues = getDefaultValues();
-    setSelectedValues(defaultValues);
+    if (id && stockData) {
+      const defaultValues = getDefaultValues();
+      setSelectedValues(defaultValues);
 
-    const updatedTypes = { ...selectedTypes };
-    Object.keys(defaultValues).forEach((key) => {
-      updatedTypes[key] = defaultValues[key]?.length > 0;
-    });
+      const updatedTypes = { ...selectedTypes };
+      Object.keys(defaultValues).forEach((key) => {
+        updatedTypes[key] = defaultValues[key]?.length > 0;
+      });
+      setSelectedTypes(updatedTypes);
 
-    setSelectedTypes(updatedTypes);
+      // Optionally, clear localStorage to avoid conflicts
+      localStorage.removeItem("selectedTypes");
+      localStorage.removeItem("selectedValues");
+    }
   }, [stockData, id]);
 
+  // Load saved state from localStorage only if no id (new function, not editing)
+  useEffect(() => {
+    if (!id) {
+      const storedTypes = localStorage.getItem("selectedTypes");
+      const storedValues = localStorage.getItem("selectedValues");
+
+      if (storedTypes) {
+        try {
+          setSelectedTypes(JSON.parse(storedTypes));
+        } catch (e) {
+          console.error("Invalid selectedTypes in localStorage");
+        }
+      }
+
+      if (storedValues) {
+        try {
+          setSelectedValues(JSON.parse(storedValues));
+        } catch (e) {
+          console.error("Invalid selectedValues in localStorage");
+        }
+      }
+    }
+  }, []);
+
+  // Persist selectedTypes to localStorage
+  useEffect(() => {
+    localStorage.setItem("selectedTypes", JSON.stringify(selectedTypes));
+  }, [selectedTypes]);
+
+  // Persist selectedValues to localStorage
+  useEffect(() => {
+    localStorage.setItem("selectedValues", JSON.stringify(selectedValues));
+  }, [selectedValues]);
+
+  // Update parent component whenever state changes
   useEffect(() => {
     const updatedFunction = {
-      // Dynamically set based on array length
       filterRule: selectedValues.filterRule?.length > 0,
       tradeRule: selectedValues.tradeRule?.length > 0,
       tradeSequence: selectedTypes.tradeSequence,
@@ -85,7 +128,6 @@ const FunctionSelect = ({
       utility: selectedTypes.utility,
     };
 
-    // Dynamically add "entry" or "exit" based on stockEntryExit content
     if (Array.isArray(selectedValues.stockEntryExit)) {
       if (selectedValues.stockEntryExit.includes("Entry")) {
         updatedFunction.entry = true;
@@ -94,6 +136,7 @@ const FunctionSelect = ({
         updatedFunction.exit = true;
       }
     }
+
     if (Array.isArray(selectedValues.globalEntryExit)) {
       if (selectedValues.globalEntryExit.includes("Entry")) {
         updatedFunction.gentry = true;
@@ -102,6 +145,7 @@ const FunctionSelect = ({
         updatedFunction.gexit = true;
       }
     }
+
     if (Array.isArray(selectedValues.filterRule)) {
       if (selectedValues.filterRule.includes("Static")) {
         updatedFunction.stockList = true;
@@ -109,7 +153,7 @@ const FunctionSelect = ({
     }
 
     setSelectedFunction(updatedFunction);
-  }, [selectedValues, selectedTypes]);
+  }, [selectedValues, selectedTypes, stockData]);
 
   const toggleType = (type) => {
     const canEdit = !id || editUserData;
@@ -194,7 +238,6 @@ const FunctionSelect = ({
           {Object.entries(selectedTypes).map(([key, value]) => {
             const shouldHide =
               key === "utility" && stockData?.filter && stockData?.stockList;
-
             if (shouldHide) return null;
 
             return (
@@ -205,7 +248,6 @@ const FunctionSelect = ({
                     icon={<CheckBoxOutlinedIcon />}
                     checkedIcon={<CheckBoxIcon />}
                     checked={value}
-                    // disabled={id && !editUserData}
                     onChange={() => toggleType(key)}
                   />
                 }

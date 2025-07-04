@@ -92,7 +92,7 @@ const EditFunction = () => {
       }).unwrap();
       setArgsData(combineAdescArgs(data));
 
-      setStockData(data);
+      setStockData(data);      
     } catch (error) {}
   };
   const handleKeywords = async () => {
@@ -403,6 +403,7 @@ const EditFunction = () => {
           handleArgsDataChange={handleArgsDataChange}
           setIsFunctionDialogOpen={setIsFunctionDialogOpen}
           keywordData={keywordData}
+          editUserData={!editUserData}
         />
       )}
 

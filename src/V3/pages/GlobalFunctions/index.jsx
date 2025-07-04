@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import {
-  Box,
   Grid2,
   InputAdornment,
   TextField,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -90,7 +88,14 @@ const gobalFunction = () => {
             <HeaderButton
               variant="contained"
               className="w-full sm:w-auto"
-              onClick={() => navigate("/Devstudio/create-function")}
+              onClick={() => {
+                localStorage.removeItem("argsData");
+                localStorage.removeItem("editorFunctionCode");
+                localStorage.removeItem("selectedValues");
+                localStorage.removeItem("selectedTypes");
+
+                navigate("/Devstudio/create-function");
+              }}
             >
               Create Function
             </HeaderButton>

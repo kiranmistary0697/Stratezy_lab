@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AceEditor from "react-ace";
 
 import { Box, TextField, Tooltip, Typography } from "@mui/material";
@@ -36,7 +36,17 @@ const EditorFunction = ({
 
   const handleChange = (newValue, e) => {
     setCode(newValue);
+    localStorage.setItem("editorFunctionCode", JSON.stringify(newValue));
   };
+
+  useEffect(() => {
+    const previousEditorFunctionCode = JSON.parse(
+      localStorage.getItem("editorFunctionCode")
+    );
+    if (previousEditorFunctionCode) {
+      setCode(previousEditorFunctionCode);
+    }
+  }, []);
 
   return (
     <Box className="m-2" sx={{ display: "flex", position: "relative" }}>
@@ -137,6 +147,7 @@ const EditorFunction = ({
                           value={item.name}
                           fullWidth
                           margin="normal"
+                          disabled={editUserData}
                           onChange={(e) =>
                             handleArgsDataChange(index, "name", e.target.value)
                           }
@@ -192,7 +203,11 @@ const EditorFunction = ({
                                   cursor: "pointer",
                                   height: "0.85em",
                                 }}
-                                onClick={() => handleDeleteArgsData(index)}
+                                onClick={() => {
+                                  if (!editUserData) {
+                                    handleDeleteArgsData(index);
+                                  }
+                                }}
                               />
                             </Box>
                           )}
@@ -201,6 +216,7 @@ const EditorFunction = ({
                           value={item.value}
                           fullWidth
                           margin="normal"
+                          disabled={editUserData}
                           onChange={(e) =>
                             handleArgsDataChange(index, "value", e.target.value)
                           }
@@ -220,7 +236,11 @@ const EditorFunction = ({
             }}
           >
             <Typography
-              onClick={handleAddArgsData}
+              onClick={() => {
+                if (!editUserData) {
+                  handleAddArgsData();
+                }
+              }}
               sx={{
                 fontSize: "14px",
                 color: "#3D69D3",

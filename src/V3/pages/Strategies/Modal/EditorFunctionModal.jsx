@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import { useState } from "react";
+import AceEditor from "react-ace";
 import {
   Box,
   Dialog,
@@ -12,8 +14,6 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 
 import HeaderButton from "../../../common/Table/HeaderButton";
-import AceEditor from "react-ace";
-import { useState } from "react";
 
 import {
   FUNCTION_SUB_TITLE,
@@ -48,7 +48,6 @@ const EditorFunctionModal = ({
   keywordData,
 }) => {
   const [showArgs, setShowArgs] = useState(true); // toggles the side panel
-  console.log(argsData, "argdfff");
 
   const handleChange = (newValue, e) => {
     setCode(newValue);
@@ -213,6 +212,7 @@ const EditorFunctionModal = ({
                                 value={item.name}
                                 fullWidth
                                 margin="normal"
+                                disabled={editUserData}
                                 onChange={(e) =>
                                   handleArgsDataChange(
                                     index,
@@ -273,9 +273,11 @@ const EditorFunctionModal = ({
                                         cursor: "pointer",
                                         height: "0.85em",
                                       }}
-                                      onClick={() =>
-                                        handleDeleteArgsData(index)
-                                      }
+                                      onClick={() => {
+                                        if (!editUserData) {
+                                          handleDeleteArgsData(index);
+                                        }
+                                      }}
                                     />
                                   </Box>
                                 )}
@@ -284,6 +286,7 @@ const EditorFunctionModal = ({
                                 value={item.value}
                                 fullWidth
                                 margin="normal"
+                                disabled={editUserData}
                                 onChange={(e) =>
                                   handleArgsDataChange(
                                     index,
@@ -307,7 +310,11 @@ const EditorFunctionModal = ({
                   }}
                 >
                   <Typography
-                    onClick={handleAddArgsData}
+                    onClick={() => {
+                      if (!editUserData) {
+                        handleAddArgsData();
+                      }
+                    }}
                     sx={{
                       fontSize: "14px",
                       color: "#3D69D3",

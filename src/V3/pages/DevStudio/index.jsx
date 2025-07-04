@@ -63,23 +63,26 @@ const CreateFunction = () => {
   const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
 
   const handleAddArgsData = () => {
-    setArgsData((pre) => [...pre, { name: "", value: "" }]);
+    const modifiedArgsData = [...argsData, { name: "", value: "" }];
+    setArgsData(modifiedArgsData);
+    localStorage.setItem("argsData", JSON.stringify(modifiedArgsData));
   };
 
   const handleDeleteArgsData = (index) => {
     const deletedData = argsData.filter((_, i) => index !== i);
     setArgsData(deletedData);
+    localStorage.setItem("argsData", JSON.stringify(deletedData));
   };
 
   const handleArgsDataChange = (index, field, value) => {
-    setArgsData((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+    const modifiedArgsData = argsData.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
     );
+    setArgsData(modifiedArgsData);
+    localStorage.setItem("argsData", JSON.stringify(modifiedArgsData));
   };
 
-  const queryParams = new URLSearchParams(search);
 
-  const id = queryParams.get("name");
 
   const startDate = moment(dateRange.startDate).format("YYYY-MM-DD");
   const endDate = moment(dateRange.endDate).format("YYYY-MM-DD");
@@ -118,6 +121,13 @@ const CreateFunction = () => {
     };
 
     fetchAllData();
+  }, []);
+
+  useEffect(() => {
+    const previousArgsData = localStorage.getItem("argsData");
+    if (previousArgsData) {
+      setArgsData(JSON.parse(previousArgsData));
+    }
   }, []);
 
   const handleVerifyStock = async ({ xAxis, yAxis }) => {
@@ -442,8 +452,6 @@ const CreateFunction = () => {
                   setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
                 }}
                 isSaving={isSaving}
-                // systemDefine={stockData?.userDefined}
-                // id={id}
               />
               <Grid2
                 container

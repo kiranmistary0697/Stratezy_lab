@@ -47,6 +47,11 @@ const useStyles = makeStyles({
   },
 });
 const FunctionTable = ({ query }) => {
+  
+  const localSelectedStatus = localStorage.getItem("selectedStatus");
+  const localSelectedSubStatuses = localStorage.getItem("selectedSubStatuses");
+  const localSelectedCreatedBy = localStorage.getItem("selectedCreatedBy");
+
   const classes = useStyles();
   const navigate = useNavigate();
   const [getAllStock] = usePostMutation();
@@ -116,6 +121,11 @@ const FunctionTable = ({ query }) => {
 
   const handleRowClick = ({ row }) => {
     navigate(`/Devstudio/edit-function?name=${row.shortFuncName}`);
+
+    localStorage.removeItem("argsData");
+    localStorage.removeItem("editorFunctionCode");
+    localStorage.removeItem("selectedValues");
+    localStorage.removeItem("selectedTypes");
   };
 
   // Separate handler for type filter
@@ -146,15 +156,39 @@ const FunctionTable = ({ query }) => {
 
   const handleStatusFilterChange = (filterData) => {
     setSelectedStatuses(filterData.value || []);
+    localStorage.setItem(
+      "selectedStatus",
+      JSON.stringify(filterData.value || [])
+    );
   };
 
   const handleSubTypeFilterChange = (filterData) => {
     setSelectedSubStatuses(filterData.value || []);
+    localStorage.setItem(
+      "selectedSubStatuses",
+      JSON.stringify(filterData.value || [])
+    );
   };
 
   const handleCreatedByFilterChange = (filterData) => {
     setSelectedCreatedBy(filterData.value || []);
+    localStorage.setItem(
+      "selectedCreatedBy",
+      JSON.stringify(filterData.value || [])
+    );
   };
+
+  useEffect(() => {
+    if (localSelectedStatus) {
+      setSelectedStatuses(JSON.parse(localSelectedStatus));
+    }
+    if (localSelectedSubStatuses) {
+      setSelectedSubStatuses(JSON.parse(localSelectedSubStatuses));
+    }
+    if (localSelectedCreatedBy) {
+      setSelectedCreatedBy(JSON.parse(localSelectedCreatedBy));
+    }
+  }, []);
 
   const popoverContent = () => {
     if (!activeFilter) return null;
