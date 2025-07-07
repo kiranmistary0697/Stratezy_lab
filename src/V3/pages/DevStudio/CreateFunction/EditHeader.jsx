@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import HeaderButton from "../../../common/Table/HeaderButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const EditHeader = ({ stockData, handleChange = () => {}, isDuplicate }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const EditHeader = ({
+  stockData,
+  handleChange = () => {},
+  isDuplicate,
+  handleDelete = () => {},
+  handleDuplicate = () => {},
+}) => {
   const [anchorEl, setAnchorEl] = useState(false);
 
   const open = Boolean(anchorEl);
@@ -52,7 +57,7 @@ const EditHeader = ({ stockData, handleChange = () => {}, isDuplicate }) => {
             <MenuItem
               sx={{ color: "#666666" }}
               onClick={() => {
-                setIsOpen(true);
+                handleDuplicate();
                 handleClose();
               }}
             >
@@ -62,6 +67,7 @@ const EditHeader = ({ stockData, handleChange = () => {}, isDuplicate }) => {
             <MenuItem
               sx={{ color: "#CD3D64" }} // Makes text red
               onClick={() => {
+                handleDelete();
                 handleClose();
               }}
               disabled={!stockData?.userDefined}
@@ -73,7 +79,7 @@ const EditHeader = ({ stockData, handleChange = () => {}, isDuplicate }) => {
           <HeaderButton
             variant="outlined"
             onClick={handleChange}
-            disabled={!stockData?.userDefined}
+            disabled={isDuplicate ? false : !stockData?.userDefined}
           >
             Edit
           </HeaderButton>

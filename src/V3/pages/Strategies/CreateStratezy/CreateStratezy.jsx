@@ -225,6 +225,7 @@ const CreateStrategy = () => {
             onBack={goBack}
             step={step}
             formik={formik}
+            setIsDirty={setIsDirty}
           />
 
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
@@ -258,10 +259,7 @@ const CreateStrategy = () => {
                 lg: 8,
               }}
             >
-              <CurrentStepComponent
-                setIsDirty={setIsDirty}
-                formik={formik}
-              />
+              <CurrentStepComponent setIsDirty={setIsDirty} formik={formik} />
             </Grid2>
           </Grid2>
         </div>

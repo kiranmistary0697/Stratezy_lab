@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { Box, Divider, Grid2, useTheme } from "@mui/material";
 import CreateFunctionHeader from "./CreateFunction/CreateFunctionHeader";
 import FunctionSelect from "./CreateFunction/FunctionSelect";
@@ -82,8 +83,6 @@ const CreateFunction = () => {
     localStorage.setItem("argsData", JSON.stringify(modifiedArgsData));
   };
 
-
-
   const startDate = moment(dateRange.startDate).format("YYYY-MM-DD");
   const endDate = moment(dateRange.endDate).format("YYYY-MM-DD");
   const selectedSymbol = selectedStock?.symbol;
@@ -158,6 +157,11 @@ const CreateFunction = () => {
       };
 
       const { data } = await verifyStock(verifyStockPayload).unwrap();
+
+      if (data?.error) {
+        toast.error(data.message);
+        throw new Error(data.message);
+      }
 
       const dataMap = data["chartResMap"];
       const preparedData = prepareData(dataMap);

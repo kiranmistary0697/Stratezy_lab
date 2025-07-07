@@ -56,7 +56,6 @@ const CustomizedDialogs = ({
     setFieldValue = () => {},
     setFieldTouched = () => {},
   } = formik;
-  
 
   const hasAllValues = (obj) => {
     const stockBundleValid =

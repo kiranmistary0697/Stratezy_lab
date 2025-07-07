@@ -103,7 +103,7 @@ const CreateDeploy = ({
             strategyName,
             brokerage,
           },
-          tags: [tagTypes.DEPLOY, tagTypes.GET_DEPLOY],
+          // tags: [tagTypes.DEPLOY, tagTypes.GET_DEPLOY],
         }).unwrap();
 
         // setSuccessModalOpen(true);

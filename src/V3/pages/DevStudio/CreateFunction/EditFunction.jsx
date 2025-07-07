@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useLazyGetQuery, usePostMutation } from "../../../../slices/api";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { tagTypes } from "../../../tagTypes";
 
 import {
@@ -30,6 +31,7 @@ import AddFunctionModal from "./AddFunctionModal";
 import moment from "moment";
 import Plot from "react-plotly.js";
 import EditorFunctionModal from "../../Strategies/Modal/EditorFunctionModal";
+import DeleteModal from "../../../common/DeleteModal";
 
 const EditFunction = () => {
   const theme = useTheme();
@@ -64,6 +66,11 @@ const EditFunction = () => {
   const [triggerVerify, setTriggerVerify] = useState(false);
   const [argsData, setArgsData] = useState([{ name: "", value: "" }]);
   const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteFunctionName, setDeleteFunctionName] = useState({});
+
+  const [deleteData] = useLazyGetQuery();
+  const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(search);
   const id = queryParams.get("name");
@@ -92,7 +99,7 @@ const EditFunction = () => {
       }).unwrap();
       setArgsData(combineAdescArgs(data));
 
-      setStockData(data);      
+      setStockData(data);
     } catch (error) {}
   };
   const handleKeywords = async () => {
@@ -105,6 +112,42 @@ const EditFunction = () => {
       setKeywordData(data);
     } catch (error) {}
   };
+
+  const handleDeleteFunction = async () => {
+    setDeleteFunctionName(stockData.func);
+    setIsDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      const { data } = await deleteData({
+        endpoint: `stock-analysis-function/delete/${deleteFunctionName}`,
+        tags: [tagTypes.GET_FILTERTYPE],
+      }).unwrap();
+
+      if (data.success) {
+        toast.success(data.message);
+        navigate(`/Globalfunctions`);
+      }
+    } catch (error) {
+      console.error("Failed to delete:", error);
+    } finally {
+      setIsDeleteOpen(false);
+    }
+  };
+
+  const handleDuplicate = () => {
+    if (!stockData || !stockData.func) {
+      toast.error("No function data available to duplicate");
+      return;
+    }
+
+    navigate(
+      `/Devstudio/edit-function?name=${stockData.shortFuncName}&duplicate=true`
+    );
+
+  };
+
   useEffect(() => {
     if (id) {
       handleStockAnalysis();
@@ -161,6 +204,11 @@ const EditFunction = () => {
       };
 
       const { data } = await verifyStock(verifyStockPayload).unwrap();
+
+      if (data?.error) {
+        toast.error(data.message);
+        throw new Error(data.message);
+      }
 
       const dataMap = data["chartResMap"];
       const preparedData = prepareData(dataMap);
@@ -415,6 +463,8 @@ const EditFunction = () => {
               setEditUserData(true);
             }}
             isDuplicate={isDuplicate}
+            handleDelete={handleDeleteFunction}
+            handleDuplicate={handleDuplicate}
           />
 
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
@@ -460,7 +510,7 @@ const EditFunction = () => {
                 lg: 8,
               }}
             >
-              {stockData?.rule && (
+              {stockData && (
                 <EditorFunction
                   stockData={stockData}
                   code={code}
@@ -549,6 +599,16 @@ const EditFunction = () => {
                 </Grid2>
               </Grid2>
             </>
+          )}
+
+          {isDeleteOpen && (
+            <DeleteModal
+              isOpen={isDeleteOpen}
+              handleClose={() => setIsDeleteOpen(false)}
+              handleConfirm={handleConfirmDelete}
+              title="Are you Sure?"
+              description="This action is irreversible. Once deleted, the function and all its data cannot be recovered."
+            />
           )}
         </div>
       </div>

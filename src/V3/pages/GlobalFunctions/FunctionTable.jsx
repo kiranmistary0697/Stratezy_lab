@@ -47,7 +47,6 @@ const useStyles = makeStyles({
   },
 });
 const FunctionTable = ({ query }) => {
-  
   const localSelectedStatus = localStorage.getItem("selectedStatus");
   const localSelectedSubStatuses = localStorage.getItem("selectedSubStatuses");
   const localSelectedCreatedBy = localStorage.getItem("selectedCreatedBy");
@@ -73,9 +72,11 @@ const FunctionTable = ({ query }) => {
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchStockDetails = async () => {
     try {
+      setIsLoading(true);
       const { data } = await getAllStock({
         endpoint: "stock-analysis-function/details",
         payload: {
@@ -97,6 +98,8 @@ const FunctionTable = ({ query }) => {
       setRows(data?.data);
     } catch (error) {
       console.error("Failed to fetch stock details:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -249,9 +252,12 @@ const FunctionTable = ({ query }) => {
 
   const normalizedQuery = query.toLowerCase();
 
-  const searchedRows = tableRows.filter((row) =>
-    row.func?.toLowerCase().includes(normalizedQuery)
-  );
+  const searchedRows = tableRows.filter((row) => {
+    const filteredRow =
+      row.func?.toLowerCase().includes(normalizedQuery) ||
+      row.shortFuncName?.toLowerCase().includes(normalizedQuery);
+    return filteredRow;
+  });
 
   const filteredRows = searchedRows.filter((row) => {
     if (
@@ -524,6 +530,35 @@ const FunctionTable = ({ query }) => {
       },
     },
     {
+      field: "timestamp",
+      headerName: "Created On",
+      flex: 1,
+      valueGetter: (_, row) => {
+        const createdOn = row?.graphFunction?.createdOn;
+        return createdOn ? new Date(createdOn) : null;
+      },
+      renderCell: (params) => {
+        const timestamp = params?.row?.graphFunction?.createdOn;
+        if (!timestamp) {
+          return <div className="text-[#666666]">-</div>;
+        }
+
+        const date = new Date(timestamp);
+        const formatted = date.toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        });
+
+        return <div className="text-[#666666]">{formatted}</div>;
+      },
+      minWidth: 150,
+    },
+    {
       field: "userDefined",
       headerName: "Created By",
       minWidth: 150,
@@ -704,6 +739,7 @@ const FunctionTable = ({ query }) => {
       >
         <DataGrid
           rows={filteredRows}
+          loading={isLoading}
           columns={visibleColumns}
           filterModel={filterModel}
           onRowClick={handleRowClick}

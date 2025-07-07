@@ -1,0 +1,1 @@
+export const SUBSCRIPTION_ID =  "price_1Qs2UHHUHzoZhIZknfmwnizB";

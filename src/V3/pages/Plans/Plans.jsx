@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Box } from "@mui/material";
 import PlansHeader from "./PlansHeader";
 import PlansCard from "./PlansCard";
+import { usePostMutation } from "../../../slices/api";
+import { SUBSCRIPTION_ID } from "../../../constants/Enum";
 
 const freePlanList = [
   "50 Backtest Credits",
@@ -20,14 +22,28 @@ const Plans = () => {
     Free: "Current Plan",
     Pro: "Subscribe",
   });
+  const [newSubscription] = usePostMutation();
 
-  const handleChangePlan = (plan) => {
+  const handleChangePlan = async (plan) => {
     if (plan === "Pro") {
       setCurrentPlan("Pro");
       setButtonText({ Free: "Use this Plan", Pro: "Current Plan" });
     } else {
       setCurrentPlan("Free");
       setButtonText({ Free: "Current Plan", Pro: "Subscribe" });
+    }
+
+    try {
+      const { data } = await newSubscription({
+        endpoint: "/stockclient/create-session",
+        payload: { priceId: SUBSCRIPTION_ID },
+      }).unwrap();
+
+      if (data && data.url) {
+        window.location = data.url;
+      }
+    } catch (error) {
+      console.error("error while subscribe", error);
     }
   };
 

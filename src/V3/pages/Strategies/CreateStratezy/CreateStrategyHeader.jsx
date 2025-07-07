@@ -10,7 +10,14 @@ import Badge from "../../../common/Badge";
 import { CREATE_STRATEGY_BTN_TOOLTIP } from "../../../../constants/CommonText";
 import WarningPopupModal from "./WarningPopupModal";
 
-const CreateStrategyHeader = ({ onNext, step, formik, id, strategyName }) => {
+const CreateStrategyHeader = ({
+  onNext,
+  step,
+  formik,
+  id,
+  strategyName,
+  setIsDirty = () => {},
+}) => {
   const [isCancelStrategy, setIsCancelStrategy] = useState(false);
   const [isOpenSaveDraft, setIsOpenSaveDraft] = useState(false);
   const [saveActionType, setSaveActionType] = useState("draft"); // 'draft' | 'create'
@@ -120,6 +127,7 @@ const CreateStrategyHeader = ({ onNext, step, formik, id, strategyName }) => {
             <HeaderButton
               variant="primary"
               onClick={() => {
+                setIsDirty(false);
                 setSaveActionType("create");
                 setIsOpenSaveDraft(true);
               }}
@@ -130,11 +138,12 @@ const CreateStrategyHeader = ({ onNext, step, formik, id, strategyName }) => {
             <HeaderButton
               variant="primary"
               onClick={() => {
-                setSaveActionType("draft");
+                setIsDirty(false);
+                setSaveActionType(!hasAllValues(values) ? "draft" : "create");
                 setIsOpenSaveDraft(true);
               }}
             >
-              {"Save as Draft"}
+              {!hasAllValues(values) ? "Save as Draft" : "Save"}
             </HeaderButton>
           )}
 
@@ -181,6 +190,7 @@ const CreateStrategyHeader = ({ onNext, step, formik, id, strategyName }) => {
                   className="!w-full"
                   disabled={step === 5 && !hasAllValues(values)}
                   onClick={() => {
+                    setIsDirty(false);
                     setSaveActionType("create");
                     handleSaveStrategy();
                   }}

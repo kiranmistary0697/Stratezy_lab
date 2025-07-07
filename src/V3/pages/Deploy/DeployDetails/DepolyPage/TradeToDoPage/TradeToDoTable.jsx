@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -203,6 +204,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
       headerName: "Action",
       minWidth: 150,
       flex: 1,
+      valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
       renderCell: (params) => {
         return <div> {params.row.closed ? "EXIT" : "ENTER"}</div>;
       },

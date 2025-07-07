@@ -3,6 +3,15 @@ import AceEditor from "react-ace";
 
 import { Box, TextField, Tooltip, Typography } from "@mui/material";
 
+
+// import 'ace-builds/src-noconflict/mode-javascript';
+// import 'ace-builds/src-noconflict/theme-github';
+// import 'ace-builds/src-noconflict/theme-twilight';
+// import 'ace-builds/src-noconflict/ext-language_tools';
+// import 'ace-builds/src-noconflict/mode-java'; // For Java
+import 'ace-builds/src-noconflict/mode-c_cpp'; // For C/C++
+import 'ace-builds/src-noconflict/theme-monokai'; // Ensure the theme is imported as well
+
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
@@ -59,6 +68,7 @@ const EditorFunction = ({
       >
         <AceEditor
           mode="c_cpp"
+          // theme="chaos"
           theme="monokai"
           name="code-editor"
           value={code}

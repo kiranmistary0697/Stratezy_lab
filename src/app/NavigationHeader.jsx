@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,15 +13,19 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import Coinimg from "../assets/coins.svg";
-import NavigationTab from "./NavigationTabs";
-import LanguageDropdown from "../components/Select/LanguageDropdown";
-import routes from "../V2/constants/Routes";
-import Logo from "../V2/assets/Logo.svg";
+
+import { usePostMutation } from "../slices/api";
 import { useAuth } from "../V2/contexts/AuthContext";
 
+import { SUBSCRIPTION_ID } from "../constants/Enum";
+import routes from "../V2/constants/Routes";
+import NavigationTab from "./NavigationTabs";
+import LanguageDropdown from "../components/Select/LanguageDropdown";
+
+import Coinimg from "../assets/coins.svg";
+import Logo from "../V2/assets/Logo.svg";
+
+import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 
@@ -30,11 +35,11 @@ const NavigationHeader = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [newSubscription] = usePostMutation();
 
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
-  // Close Drawer on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
@@ -47,46 +52,52 @@ const NavigationHeader = () => {
     setAnchorEl(null);
   };
 
+  const handleSubscribe = async () => {
+    try {
+      const { data } = await newSubscription({
+        endpoint: "/stockclient/create-session",
+        payload: { priceId: SUBSCRIPTION_ID },
+      }).unwrap();
+
+      if (data && data.url) {
+        window.location = data.url;
+      }
+    } catch (error) {
+      console.error("error while subscribe", error);
+    }
+  };
+
   return (
     <Box
       className="flex flex-col justify-center px-6 py-4 w-full text-sm font-medium bg-white md:px-8"
-      sx={{
-        boxShadow: "2px 1px 4px 0px #01010117",
-      }}
+      sx={{ boxShadow: "2px 1px 4px 0px #01010117" }}
     >
-      {/* <nav className="flex flex-wrap justify-between items-center w-full"> */}
       <nav className="w-full justify-between items-center lg:flex lg:flex-nowrap">
         {/* Left Section */}
         <div className="flex items-center gap-5 w-full md:w-auto">
-          {/* Hamburger Menu Icon for Mobile */}
+          {/* Mobile Menu Icon */}
           <div className="lg:hidden flex items-center justify-between w-full gap-4">
             <IconButton
-              sx={{
-                "&:focus": {
-                  outline: "none",
-                },
-              }}
+              sx={{ "&:focus": { outline: "none" } }}
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Open Menu"
             >
               <MenuIcon fontSize="large" />
             </IconButton>
 
-            {/* Right Section */}
-            <div className="flex items-center gap-4 sm:gap-5 md:gap-7">
-              {/* Language Dropdown */}
+            {/* Right (Mobile) */}
+            <div className="flex items-center gap-4 sm:gap-5 md:gap-6">
               <LanguageDropdown />
-
-              {/* Icons */}
               <HelpOutlineOutlinedIcon fontSize="small" />
-              <NotificationsNoneOutlinedIcon className="object-contain w-6 sm:w-7 md:w-[30px]" />
-              <div className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 text-white bg-blue-700 rounded-full">
+              <NotificationsNoneOutlinedIcon className="w-6 sm:w-7 md:w-[30px]" />
+              <div
+                onClick={handleClick}
+                className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center rounded-full bg-blue-700 text-white cursor-pointer"
+              >
                 S
               </div>
             </div>
           </div>
-
-          {/* Logo */}
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex gap-4 md:gap-3 items-center">
@@ -97,7 +108,6 @@ const NavigationHeader = () => {
                 className="w-20 lg:w-[5.75rem] h-auto"
               />
             </Link>
-
             <NavigationTab to="/Strategies">Strategies</NavigationTab>
             <NavigationTab to="/Backtest">Backtests</NavigationTab>
             <NavigationTab to="/Deploy">Deploy</NavigationTab>
@@ -109,10 +119,12 @@ const NavigationHeader = () => {
           </div>
         </div>
 
-        <div className="hidden lg:flex items-center gap-4 mt-3 sm:gap-5 md:gap-7 ">
+        {/* Subscribe + Tooltip + User Section — Responsive */}
+        <div className="flex items-center gap-3 sm:gap-4 md:gap-5 mt-4 lg:mt-0 flex-wrap justify-end lg:justify-normal">
+          {/* Tooltip with credits */}
           <Tooltip
             title={
-              <div className="flex flex-col gap-2 text-sm ">
+              <div className="flex flex-col gap-2 text-sm">
                 <div className="font-[600] text-xs text-[#535862]">
                   Current Plan
                 </div>
@@ -145,8 +157,10 @@ const NavigationHeader = () => {
               </Typography>
             </Box>
           </Tooltip>
+
+          {/* Subscribe Button */}
           <Button
-            className="text-sm font-medium px-4 py-2"
+            onClick={handleSubscribe}
             sx={{
               borderRadius: "3px",
               padding: "10px",
@@ -164,19 +178,20 @@ const NavigationHeader = () => {
             Subscribe
           </Button>
 
-          <div className="w-px h-5 bg-zinc-200"></div>
-          {/* Language Dropdown */}
+          {/* Divider */}
+          <div className="w-px h-5 bg-zinc-200 hidden lg:block"></div>
+
+          {/* Language + Icons */}
           <LanguageDropdown />
-          {/* Icons */}
           <HelpOutlineOutlinedIcon fontSize="small" />
-          <NotificationsNoneOutlinedIcon className="object-contain w-6 sm:w-7 md:w-[30px]" />
+          <NotificationsNoneOutlinedIcon className="w-6 sm:w-7 md:w-[30px]" />
           <div
-            style={{ cursor: "pointer" }}
             onClick={handleClick}
-            className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 text-white bg-blue-700 rounded-full"
+            className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center rounded-full bg-blue-700 text-white cursor-pointer"
           >
             S
           </div>
+
           {/* Dropdown Menu */}
           <Menu
             anchorEl={anchorEl}
@@ -195,7 +210,7 @@ const NavigationHeader = () => {
         </div>
       </nav>
 
-      {/* Mobile Persistent Drawer */}
+      {/* Mobile Drawer */}
       <Drawer
         anchor="left"
         open={mobileOpen}
@@ -205,9 +220,8 @@ const NavigationHeader = () => {
       >
         <div className="w-64 p-4 flex flex-col gap-3">
           <Link to={routes.homepage}>
-            <img src={Logo} alt="logo" className="w-20 lg:w-[5.75rem] h-auto" />
+            <img src={Logo} alt="logo" className="w-20 h-auto" />
           </Link>
-
           <NavigationTab to="/Strategies" onClick={() => setMobileOpen(false)}>
             Strategies
           </NavigationTab>

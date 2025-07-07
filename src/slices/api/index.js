@@ -7,37 +7,41 @@ import generateEndPoint from "../../V3/utils/generateEndPoint";
 import { tagTypes } from "../../V3/tagTypes";
 import { BACKEND_BASE_URL } from "../../V2/services/apiEndpoints";
 
-const displayErrorMessage = (error) => {
-  console.log(error, "errorrr");
+// const displayErrorMessage = (error) => {
+//   console.log(error, "errorrr");
 
-  const statusCode = error?.originalStatus || error?.data?.StatusCode || 0;
-  if (Math.floor(statusCode / 100) === 2) return;
-  let errorMessage;
-  switch (error?.data?.StatusCode) {
-    case 400:
-      errorMessage = error?.data?.Error || "Invalid data";
-      break;
-    case 401:
-      errorMessage = error?.data?.Error || "Unauthenticated";
-      break;
-    case 403:
-      errorMessage = error?.data?.Error || "No access for given URL";
-      break;
-    case 404:
-      errorMessage = error?.data?.Error || "Page not found";
-      break;
-    case 500:
-      errorMessage = error?.data?.Error || "Internal server error";
-      break;
-    default:
-      errorMessage =
-        error?.data?.errorMessage ||
-        error?.data?.message ||
-        error?.data?.error ||
-        "Something went wrong, Please try again";
-  }
-  toast.error(errorMessage);
-};
+//   const statusCode = error?.originalStatus || error?.data?.StatusCode || error?.status || 0;
+//   console.log("st code", error?.originalStatus, error?.data);
+
+//   if (Math.floor(statusCode / 100) === 2) return;
+//   let errorMessage;
+//   switch (statusCode ) {
+//     case 400:
+//       console.log("ssss", error.data);
+
+//       errorMessage = error?.data?.Error || error?.data?["error"] || "Invalid data";
+//       break;
+//     case 401:
+//       errorMessage = error?.data?.Error || "Unauthenticated";
+//       break;
+//     case 403:
+//       errorMessage = error?.data?.Error || "No access for given URL";
+//       break;
+//     case 404:
+//       errorMessage = error?.data?.Error || "Page not found";
+//       break;
+//     case 500:
+//       errorMessage = error?.data?.Error || "Internal server error";
+//       break;
+//     default:
+//       errorMessage =
+//         error?.data?.errorMessage ||
+//         error?.data?.message ||
+//         error?.data?.error ||
+//         "Something went wrong, Please try again";
+//   }
+//   toast.error(errorMessage);
+// };
 
 // const transformResponse = (response) => {
 //   return {
@@ -46,6 +50,53 @@ const displayErrorMessage = (error) => {
 // };
 
 //modified transformResponse to handle text and JSON response as we defined in RTK Query
+const displayErrorMessage = (error) => {
+  console.log(error, "errorrr");
+
+  const statusCode =
+    error?.originalStatus || error?.data?.StatusCode || error?.status || 0;
+  let parsedData = error?.data;
+
+  if (typeof parsedData === "string") {
+    try {
+      parsedData = JSON.parse(parsedData);
+    } catch (parseErr) {
+      console.warn("Failed to parse error data:", parseErr);
+    }
+  }
+
+  console.log("Parsed Error Data:", parsedData);
+
+  if (Math.floor(statusCode / 100) === 2) return;
+
+  let errorMessage;
+  switch (statusCode) {
+    case 400:
+      errorMessage = parsedData?.Error || parsedData?.error || "Invalid data";
+      break;
+    case 401:
+      errorMessage = parsedData?.Error || "Unauthenticated";
+      break;
+    case 403:
+      errorMessage = parsedData?.Error || "No access for given URL";
+      break;
+    case 404:
+      errorMessage = parsedData?.Error || "Page not found";
+      break;
+    case 500:
+      errorMessage = parsedData?.Error || "Internal server error";
+      break;
+    default:
+      errorMessage =
+        parsedData?.errorMessage ||
+        parsedData?.message ||
+        parsedData?.error ||
+        "Something went wrong, Please try again";
+  }
+
+  toast.error(errorMessage);
+};
+
 const transformResponse = (responseText) => {
   try {
     const parsed = JSON.parse(responseText);
