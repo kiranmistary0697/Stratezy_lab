@@ -237,6 +237,7 @@ const BacktestTable = () => {
             title="Select Strategies"
             dataKey="name"
             isVersion
+            selectedValues={selectedStrategies}
           />
         );
       case "status":
@@ -251,6 +252,7 @@ const BacktestTable = () => {
             applyValue={(data) => setSelectedStatuses(data.value || [])}
             title="Select Status"
             dataKey="status"
+            selectedValues={selectedStatuses}
             isStatus
           />
         );
@@ -333,7 +335,11 @@ const BacktestTable = () => {
               size="small"
               onClick={(e) => handlePopoverOpen(e, "strategy")}
             >
+             {selectedStrategies.length ? (
+              <FilterListIcon fontSize="small" color="primary" />
+            ) : (
               <FilterListIcon fontSize="small" />
+            )}
             </IconButton>
           </Box>
         ),

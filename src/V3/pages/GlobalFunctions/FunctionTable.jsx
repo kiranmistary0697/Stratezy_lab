@@ -300,6 +300,8 @@ const FunctionTable = ({ query }) => {
 
     if (row.psizing) rowTypes.push("Portfolio Sizing");
 
+    if (row.sort) rowTypes.push("Trade Sequence");
+
     rowCreatedBy.push(row.userDefined ? "User" : "System");
 
     const matchesType =
@@ -336,7 +338,7 @@ const FunctionTable = ({ query }) => {
 
   const columns = [
     {
-      field: "shortFuncName",
+      field: "func",
       headerName: "Function Name",
       minWidth: 280,
       flex: 1,
@@ -349,7 +351,7 @@ const FunctionTable = ({ query }) => {
             cursor: "pointer",
           }}
         >
-          <span>{params.row.shortFuncName}</span>
+          <span>{params.row.func}</span>
         </div>
       ),
     },
@@ -373,7 +375,11 @@ const FunctionTable = ({ query }) => {
             Type
           </span>
           <IconButton size="small" onClick={handleTypeFilterOpen}>
-            <FilterListIcon fontSize="small" />
+            {selectedStatuses.length ? (
+              <FilterListIcon fontSize="small" color="primary" />
+            ) : (
+              <FilterListIcon fontSize="small" />
+            )}
           </IconButton>
 
           <Popover
@@ -394,6 +400,7 @@ const FunctionTable = ({ query }) => {
                 { status: "Stock Entry" },
                 { status: "Stock Exit" },
                 { status: "Portfolio Sizing" },
+                { status: "Trade Sequence" },
               ]}
               fieldName="status"
               applyValue={handleStatusFilterChange}
@@ -424,6 +431,7 @@ const FunctionTable = ({ query }) => {
           badges.push("Stock Exit");
         }
         if (row.psizing) badges.push("Portfolio Sizing");
+        if (row.sort) badges.push("Trade Sequence");
 
         return (
           <Box
@@ -468,7 +476,11 @@ const FunctionTable = ({ query }) => {
             Sub Type
           </span>
           <IconButton size="small" onClick={handleSubTypeFilterOpen}>
-            <FilterListIcon fontSize="small" />
+            {selectedSubStatuses.length ? (
+              <FilterListIcon fontSize="small" color="primary" />
+            ) : (
+              <FilterListIcon fontSize="small" />
+            )}
           </IconButton>
           <Popover
             open={Boolean(subTypeAnchorEl)}
@@ -534,11 +546,11 @@ const FunctionTable = ({ query }) => {
       headerName: "Created On",
       flex: 1,
       valueGetter: (_, row) => {
-        const createdOn = row?.graphFunction?.createdOn;
+        const createdOn = row?.createdOn;
         return createdOn ? new Date(createdOn) : null;
       },
       renderCell: (params) => {
-        const timestamp = params?.row?.graphFunction?.createdOn;
+        const timestamp = params?.row?.createdOn;
         if (!timestamp) {
           return <div className="text-[#666666]">-</div>;
         }
@@ -578,7 +590,11 @@ const FunctionTable = ({ query }) => {
             Created By
           </span>
           <IconButton size="small" onClick={handleCreatedByFilterOpen}>
-            <FilterListIcon fontSize="small" />
+            {selectedCreatedBy.length ? (
+              <FilterListIcon fontSize="small" color="primary" />
+            ) : (
+              <FilterListIcon fontSize="small" />
+            )}
           </IconButton>
           <Popover
             open={Boolean(createdByAnchor)}
