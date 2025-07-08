@@ -1,14 +1,30 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Typography } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  Popover,
+  Typography,
+} from "@mui/material";
+import {
+  Settings as SettingsIcon,
+  CheckBox as CheckBoxIcon,
+  CheckBoxOutlineBlank as CheckBoxOutlinedIcon,
+} from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
-import Badge from "../../../../../common/Badge";
+import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
-import ActionMenu from "../../../../../common/DropDownButton";
-import ActionButton from "../../../../../common/ActionButton";
+
 import { useLazyGetQuery } from "../../../../../../slices/api";
 import { tagTypes } from "../../../../../tagTypes";
+
 import AddCapital from "./AddCapital";
+
+import ActionButton from "../../../../../common/ActionButton";
+import ActionMenu from "../../../../../common/DropDownButton";
+import Badge from "../../../../../common/Badge";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -56,6 +72,10 @@ const CapitalTable = ({ data }) => {
   const [capitalData, setCapitalData] = useState(false);
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
+  const [hiddenColumns, setHiddenColumns] = useState([]);
+
+  const [popoverAnchor, setPopoverAnchor] = useState(null);
+  const [activeFilter, setActiveFilter] = useState(null);
 
   const [selectedType, setSelectedType] = useState("ONETIME");
   const [startDate, setStartDate] = useState(
@@ -120,6 +140,25 @@ const CapitalTable = ({ data }) => {
     fetchAllData();
   }, []);
 
+  const handlePopoverOpen = (event, type) => {
+    event.stopPropagation();
+    setPopoverAnchor(event.currentTarget);
+    setActiveFilter(type);
+  };
+
+  const handlePopoverClose = () => {
+    setPopoverAnchor(null);
+    setActiveFilter(null);
+  };
+
+  const handleColumnToggle = (field) => {
+    setHiddenColumns((prev) =>
+      prev.includes(field)
+        ? prev.filter((col) => col !== field)
+        : [...prev, field]
+    );
+  };
+
   const handleSaveCapital = async () => {
     setLoading(true);
     try {
@@ -137,12 +176,64 @@ const CapitalTable = ({ data }) => {
     }
   };
 
+  const popoverContent = () => {
+    if (!activeFilter) return null;
+
+    switch (activeFilter) {
+      case "column":
+        return (
+          <FormGroup sx={{ padding: 2 }}>
+            <Typography
+              sx={{
+                fontFamily: "Inter",
+                fontWeight: 500,
+                fontSize: "14px",
+                lineHeight: "120%",
+                letterSpacing: "0%",
+                color: "#0A0A0A",
+              }}
+            >
+              Select Column
+            </Typography>
+            {columns
+              .filter(
+                ({ field }) =>
+                  ![
+                    "requestId",
+                    "name",
+                    "version",
+                    "createdAt",
+                    "status",
+                    "moreaction",
+                  ].includes(field)
+              )
+              .map((col) => (
+                <FormControlLabel
+                  key={col.field}
+                  control={
+                    <Checkbox
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxIcon />}
+                      checked={!hiddenColumns.includes(col.field)}
+                      onChange={() => handleColumnToggle(col.field)}
+                    />
+                  }
+                  label={col.headerName}
+                />
+              ))}
+          </FormGroup>
+        );
+      default:
+        return null;
+    }
+  };
+
   const columns = useMemo(
     () => [
       {
         field: "Date",
         headerName: "Date",
-        minWidth: 250,
+        minWidth: 100,
         flex: 1,
         valueGetter: (_, row) => moment(row?.Date).format("DD MMM YYYY"),
         renderCell: (params) => (
@@ -154,7 +245,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "status",
         headerName: "Status",
-        minWidth: 200,
+        minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Badge variant={params.row.status?.toLowerCase()}>
@@ -165,7 +256,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "Amount",
         headerName: "Amount",
-        minWidth: 200,
+        minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>{params.row?.Amount}</Typography>
@@ -174,7 +265,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "Type",
         headerName: "Type",
-        minWidth: 200,
+        minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Badge variant="version">{params.row?.Type}</Badge>
@@ -183,7 +274,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "Schedule",
         headerName: "Schedule",
-        minWidth: 150,
+        minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>
@@ -194,7 +285,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "manage",
         headerName: "Action",
-        minWidth: 150,
+        minWidth: 100,
         flex: 1,
         renderCell: (params) => {
           return (
@@ -220,19 +311,29 @@ const CapitalTable = ({ data }) => {
         },
       },
       {
-        field: " ",
-        headerName: " ",
+        field: "moreaction",
+        headerName: "",
         align: "center",
         minWidth: 50,
         maxWidth: 60,
         sortable: false,
         disableColumnMenu: true,
+        renderHeader: () => (
+          <IconButton
+            size="small"
+            onClick={(e) => handlePopoverOpen(e, "column")}
+          >
+            <SettingsIcon fontSize="small" />
+          </IconButton>
+        ),
         renderCell: () => <ActionMenu isDeleteButton />,
       },
     ],
-    [rows]
+    [rows, hiddenColumns]
   );
-
+  const visibleColumns = columns.filter(
+    (col) => !hiddenColumns.includes(col.field)
+  );
   return (
     <>
       {openCapital && (
@@ -251,6 +352,15 @@ const CapitalTable = ({ data }) => {
           onSave={handleSaveCapital}
         />
       )}
+      <Popover
+        open={Boolean(popoverAnchor)}
+        anchorEl={popoverAnchor}
+        onClose={handlePopoverClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        // transformOrigin={{ vertical: "top", horizontal: "left" }}
+      >
+        {popoverContent()}
+      </Popover>
       <Box
         className={`${classes.filterModal} flex`}
         sx={{
@@ -264,7 +374,7 @@ const CapitalTable = ({ data }) => {
       >
         <DataGrid
           rows={rows}
-          columns={columns}
+          columns={visibleColumns}
           initialState={{
             pagination: {
               paginationModel: {

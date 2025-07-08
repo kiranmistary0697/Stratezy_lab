@@ -5,10 +5,12 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const EditHeader = ({
   stockData,
-  handleChange = () => {},
+  // handleChange = () => {},
   isDuplicate,
   handleDelete = () => {},
   handleDuplicate = () => {},
+  setEditUserData = () => {},
+  editUserData,
 }) => {
   const [anchorEl, setAnchorEl] = useState(false);
 
@@ -21,6 +23,14 @@ const EditHeader = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleChange = () => {
+    if (!editUserData) {
+      setEditUserData(true);
+    } else {
+      setEditUserData(false);
+    }
+  };
+
   return (
     <Box className="flex md:flex-row gap-2.5 items-center justify-between text-center md:text-left p-4">
       <div className="flex flex-col gap-3">
@@ -81,7 +91,7 @@ const EditHeader = ({
             onClick={handleChange}
             disabled={isDuplicate ? false : !stockData?.userDefined}
           >
-            Edit
+           {editUserData ? "Lock" : "Edit"} 
           </HeaderButton>
         </Box>
       </div>

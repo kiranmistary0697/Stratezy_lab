@@ -37,7 +37,7 @@ const CustomFilterPanel = ({
             const isChecked = selectedValues.includes(item[dataKey]);
             return (
               <FormControlLabel
-                className="custom-select"
+                // className="custom-select"
                 key={key}
                 control={
                   <Checkbox

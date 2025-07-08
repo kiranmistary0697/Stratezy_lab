@@ -39,6 +39,7 @@ const NavigationHeader = () => {
 
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+  const isTabletOrMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
   useEffect(() => {
     setMobileOpen(false);
@@ -67,6 +68,40 @@ const NavigationHeader = () => {
     }
   };
 
+  const renderCreditsTooltip = () => (
+    <Tooltip
+      title={
+        <div className="flex flex-col gap-2 text-sm">
+          <div className="font-[600] text-xs text-[#535862]">Current Plan</div>
+          <div className="text-sm text-gray-600">41/50 credits</div>
+          <div className="text-sm text-gray-600">1/1 Deployment</div>
+          <div className="text-sm text-blue-700 cursor-pointer">
+            Subscribe to Pro Plan
+          </div>
+        </div>
+      }
+      placement="bottom"
+      componentsProps={{
+        tooltip: {
+          sx: {
+            backgroundColor: "white",
+            color: "black",
+            border: "1px solid #e4e4e7",
+            boxShadow: "0px 4px 13px rgba(0, 0, 0, 0.16)",
+            padding: "12px 16px",
+            borderRadius: "4px",
+            maxWidth: "210px",
+          },
+        },
+      }}
+    >
+      <Box className="flex gap-2 items-center cursor-pointer">
+        <img src={Coinimg} alt="Coin" className="h-5 w-5" />
+        <Typography sx={{ fontSize: "14px", color: "#0A0A0A" }}>41</Typography>
+      </Box>
+    </Tooltip>
+  );
+
   return (
     <Box
       className="flex flex-col justify-center px-6 py-4 w-full text-sm font-medium bg-white md:px-8"
@@ -87,6 +122,7 @@ const NavigationHeader = () => {
 
             {/* Right (Mobile) */}
             <div className="flex items-center gap-4 sm:gap-5 md:gap-6">
+              {isTabletOrMobile && renderCreditsTooltip()}
               <LanguageDropdown />
               <HelpOutlineOutlinedIcon fontSize="small" />
               <NotificationsNoneOutlinedIcon className="w-6 sm:w-7 md:w-[30px]" />
@@ -119,45 +155,9 @@ const NavigationHeader = () => {
           </div>
         </div>
 
-        {/* Subscribe + Tooltip + User Section — Responsive */}
-        <div className="hidden lg:flex items-center gap-3 sm:gap-4 md:gap-5 mt-4 lg:mt-0 flex-wrap justify-end lg:justify-normal">
-          {/* Tooltip with credits */}
-          <Tooltip
-            title={
-              <div className="flex flex-col gap-2 text-sm">
-                <div className="font-[600] text-xs text-[#535862]">
-                  Current Plan
-                </div>
-                <div className="text-sm text-gray-600">41/50 credits</div>
-                <div className="text-sm text-gray-600">1/1 Deployment</div>
-                <div className="text-sm text-blue-700 cursor-pointer">
-                  Subscribe to Pro Plan
-                </div>
-              </div>
-            }
-            placement="bottom"
-            componentsProps={{
-              tooltip: {
-                sx: {
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid #e4e4e7",
-                  boxShadow: "0px 4px 13px rgba(0, 0, 0, 0.16)",
-                  padding: "12px 16px",
-                  borderRadius: "4px",
-                  maxWidth: "210px",
-                },
-              },
-            }}
-          >
-            <Box className="flex gap-2 items-center cursor-pointer">
-              <img src={Coinimg} alt="Coin" className="h-5 w-5" />
-              <Typography sx={{ fontSize: "14px", color: "#0A0A0A" }}>
-                41
-              </Typography>
-            </Box>
-          </Tooltip>
-
+        {/* Right Section (Desktop) */}
+        <div className="hidden lg:flex items-center gap-3 sm:gap-4 md:gap-2 lg:gap-5 mt-4 lg:mt-0 justify-end lg:justify-normal">
+          {renderCreditsTooltip()}
           {/* Subscribe Button */}
           <Button
             onClick={handleSubscribe}
@@ -178,10 +178,8 @@ const NavigationHeader = () => {
             Subscribe
           </Button>
 
-          {/* Divider */}
           <div className="w-px h-5 bg-zinc-200 hidden lg:block"></div>
 
-          {/* Language + Icons */}
           <LanguageDropdown />
           <HelpOutlineOutlinedIcon fontSize="small" />
           <NotificationsNoneOutlinedIcon className="w-6 sm:w-7 md:w-[30px]" />
@@ -192,7 +190,6 @@ const NavigationHeader = () => {
             S
           </div>
 
-          {/* Dropdown Menu */}
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}

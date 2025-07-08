@@ -313,6 +313,8 @@ const TableRow = () => {
         headerName: "Backtests",
         minWidth: 150,
         flex: 1,
+        sortable: false,
+        disableColumnMenu: true,
         renderCell: (params) => {
           const isDraft = !params.row.complete;
           const button = (
@@ -374,6 +376,8 @@ const TableRow = () => {
         headerName: "Deploy",
         minWidth: 150,
         flex: 1,
+        disableColumnMenu: true,
+        sortable: false,
         renderCell: (params) => {
           const isDraft =
             !params.row.complete || !params.row?.backtestSummaryRes;

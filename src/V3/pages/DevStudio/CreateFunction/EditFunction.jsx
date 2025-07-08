@@ -462,6 +462,8 @@ const EditFunction = () => {
             handleChange={() => {
               setEditUserData(true);
             }}
+            setEditUserData={setEditUserData}
+            editUserData={editUserData}
             isDuplicate={isDuplicate}
             handleDelete={handleDeleteFunction}
             handleDuplicate={handleDuplicate}

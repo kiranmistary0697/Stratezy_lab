@@ -18,8 +18,6 @@ import CheckBoxOutlinedIcon from "@mui/icons-material/CheckBoxOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
-import { tagTypes } from "../../../../../tagTypes";
-import { useLazyGetQuery } from "../../../../../../slices/api";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -54,21 +52,34 @@ const HoldingsTable = forwardRef((props, ref) => {
   // { ref, data = {}, query }
   const classes = useStyles();
 
-  const [openProfit, setOpenProfit] = useState(null);
-  const [hiddenColumns, setHiddenColumns] = useState([]);
+  const [hiddenColumns, setHiddenColumns] = useState([
+    "sellTime",
+    "sellPrice",
+    "prf1R",
+    "closeReason",
+    "openReason",
+  ]);
+  const [popoverAnchor, setPopoverAnchor] = useState(null);
+  const [activeFilter, setActiveFilter] = useState(null);
+
   const [filterModel, setFilterModel] = useState({ items: [] });
 
-  const handleFilterProfitClose = () => {
-    setOpenProfit(null);
+  const handlePopoverOpen = (event, type) => {
+    event.stopPropagation();
+    setPopoverAnchor(event.currentTarget);
+    setActiveFilter(type);
   };
-  const handleFilterProfit = (event) => {
-    setOpenProfit(event.currentTarget);
+
+  const handlePopoverClose = () => {
+    setPopoverAnchor(null);
+    setActiveFilter(null);
   };
-  const handleColumnToggle = (columnField) => {
+
+  const handleColumnToggle = (field) => {
     setHiddenColumns((prev) =>
-      prev.includes(columnField)
-        ? prev.filter((col) => col !== columnField)
-        : [...prev, columnField]
+      prev.includes(field)
+        ? prev.filter((col) => col !== field)
+        : [...prev, field]
     );
   };
 
@@ -101,12 +112,62 @@ const HoldingsTable = forwardRef((props, ref) => {
           String(row[key]).toLowerCase().includes(normalizedQuery)
       )
     );
+  const popoverContent = () => {
+    if (!activeFilter) return null;
+
+    switch (activeFilter) {
+      case "column":
+        return (
+          <FormGroup sx={{ padding: 2 }}>
+            <Typography
+              sx={{
+                fontFamily: "Inter",
+                fontWeight: 500,
+                fontSize: "14px",
+                lineHeight: "120%",
+                letterSpacing: "0%",
+                color: "#0A0A0A",
+              }}
+            >
+              Select Column
+            </Typography>
+            {columns
+              .filter(
+                ({ field }) =>
+                  ![
+                    "requestId",
+                    "name",
+                    "version",
+                    "createdAt",
+                    "status",
+                  ].includes(field)
+              )
+              .map((col) => (
+                <FormControlLabel
+                  key={col.field}
+                  control={
+                    <Checkbox
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxIcon />}
+                      checked={!hiddenColumns.includes(col.field)}
+                      onChange={() => handleColumnToggle(col.field)}
+                    />
+                  }
+                  label={col.headerName}
+                />
+              ))}
+          </FormGroup>
+        );
+      default:
+        return null;
+    }
+  };
 
   const columns = [
     {
       field: "symbol",
       headerName: "Symbol",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -116,7 +177,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "buyPrice",
       headerName: "Buy Price",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -126,7 +187,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "number",
       headerName: "Number",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -136,7 +197,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "sellPrice",
       headerName: "Sell Price",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -148,7 +209,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "sellTime",
       headerName: "Sell Time",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -158,7 +219,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "investment",
       headerName: "Investment",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -170,7 +231,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "principal",
       headerName: "Principal",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -182,7 +243,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "netProfit",
       headerName: "Net Profit",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -194,7 +255,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "profit",
       headerName: "Profit %",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -205,7 +266,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "anPrf",
       headerName: "Annual %",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -216,7 +277,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "buyTime",
       headerName: "Buy Time",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -226,7 +287,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "prf1R",
       headerName: "Prf1R",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -236,7 +297,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "risk1R",
       headerName: "Risk1R",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -246,7 +307,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "duration",
       headerName: "Duration Time",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -256,7 +317,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "closeReason",
       headerName: "Close Reason",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -268,7 +329,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "openReason",
       headerName: "Open Reason",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
       //   minWidth: 250,
       renderCell: (params) => (
@@ -280,13 +341,27 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "action",
       headerName: "Action",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
+
+      disableColumnMenu: true,
+      renderHeader: () => (
+        <IconButton
+          size="small"
+          onClick={(e) => handlePopoverOpen(e, "column")}
+        >
+          <SettingsIcon fontSize="small" />
+        </IconButton>
+      ),
       renderCell: (params) => {
         return <div> {params.row.closed ? "EXIT" : "ENTER"}</div>;
       },
     },
   ].filter(Boolean);
+
+  const visibleColumns = columns.filter(
+    (col) => !hiddenColumns.includes(col.field)
+  );
 
   useImperativeHandle(ref, () => ({
     getCSVData: () => ({
@@ -298,59 +373,61 @@ const HoldingsTable = forwardRef((props, ref) => {
     }),
   }));
   return (
-    <Box
-      className={`${classes.filterModal} flex`}
-      sx={{
-        borderRadius: 2,
-        border: "1px solid #E0E0E0",
-        backgroundColor: "white",
-        minWidth: "100%",
-        height: "500px", // Set a max height for scrolling
-        overflow: "auto", // Enable scrolling when content overflows
-      }}
-    >
-      <DataGrid
-        rows={rowsWithId}
-        columns={columns}
-        filterModel={filterModel}
-        onFilterModelChange={setFilterModel}
-        initialState={{
-          columns: {
-            columnVisibilityModel: {
-              sellTime: false,
-              sellPrice: false,
-              prf1R: false,
-              closeReason: false,
-              openReason: false,
-              action: false,
-            },
-          },
-          pagination: {
-            paginationModel: {
-              pageSize: 10,
-            },
-          },
-        }}
-        loading={isLoading}
-        slotProps={{
-          loadingOverlay: {
-            variant: "circular-progress",
-            noRowsVariant: "circular-progress",
-          },
-        }}
-        pageSizeOptions={[10]}
+    <>
+      <Popover
+        open={Boolean(popoverAnchor)}
+        anchorEl={popoverAnchor}
+        onClose={handlePopoverClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        // transformOrigin={{ vertical: "top", horizontal: "left" }}
+      >
+        {popoverContent()}
+      </Popover>
+
+      <Box
+        className={`${classes.filterModal} flex`}
         sx={{
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontFamily: "Inter",
-            fontWeight: 600,
-            fontSize: "12px",
-            lineHeight: "100%",
-            letterSpacing: "0px",
-            color: "#666666",
-          },
+          borderRadius: 2,
+          border: "1px solid #E0E0E0",
+          backgroundColor: "white",
+          minWidth: "100%",
+          height: "500px", // Set a max height for scrolling
+          overflow: "auto", // Enable scrolling when content overflows
         }}
-      />
-    </Box>
+      >
+        <DataGrid
+          rows={rowsWithId}
+          columns={visibleColumns}
+          filterModel={filterModel}
+          onFilterModelChange={setFilterModel}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
+            },
+          }}
+          loading={isLoading}
+          slotProps={{
+            loadingOverlay: {
+              variant: "circular-progress",
+              noRowsVariant: "circular-progress",
+            },
+          }}
+          pageSizeOptions={[10]}
+          sx={{
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontFamily: "Inter",
+              fontWeight: 600,
+              fontSize: "12px",
+              lineHeight: "100%",
+              letterSpacing: "0px",
+              color: "#666666",
+            },
+          }}
+        />
+      </Box>
+    </>
   );
 });
 
