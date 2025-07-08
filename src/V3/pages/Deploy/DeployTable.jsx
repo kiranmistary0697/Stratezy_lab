@@ -89,7 +89,6 @@ const DeployTable = ({
       handleCreateStrategy(params.row.reqId, params.row.name);
   };
 
-
   const confirmDelete = async () => {
     try {
       await deleteDeployData({
@@ -211,7 +210,20 @@ const DeployTable = ({
                       onChange={() => handleColumnToggle(col.field)}
                     />
                   }
-                  label={col.headerName}
+                  label={
+                    <Typography
+                      sx={{
+                        fontFamily: "Inter",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        lineHeight: "120%",
+                        letterSpacing: "0%",
+                        color: "#0A0A0A",
+                      }}
+                    >
+                      {col.headerName}
+                    </Typography>
+                  }
                 />
               ))}
           </FormGroup>
@@ -514,6 +526,13 @@ const DeployTable = ({
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        PaperProps={{
+          sx: {
+            maxHeight: 300,
+            overflowY: "auto",
+            overflowX: "hidden",
+          },
+        }}
         // transformOrigin={{ vertical: "top", horizontal: "left" }}
         disableRestoreFocus
       >

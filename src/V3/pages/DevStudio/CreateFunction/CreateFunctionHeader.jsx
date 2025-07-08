@@ -14,6 +14,7 @@ const CreateFunctionHeader = ({
   isVerify = false,
   isSaving,
   handleVerify = () => {},
+  // showButtons = true,
 }) => {
   const [isCancelStrategy, setIsCancelStrategy] = useState(false);
 
@@ -26,7 +27,7 @@ const CreateFunctionHeader = ({
         }`}
       >
         <Box
-          className={`flex items-center gap-2.5 ${
+          className={`flex items-center justify-center gap-2.5 ${
             isFunction ? " w-full" : ""
           }`}
         >
@@ -88,6 +89,7 @@ const CreateFunctionHeader = ({
       </Box>
 
       {/* Button Section */}
+      {/* {showButtons && ( */}
       <nav className="flex flex-col md:flex-row gap-3 w-full md:w-auto md:ml-auto justify-end">
         {isFunction && (
           <HeaderButton
@@ -113,6 +115,7 @@ const CreateFunctionHeader = ({
           </HeaderButton>
         )}
       </nav>
+      {/* )} */}
     </Box>
   );
 };

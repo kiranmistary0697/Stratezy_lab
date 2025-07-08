@@ -225,7 +225,20 @@ const FunctionTable = ({ query }) => {
                       onChange={() => handleColumnToggle(col.field)}
                     />
                   }
-                  label={col.headerName}
+                  label={
+                    <Typography
+                      sx={{
+                        fontFamily: "Inter",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        lineHeight: "120%",
+                        letterSpacing: "0%",
+                        color: "#0A0A0A",
+                      }}
+                    >
+                      {col.headerName}
+                    </Typography>
+                  }
                 />
               ))}
           </FormGroup>
@@ -411,6 +424,32 @@ const FunctionTable = ({ query }) => {
           </Popover>
         </Box>
       ),
+      valueGetter: (_, row) => {
+        const badges = [];
+
+        if (row.filter) badges.push("Stock Filter");
+        if (row.buysell) badges.push("Trade Rule");
+
+        if (row.gentry && row.gexit) {
+          badges.push("Global Entry & Exit");
+        } else if (row.gentry) {
+          badges.push("Global Entry");
+        } else if (row.gexit) {
+          badges.push("Global Exit");
+        }
+
+        if (row.entry && row.exit) {
+          badges.push("Stock Entry & Exit");
+        } else if (row.entry) {
+          badges.push("Stock Entry");
+        } else if (row.exit) {
+          badges.push("Stock Exit");
+        }
+
+        if (row.psizing) badges.push("Portfolio Sizing");
+
+        return badges.length > 0 ? badges.join(", ") : "NA";
+      },
       renderCell: ({ row }) => {
         const badges = [];
 
@@ -505,6 +544,21 @@ const FunctionTable = ({ query }) => {
           </Popover>
         </Box>
       ),
+      valueGetter: (_, row) => {
+        const badges = [];
+
+        if (row.filter && row.stockList) {
+          badges.push("Static");
+        } else {
+          badges.push("Dynamic");
+        }
+
+        if (row.buysell) {
+          badges.push("Buy", "Sell");
+        }
+
+        return badges.length > 0 ? badges.join(", ") : "NA";
+      },
       renderCell: ({ row }) => {
         const badges = [];
 
@@ -739,6 +793,13 @@ const FunctionTable = ({ query }) => {
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        PaperProps={{
+          sx: {
+            maxHeight: 300,
+            overflowY: "auto",
+            overflowX: "hidden",
+          },
+        }}
       >
         {popoverContent()}
       </Popover>

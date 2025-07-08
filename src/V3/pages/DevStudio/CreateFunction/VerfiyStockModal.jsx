@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Dialog,
@@ -60,6 +60,10 @@ const VerfiyStockModal = ({
 
     handleVerifyStock({ xAxis: xAxisArray, yAxis: yAxisArray });
   };
+
+  useEffect(() => {
+    console.log("selectedStock", selectedStock?.symbol);
+  }, [selectedStock]);
 
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -350,8 +354,11 @@ const VerfiyStockModal = ({
           </ModalButton>
           <ModalButton
             variant="primary"
-            disabled={isSaving}
+            disabled={!selectedStock?.symbol || isSaving}
             onClick={handlePlotGraph}
+            className={`${
+              !selectedStock?.symbol || isSaving ? "opacity-50" : ""
+            }`}
           >
             {isSaving && (
               <CircularProgress color="inherit" size={18} thickness={4} />

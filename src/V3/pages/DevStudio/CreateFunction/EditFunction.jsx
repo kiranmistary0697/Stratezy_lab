@@ -145,7 +145,6 @@ const EditFunction = () => {
     navigate(
       `/Devstudio/edit-function?name=${stockData.shortFuncName}&duplicate=true`
     );
-
   };
 
   useEffect(() => {
@@ -452,6 +451,8 @@ const EditFunction = () => {
           setIsFunctionDialogOpen={setIsFunctionDialogOpen}
           keywordData={keywordData}
           editUserData={!editUserData}
+          stockData={stockData}
+          isNewFuncOrDuplicate={isDuplicate}
         />
       )}
 
@@ -523,6 +524,7 @@ const EditFunction = () => {
                   handleDeleteArgsData={handleDeleteArgsData}
                   handleArgsDataChange={handleArgsDataChange}
                   setIsFunctionDialogOpen={setIsFunctionDialogOpen}
+                  isNewFuncOrDuplicate={isDuplicate}
                 />
               )}
             </Grid2>
@@ -543,6 +545,7 @@ const EditFunction = () => {
                   setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
                 }}
                 isSaving={isSaving}
+                // showButtons={isDuplicate || stockData?.userDefined}
                 // systemDefine={stockData?.userDefined}
                 // id={id}
               />

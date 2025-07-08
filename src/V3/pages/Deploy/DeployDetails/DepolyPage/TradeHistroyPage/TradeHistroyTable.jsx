@@ -173,7 +173,20 @@ const TradeHistroyTable = forwardRef((props, ref) => {
                       onChange={() => handleColumnToggle(col.field)}
                     />
                   }
-                  label={col.headerName}
+                  label={
+                    <Typography
+                      sx={{
+                        fontFamily: "Inter",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        lineHeight: "120%",
+                        letterSpacing: "0%",
+                        color: "#0A0A0A",
+                      }}
+                    >
+                      {col.headerName}
+                    </Typography>
+                  }
                 />
               ))}
           </FormGroup>
@@ -433,6 +446,13 @@ const TradeHistroyTable = forwardRef((props, ref) => {
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        PaperProps={{
+          sx: {
+            maxHeight: 300,
+            overflowY: "auto",
+            overflowX: "hidden",
+          },
+        }}
         // transformOrigin={{ vertical: "top", horizontal: "left" }}
       >
         {popoverContent()}

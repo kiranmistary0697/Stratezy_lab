@@ -294,7 +294,20 @@ const BacktestTable = () => {
                       onChange={() => handleColumnToggle(col.field)}
                     />
                   }
-                  label={col.headerName}
+                  label={
+                    <Typography
+                      sx={{
+                        fontFamily: "Inter",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        lineHeight: "120%",
+                        letterSpacing: "0%",
+                        color: "#0A0A0A",
+                      }}
+                    >
+                      {col.headerName}
+                    </Typography>
+                  }
                 />
               ))}
           </FormGroup>
@@ -335,11 +348,10 @@ const BacktestTable = () => {
               size="small"
               onClick={(e) => handlePopoverOpen(e, "strategy")}
             >
-             {selectedStrategies.length ? (
-              <FilterListIcon fontSize="small" color="primary" />
-            ) : (
-              <FilterListIcon fontSize="small" />
-            )}
+              <FilterListIcon
+                fontSize="small"
+                color={selectedStrategies.length ? "primary" : ""}
+              />
             </IconButton>
           </Box>
         ),
@@ -397,7 +409,10 @@ const BacktestTable = () => {
               size="small"
               onClick={(e) => handlePopoverOpen(e, "status")}
             >
-              <FilterListIcon fontSize="small" />
+              <FilterListIcon
+                fontSize="small"
+                color={selectedStatuses.length ? "primary" : ""}
+              />
             </IconButton>
           </Box>
         ),
@@ -528,7 +543,7 @@ const BacktestTable = () => {
         },
       },
     ],
-    [hiddenColumns]
+    [hiddenColumns, selectedStrategies, selectedStatuses]
   );
 
   const visibleColumns = columns.filter(
@@ -560,6 +575,13 @@ const BacktestTable = () => {
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        PaperProps={{
+          sx: {
+            maxHeight: 300,
+            overflowY: "auto",
+            overflowX: "hidden",
+          },
+        }}
         // transformOrigin={{ vertical: "top", horizontal: "left" }}
       >
         {popoverContent()}

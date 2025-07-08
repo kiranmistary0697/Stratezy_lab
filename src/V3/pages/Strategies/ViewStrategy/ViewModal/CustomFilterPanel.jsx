@@ -1,4 +1,10 @@
-import { Checkbox, FormControlLabel, FormGroup, Paper } from "@mui/material";
+import {
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Paper,
+  Typography,
+} from "@mui/material";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlinedIcon from "@mui/icons-material/CheckBoxOutlined";
 import Badge from "../../../../common/Badge";
@@ -48,7 +54,17 @@ const CustomFilterPanel = ({
                   />
                 }
                 label={
-                  <div className="flex items-center gap-2">
+                  // <div className="flex items-center gap-2">
+                  <Typography
+                    sx={{
+                      fontFamily: "Inter",
+                      fontWeight: 400,
+                      fontSize: "14px",
+                      lineHeight: "120%",
+                      letterSpacing: "0%",
+                      color: "#0A0A0A",
+                    }}
+                  >
                     {!isStatus && <span>{item[dataKey]}</span>}
                     {isVersion && item.version && (
                       <Badge variant="version">{item.version}</Badge>
@@ -58,7 +74,8 @@ const CustomFilterPanel = ({
                         {item[dataKey]}
                       </Badge>
                     )}
-                  </div>
+                    {/* </div> */}
+                  </Typography>
                 }
               />
             );

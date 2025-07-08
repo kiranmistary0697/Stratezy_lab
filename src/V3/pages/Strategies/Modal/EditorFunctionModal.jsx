@@ -46,6 +46,8 @@ const EditorFunctionModal = ({
   handleDeleteArgsData,
   handleArgsDataChange,
   keywordData,
+  stockData,
+  isNewFuncOrDuplicate,
 }) => {
   const [showArgs, setShowArgs] = useState(true); // toggles the side panel
 
@@ -257,30 +259,32 @@ const EditorFunctionModal = ({
                                   </Tooltip>
                                 </Box>
 
-                                {index > 0 && (
-                                  <Box
-                                    sx={{
-                                      color: "transparent",
-                                      cursor: "pointer",
-                                      marginBottom: "0px",
-                                      display: "flex",
-                                      flexDirection: "row-reverse",
-                                    }}
-                                  >
-                                    <DeleteOutlineOutlinedIcon
+                                {index > 0 &&
+                                  (stockData?.userDefined ||
+                                    isNewFuncOrDuplicate) && (
+                                    <Box
                                       sx={{
-                                        color: "red",
+                                        color: "transparent",
                                         cursor: "pointer",
-                                        height: "0.85em",
+                                        marginBottom: "0px",
+                                        display: "flex",
+                                        flexDirection: "row-reverse",
                                       }}
-                                      onClick={() => {
-                                        if (!editUserData) {
-                                          handleDeleteArgsData(index);
-                                        }
-                                      }}
-                                    />
-                                  </Box>
-                                )}
+                                    >
+                                      <DeleteOutlineOutlinedIcon
+                                        sx={{
+                                          color: "red",
+                                          cursor: "pointer",
+                                          height: "0.85em",
+                                        }}
+                                        onClick={() => {
+                                          if (!editUserData) {
+                                            handleDeleteArgsData(index);
+                                          }
+                                        }}
+                                      />
+                                    </Box>
+                                  )}
                               </Box>
                               <TextField
                                 value={item.value}
@@ -302,30 +306,32 @@ const EditorFunctionModal = ({
                     })}
                   </Box>
                 </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginTop: "8px",
-                  }}
-                >
-                  <Typography
-                    onClick={() => {
-                      if (!editUserData) {
-                        handleAddArgsData();
-                      }
-                    }}
+                {(stockData?.userDefined || isNewFuncOrDuplicate) && (
+                  <Box
                     sx={{
-                      fontSize: "14px",
-                      color: "#3D69D3",
-                      fontFamily: "Inter",
-                      fontWeight: 500,
-                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: "8px",
                     }}
                   >
-                    + Add More
-                  </Typography>
-                </Box>
+                    <Typography
+                      onClick={() => {
+                        if (!editUserData) {
+                          handleAddArgsData();
+                        }
+                      }}
+                      sx={{
+                        fontSize: "14px",
+                        color: "#3D69D3",
+                        fontFamily: "Inter",
+                        fontWeight: 500,
+                        cursor: "pointer",
+                      }}
+                    >
+                      + Add More
+                    </Typography>
+                  </Box>
+                )}
 
                 {/* Row 2 */}
               </Box>

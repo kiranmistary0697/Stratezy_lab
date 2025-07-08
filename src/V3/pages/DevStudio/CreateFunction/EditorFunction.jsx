@@ -3,14 +3,13 @@ import AceEditor from "react-ace";
 
 import { Box, TextField, Tooltip, Typography } from "@mui/material";
 
-
 // import 'ace-builds/src-noconflict/mode-javascript';
 // import 'ace-builds/src-noconflict/theme-github';
 // import 'ace-builds/src-noconflict/theme-twilight';
 // import 'ace-builds/src-noconflict/ext-language_tools';
 // import 'ace-builds/src-noconflict/mode-java'; // For Java
-import 'ace-builds/src-noconflict/mode-c_cpp'; // For C/C++
-import 'ace-builds/src-noconflict/theme-monokai'; // Ensure the theme is imported as well
+import "ace-builds/src-noconflict/mode-c_cpp"; // For C/C++
+import "ace-builds/src-noconflict/theme-monokai"; // Ensure the theme is imported as well
 
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -40,6 +39,7 @@ const EditorFunction = ({
   handleDeleteArgsData,
   handleArgsDataChange,
   setIsFunctionDialogOpen,
+  isNewFuncOrDuplicate,
 }) => {
   const [showArgs, setShowArgs] = useState(false); // toggles the side panel
 
@@ -124,7 +124,7 @@ const EditorFunction = ({
                       <Box>
                         <Box className="flex gap-2.5 items-center">
                           <StyledLabel>{labelIndex}</StyledLabel>
-                          <Tooltip
+                          {/* <Tooltip
                             title={labelIndex}
                             placement="right-end"
                             componentsProps={{
@@ -150,7 +150,7 @@ const EditorFunction = ({
                                 cursor: "pointer",
                               }}
                             />
-                          </Tooltip>
+                          </Tooltip> */}
                         </Box>
 
                         <TextField
@@ -168,7 +168,7 @@ const EditorFunction = ({
                         <Box className="flex gap-2.5 items-center justify-between">
                           <Box className="flex gap-2.5 items-center">
                             <StyledLabel>Default Value</StyledLabel>
-                            <Tooltip
+                            {/* <Tooltip
                               title={"Default Value"}
                               placement="right-end"
                               componentsProps={{
@@ -194,33 +194,35 @@ const EditorFunction = ({
                                   cursor: "pointer",
                                 }}
                               />
-                            </Tooltip>
+                            </Tooltip> */}
                           </Box>
 
-                          {index > 0 && (
-                            <Box
-                              sx={{
-                                color: "transparent",
-                                cursor: "pointer",
-                                marginBottom: "0px",
-                                display: "flex",
-                                flexDirection: "row-reverse",
-                              }}
-                            >
-                              <DeleteOutlineOutlinedIcon
+                          {index > 0 &&
+                            (stockData?.userDefined ||
+                              isNewFuncOrDuplicate) && (
+                              <Box
                                 sx={{
-                                  color: "red",
+                                  color: "transparent",
                                   cursor: "pointer",
-                                  height: "0.85em",
+                                  marginBottom: "0px",
+                                  display: "flex",
+                                  flexDirection: "row-reverse",
                                 }}
-                                onClick={() => {
-                                  if (!editUserData) {
-                                    handleDeleteArgsData(index);
-                                  }
-                                }}
-                              />
-                            </Box>
-                          )}
+                              >
+                                <DeleteOutlineOutlinedIcon
+                                  sx={{
+                                    color: "red",
+                                    cursor: "pointer",
+                                    height: "0.85em",
+                                  }}
+                                  onClick={() => {
+                                    if (!editUserData) {
+                                      handleDeleteArgsData(index);
+                                    }
+                                  }}
+                                />
+                              </Box>
+                            )}
                         </Box>
                         <TextField
                           value={item.value}
@@ -238,30 +240,32 @@ const EditorFunction = ({
               })}
             </Box>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginTop: "8px",
-            }}
-          >
-            <Typography
-              onClick={() => {
-                if (!editUserData) {
-                  handleAddArgsData();
-                }
-              }}
+          {(stockData?.userDefined || isNewFuncOrDuplicate) && (
+            <Box
               sx={{
-                fontSize: "14px",
-                color: "#3D69D3",
-                fontFamily: "Inter",
-                fontWeight: 500,
-                cursor: "pointer",
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "8px",
               }}
             >
-              + Add More
-            </Typography>
-          </Box>
+              <Typography
+                onClick={() => {
+                  if (!editUserData) {
+                    handleAddArgsData();
+                  }
+                }}
+                sx={{
+                  fontSize: "14px",
+                  color: "#3D69D3",
+                  fontFamily: "Inter",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+              >
+                + Add More
+              </Typography>
+            </Box>
+          )}
 
           {/* Row 2 */}
         </Box>

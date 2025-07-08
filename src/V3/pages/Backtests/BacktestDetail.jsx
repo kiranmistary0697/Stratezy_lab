@@ -23,6 +23,14 @@ const BacktestDetail = () => {
   const [requestData, setRequestData] = useState({});
   const [getRequestId] = useLazyGetQuery();
 
+  useEffect(() => {
+    if (requestData?.status === "COMPLETED") {
+      setTimeout(() => {
+        navigate(`/Backtest/backtest-output?id=${id}&name=${strategyName}`);
+      }, 3000);
+    }
+  }, [requestData]);
+
   const backTestIdData = backTestData?.data?.find(
     ({ requestId }) => requestId === id
   );

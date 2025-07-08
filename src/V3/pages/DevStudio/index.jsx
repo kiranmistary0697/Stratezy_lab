@@ -381,6 +381,7 @@ const CreateFunction = () => {
           handleArgsDataChange={handleArgsDataChange}
           setIsFunctionDialogOpen={setIsFunctionDialogOpen}
           keywordData={keywordData}
+          isNewFuncOrDuplicate={true}
         />
       )}
 
@@ -390,6 +391,7 @@ const CreateFunction = () => {
             title={FUNCTION_TITLE}
             buttonText={FUNCTION_TITLE_BUTTON}
             tooltip={FUNCTION_TITLE_TOOLTIP}
+            // showButtons={true}
           />
 
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
@@ -404,6 +406,7 @@ const CreateFunction = () => {
             }}
             isFunction
             systemDefine={true}
+            // showButtons={true}
           />
           <Grid2
             container
@@ -437,6 +440,7 @@ const CreateFunction = () => {
                 handleDeleteArgsData={handleDeleteArgsData}
                 handleArgsDataChange={handleArgsDataChange}
                 setIsFunctionDialogOpen={setIsFunctionDialogOpen}
+                isNewFuncOrDuplicate={true}
               />
             </Grid2>
 
