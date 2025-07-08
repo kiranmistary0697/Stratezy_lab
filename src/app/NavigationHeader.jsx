@@ -120,7 +120,7 @@ const NavigationHeader = () => {
         </div>
 
         {/* Subscribe + Tooltip + User Section — Responsive */}
-        <div className="flex items-center gap-3 sm:gap-4 md:gap-5 mt-4 lg:mt-0 flex-wrap justify-end lg:justify-normal">
+        <div className="hidden lg:flex items-center gap-3 sm:gap-4 md:gap-5 mt-4 lg:mt-0 flex-wrap justify-end lg:justify-normal">
           {/* Tooltip with credits */}
           <Tooltip
             title={
@@ -244,6 +244,24 @@ const NavigationHeader = () => {
           >
             Dev Studio
           </NavigationTab>
+          <Button
+            onClick={handleSubscribe}
+            sx={{
+              borderRadius: "3px",
+              padding: "10px",
+              height: "30px",
+              width: "88px",
+              background: "linear-gradient(90deg, #0037FF 0%, #FF1DC6 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              border: "1px solid",
+              borderImageSource:
+                "linear-gradient(90deg, #0037FF 0%, #FF1DC6 100%)",
+              borderImageSlice: 1,
+            }}
+          >
+            Subscribe
+          </Button>
         </div>
       </Drawer>
     </Box>
