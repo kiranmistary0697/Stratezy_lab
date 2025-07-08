@@ -545,7 +545,7 @@ const EditFunction = () => {
                   setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
                 }}
                 isSaving={isSaving}
-                // showButtons={isDuplicate || stockData?.userDefined}
+                showButtons={isDuplicate || stockData?.userDefined}
                 // systemDefine={stockData?.userDefined}
                 // id={id}
               />

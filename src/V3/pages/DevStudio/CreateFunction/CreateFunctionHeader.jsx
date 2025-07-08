@@ -14,7 +14,7 @@ const CreateFunctionHeader = ({
   isVerify = false,
   isSaving,
   handleVerify = () => {},
-  // showButtons = true,
+  showButtons = true,
 }) => {
   const [isCancelStrategy, setIsCancelStrategy] = useState(false);
 
@@ -89,7 +89,7 @@ const CreateFunctionHeader = ({
       </Box>
 
       {/* Button Section */}
-      {/* {showButtons && ( */}
+      {showButtons && (
       <nav className="flex flex-col md:flex-row gap-3 w-full md:w-auto md:ml-auto justify-end">
         {isFunction && (
           <HeaderButton
@@ -115,7 +115,7 @@ const CreateFunctionHeader = ({
           </HeaderButton>
         )}
       </nav>
-      {/* )} */}
+      )}
     </Box>
   );
 };
