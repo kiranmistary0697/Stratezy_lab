@@ -74,7 +74,7 @@ const ViewOtherVersion = ({
       {
         field: "version",
         headerName: "Strategy Version",
-        minWidth: 200,
+        // minWidth: 200,
         flex: 1,
         renderCell: (params) => (
           <Badge variant="version">{params?.row?.version || "v1"}</Badge>
@@ -87,13 +87,13 @@ const ViewOtherVersion = ({
         renderCell: (params) => {
           return moment(params.row.timestamp).format("Do MMM YYYY");
         },
-        minWidth: 150,
+        // minWidth: 150,
         flex: 1,
       },
       {
         field: "status",
         headerName: "Status",
-        minWidth: 150,
+        // minWidth: 150,
         flex: 1,
         valueGetter: (_, row) => (row?.complete ? "Complete" : "Draft"),
         renderCell: (params) => (
@@ -108,7 +108,7 @@ const ViewOtherVersion = ({
         renderCell: (params) => {
           return <span>{params?.row?.strategy?.description}</span>;
         },
-        minWidth: 200,
+        // minWidth: 200,
         flex: 1,
       },
 
@@ -118,7 +118,7 @@ const ViewOtherVersion = ({
         sortable: false,
         disableColumnMenu: true,
         // headerName: <Settings className="!size-[12px]" />,
-        minWidth: 5,
+        // minWidth: 5,
         flex: 1,
         renderCell: (params) => (
           <ActionMenu
@@ -161,6 +161,7 @@ const ViewOtherVersion = ({
         }}
       >
         <DataGrid
+          disableColumnSelector
           rows={selectedVersion}
           columns={columns}
           // hideFooter

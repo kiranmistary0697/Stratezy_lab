@@ -32,6 +32,8 @@ import moment from "moment";
 import Plot from "react-plotly.js";
 import EditorFunctionModal from "../../Strategies/Modal/EditorFunctionModal";
 import DeleteModal from "../../../common/DeleteModal";
+import { useRouterBlocker } from "../../../hooks/useRouterBlocker";
+import WarningPopupModal from "../../Strategies/CreateStratezy/WarningPopupModal";
 
 const EditFunction = () => {
   const theme = useTheme();
@@ -68,6 +70,11 @@ const EditFunction = () => {
   const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteFunctionName, setDeleteFunctionName] = useState({});
+  const [isDirty, setIsDirty] = useState(false);
+
+  const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
+    when: isDirty,
+  });
 
   const [deleteData] = useLazyGetQuery();
   const navigate = useNavigate();
@@ -141,6 +148,7 @@ const EditFunction = () => {
       toast.error("No function data available to duplicate");
       return;
     }
+    setEditUserData(true);
 
     navigate(
       `/Devstudio/edit-function?name=${stockData.shortFuncName}&duplicate=true`
@@ -172,6 +180,12 @@ const EditFunction = () => {
 
     fetchAllData();
   }, []);
+
+  useEffect(() => {
+    if (stockData?.userDefined) {
+      setEditUserData(true);
+    }
+  }, [stockData]);
 
   const handleVerifyStock = async ({ xAxis, yAxis }) => {
     setIsSaving(true);
@@ -221,15 +235,18 @@ const EditFunction = () => {
   };
 
   const handleAddArgsData = () => {
+    setIsDirty(true);
     setArgsData((pre) => [...pre, { name: "", value: "" }]);
   };
 
   const handleDeleteArgsData = (index) => {
+    setIsDirty(true);
     const deletedData = argsData.filter((_, i) => index !== i);
     setArgsData(deletedData);
   };
 
   const handleArgsDataChange = (index, field, value) => {
+    setIsDirty(true);
     setArgsData((prev) =>
       prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
     );
@@ -435,6 +452,7 @@ const EditFunction = () => {
           title={"Create Function"}
           isDuplicate={isDuplicate}
           argsData={argsData}
+          setIsDirty={setIsDirty}
         />
       )}
 
@@ -453,6 +471,7 @@ const EditFunction = () => {
           editUserData={!editUserData}
           stockData={stockData}
           isNewFuncOrDuplicate={isDuplicate}
+          setIsDirty={setIsDirty}
         />
       )}
 
@@ -460,14 +479,12 @@ const EditFunction = () => {
         <div className="bg-white h-auto">
           <EditHeader
             stockData={stockData}
-            handleChange={() => {
-              setEditUserData(true);
-            }}
             setEditUserData={setEditUserData}
             editUserData={editUserData}
             isDuplicate={isDuplicate}
             handleDelete={handleDeleteFunction}
             handleDuplicate={handleDuplicate}
+            handleChange={() => setOpenAddFunctionModal(true)}
           />
 
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
@@ -475,18 +492,24 @@ const EditFunction = () => {
             stockData={stockData}
             editUserData={editUserData}
             id={id}
-            setSelectedFunction={setSelectedFunction}
+            setSelectedFunction={(e) => {
+              // setIsDirty(true);
+              setSelectedFunction(e);
+            }}
+            setIsDirty={setIsDirty}
           />
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
           <CreateFunctionHeader
             title={FUNCTION_SUB_TITLE}
             tooltip={FUNCTION_SUB_TITLE_TOOLTIP}
-            buttonText={FUNCTION_SUB_TITLE_BUTTON}
+            // buttonText={FUNCTION_SUB_TITLE_BUTTON}
             isFunction
-            handleChange={() => {
+            handleVerify={() => {
               setOpenStockModal(true);
             }}
             systemDefine={stockData?.userDefined}
+            showButtons={stockData?.userDefined}
+            isVerify
             // id={id}
           />
           <Grid2
@@ -525,6 +548,7 @@ const EditFunction = () => {
                   handleArgsDataChange={handleArgsDataChange}
                   setIsFunctionDialogOpen={setIsFunctionDialogOpen}
                   isNewFuncOrDuplicate={isDuplicate}
+                  setIsDirty={setIsDirty}
                 />
               )}
             </Grid2>
@@ -539,12 +563,15 @@ const EditFunction = () => {
                 buttonText={"Continue to save"}
                 isVerify
                 handleChange={() => {
+                  setIsDirty(true);
                   setOpenAddFunctionModal(true);
                 }}
                 handleVerify={() => {
+                  setIsDirty(true);
                   setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
                 }}
                 isSaving={isSaving}
+                isShowSave
                 showButtons={isDuplicate || stockData?.userDefined}
                 // systemDefine={stockData?.userDefined}
                 // id={id}
@@ -566,13 +593,25 @@ const EditFunction = () => {
                   <VerifyOnStock
                     stockList={stockList}
                     dateRange={dateRange}
-                    setDateRange={setDateRange}
+                    setDateRange={(e) => {
+                      setDateRange(e);
+                      setIsDirty(true);
+                    }}
                     selectedStock={selectedStock}
-                    setSelectedStock={setSelectedStock}
+                    setSelectedStock={(e) => {
+                      setSelectedStock(e);
+                      setIsDirty(true);
+                    }}
                     xAxisInput={xAxisInput}
-                    setXAxisInput={setXAxisInput}
+                    setXAxisInput={(e) => {
+                      setXAxisInput(e);
+                      setIsDirty(true);
+                    }}
                     yAxisInput={yAxisInput}
-                    setYAxisInput={setYAxisInput}
+                    setYAxisInput={(e) => {
+                      setYAxisInput(e);
+                      setIsDirty(true);
+                    }}
                     handleVerifyStock={handleVerifyStock}
                     isSaving={isSaving}
                     triggerVerify={triggerVerify}
@@ -613,6 +652,17 @@ const EditFunction = () => {
               handleConfirm={handleConfirmDelete}
               title="Are you Sure?"
               description="This action is irreversible. Once deleted, the function and all its data cannot be recovered."
+            />
+          )}
+
+          {showPrompt && (
+            <WarningPopupModal
+              isOpen={showPrompt}
+              handleClose={cancelNavigation}
+              title="Unsaved Changes"
+              description="You have unsaved changes. Are you sure you want to leave this page? Your changes will be lost if you don’t save them."
+              buttonText="Yes"
+              handleConfirm={confirmNavigation}
             />
           )}
         </div>

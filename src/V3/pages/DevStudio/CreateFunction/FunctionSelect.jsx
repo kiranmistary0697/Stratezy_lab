@@ -25,6 +25,7 @@ const FunctionSelect = ({
   editUserData,
   id,
   setSelectedFunction = () => {},
+  setIsDirty = () => {},
 }) => {
   const [selectedTypes, setSelectedTypes] = useState({
     filterRule: false,
@@ -163,6 +164,7 @@ const FunctionSelect = ({
       ...prev,
       [type]: !prev[type],
     }));
+    setIsDirty(true);
   };
 
   const handleSelectChange = (key, value) => {

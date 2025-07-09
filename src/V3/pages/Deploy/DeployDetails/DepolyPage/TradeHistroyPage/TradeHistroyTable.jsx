@@ -199,7 +199,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "symbol",
       headerName: "Symbol",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -214,7 +214,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "buyTime",
       headerName: "Buy Time",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -230,7 +230,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "buyPrice",
       headerName: "Buy Price",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -245,7 +245,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "sellTime",
       headerName: "Sell Time",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -260,7 +260,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "sellPrice",
       headerName: "Sell Price",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -275,7 +275,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "number",
       headerName: "Number",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -290,7 +290,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "investment",
       headerName: "Investment",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -305,7 +305,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "risk1R",
       headerName: "Risk1R",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -320,7 +320,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "principal",
       headerName: "Principal",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -335,7 +335,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "duration",
       headerName: "Duration",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -350,7 +350,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "annualPrf",
       headerName: "Annual Profit",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -365,7 +365,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "netProfit",
       headerName: "Net Profit",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -380,7 +380,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "profit",
       headerName: "Profit %",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -395,7 +395,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "closeReason",
       headerName: "Close Reason",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -410,7 +410,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "moreaction",
       headerName: "",
-      minWidth: 50,
+      // minWidth: 50,
       maxWidth: 60,
       flex: 0, // prevent it from growing or shrinking
       sortable: false,
@@ -470,6 +470,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
         }}
       >
         <DataGrid
+          disableColumnSelector
           rows={rowsWithId}
           columns={visibleColumns}
           // hideFooter

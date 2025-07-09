@@ -25,6 +25,7 @@ const AddFunctionModal = ({
   code,
   isDuplicate = false,
   argsData,
+  setIsDirty = () => {},
 }) => {
   const navigate = useNavigate();
   const [verifyNewStock] = usePostMutation();
@@ -35,14 +36,18 @@ const AddFunctionModal = ({
   const formik = useFormik({
     initialValues: {
       functionName: isDuplicate
-        ? `${stockData?.shortFuncName}_duplicate`
-        : stockData?.shortFuncName || "",
+        ? `${stockData?.func} duplicate`
+        : stockData?.func || "",
       descriptionName: stockData?.desc || "",
     },
     validationSchema: Yup.object({
       functionName: Yup.string()
         .required("Function Name is required")
-        .matches(/^[a-zA-Z0-9_]+$/, "Whitespace is not permitted"),
+        // .matches(/^[a-zA-Z0-9_]+$/, "Whitespace is not permitted"),
+        .matches(
+          /^[a-zA-Z0-9_\s]+$/,
+          "Only letters, numbers, underscores, and spaces are permitted"
+        ),
       descriptionName: Yup.string().required("Description is required"),
     }),
     //stock-analysis-function/verify
@@ -56,6 +61,7 @@ const AddFunctionModal = ({
         .map(({ name }) => `${name}`);
 
       setIsSaving(true);
+      setIsDirty(false);
       const payload = {
         func: values.functionName,
         rule: code,

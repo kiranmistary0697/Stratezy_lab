@@ -3,6 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Box, IconButton, Popover, Tooltip } from "@mui/material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import StarIcon from "@mui/icons-material/Star";
+import { FilterList as FilterListIcon } from "@mui/icons-material";
 import Badge from "../Badge";
 import ActionMenu from "../DropDownButton";
 import ActionButton from "../ActionButton";
@@ -21,6 +22,7 @@ import {
   DEPLOY_DISABLE_TOOLTIP,
   RUNBACKTEST_DISABLE_TOOLTIP,
 } from "../../../constants/CommonText";
+import CustomFilterPanel from "../../pages/Strategies/ViewStrategy/ViewModal/CustomFilterPanel";
 
 const FavoriteCell = ({ params, onToggleFavorite }) => {
   return (
@@ -54,7 +56,12 @@ const TableRow = () => {
   const [deleteData, { isLoading: isDeleting }] = useDeleteMutation();
 
   const [filterModel, setFilterModel] = useState({ items: [] });
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [rows, setRows] = useState([]);
+
   const [hoveredStrategy, setHoveredStrategy] = useState(null);
+  const [popoverAnchor, setPopoverAnchor] = useState(null);
+  const [activeFilter, setActiveFilter] = useState(null);
 
   const [isDeleteCase, setIsDeleteCase] = useState(false);
   const [deleteRow, setDeleteRow] = useState({});
@@ -124,7 +131,50 @@ const TableRow = () => {
     );
   };
 
-  const [rows, setRows] = useState([]);
+  const filteredRows = useMemo(
+    () =>
+      rows.filter((row) => {
+        const status = row.complete ? "Complete" : "Draft";
+        return (
+          selectedStatuses.length === 0 || selectedStatuses.includes(status)
+        );
+      }),
+    [rows, selectedStatuses]
+  );
+
+  const handlePopoverOpen = (event, type) => {
+    event.stopPropagation();
+    setPopoverAnchor(event.currentTarget);
+    setActiveFilter(type);
+  };
+
+  const handlePopoverClose = () => {
+    setPopoverAnchor(null);
+    setActiveFilter(null);
+  };
+
+  const popoverContent = () => {
+    if (!activeFilter) return null;
+
+    switch (activeFilter) {
+      case "status":
+        return (
+          <CustomFilterPanel
+            data={[{ status: "Complete" }, { status: "Draft" }]}
+            fieldName="status"
+            applyValue={(data) => setSelectedStatuses(data.value || [])}
+            title="Select Status"
+            dataKey="status"
+            selectedValues={selectedStatuses}
+            isStatus
+            isSquare={false}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
 
   const fetchAllData = async () => {
     try {
@@ -258,10 +308,36 @@ const TableRow = () => {
         minWidth: 150,
       },
       {
-        field: "complete",
+        field: "statusSort",
         headerName: "Status",
         minWidth: 150,
         flex: 1,
+        renderHeader: () => (
+          <Box display="flex" alignItems="center" gap={1}>
+            <span
+              style={{
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              }}
+            >
+              Status
+            </span>
+            <IconButton
+              size="small"
+              onClick={(e) => handlePopoverOpen(e, "status")}
+            >
+              <FilterListIcon
+                fontSize="small"
+                color={selectedStatuses.length ? "primary" : ""}
+              />
+            </IconButton>
+          </Box>
+        ),
+        valueGetter: (_, row) => (row?.complete ? 1 : 2),
         renderCell: (params) => (
           <Badge variant={params.row?.complete ? "complete" : "draft"}>
             {params.row?.complete ? "Complete" : "Draft"}
@@ -504,7 +580,7 @@ const TableRow = () => {
         headerClassName: "no-resize-header", // for CSS override
       },
     ],
-    [rows]
+    [rows, selectedStatuses]
   );
 
   return (
@@ -533,7 +609,8 @@ const TableRow = () => {
         }}
       >
         <DataGrid
-          rows={rows}
+          disableColumnSelector
+          rows={filteredRows}
           columns={columns}
           // hideFooter
           disableSelectionOnClick
@@ -568,6 +645,21 @@ const TableRow = () => {
           }}
         />
       </Box>
+      <Popover
+        open={Boolean(popoverAnchor)}
+        anchorEl={popoverAnchor}
+        onClose={handlePopoverClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        PaperProps={{
+          sx: {
+            maxHeight: 150,
+            overflowY: "hidden",
+            overflowX: "hidden",
+          },
+        }}
+      >
+        {popoverContent()}
+      </Popover>
     </>
   );
 };

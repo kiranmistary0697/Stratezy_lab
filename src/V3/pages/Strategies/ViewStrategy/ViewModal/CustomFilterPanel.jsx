@@ -18,6 +18,7 @@ const CustomFilterPanel = ({
   isVersion = false,
   isStatus = false,
   selectedValues = [],
+  isSquare = true,
 }) => {
   const handleChange = (event, dataKeyValue) => {
     const newSelected = event.target.checked
@@ -70,7 +71,10 @@ const CustomFilterPanel = ({
                       <Badge variant="version">{item.version}</Badge>
                     )}
                     {isStatus && item[dataKey] && (
-                      <Badge variant={item[dataKey].toLowerCase()} isSquare>
+                      <Badge
+                        variant={item[dataKey].toLowerCase()}
+                        isSquare={isSquare}
+                      >
                         {item[dataKey]}
                       </Badge>
                     )}

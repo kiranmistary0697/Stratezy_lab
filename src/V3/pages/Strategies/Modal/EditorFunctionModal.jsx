@@ -48,10 +48,12 @@ const EditorFunctionModal = ({
   keywordData,
   stockData,
   isNewFuncOrDuplicate,
+  setIsDirty = () => {},
 }) => {
   const [showArgs, setShowArgs] = useState(true); // toggles the side panel
 
   const handleChange = (newValue, e) => {
+    setIsDirty(true);
     setCode(newValue);
   };
   return (
@@ -181,33 +183,6 @@ const EditorFunctionModal = ({
                             <Box>
                               <Box className="flex gap-2.5 items-center">
                                 <StyledLabel>{labelIndex}</StyledLabel>
-                                <Tooltip
-                                  title={labelIndex}
-                                  placement="right-end"
-                                  componentsProps={{
-                                    tooltip: {
-                                      sx: {
-                                        padding: "16px",
-                                        background: "#FFFFFF",
-                                        color: "#666666",
-                                        boxShadow: "0px 8px 16px 0px #7B7F8229",
-                                        fontFamily: "Inter",
-                                        fontWeight: 400,
-                                        fontSize: "14px",
-                                        lineHeight: "20px",
-                                      },
-                                    },
-                                  }}
-                                >
-                                  <InfoOutlinedIcon
-                                    sx={{
-                                      color: "#666666",
-                                      width: "17px",
-                                      height: "17px",
-                                      cursor: "pointer",
-                                    }}
-                                  />
-                                </Tooltip>
                               </Box>
 
                               <TextField
@@ -229,34 +204,6 @@ const EditorFunctionModal = ({
                               <Box className="flex gap-2.5 items-center justify-between">
                                 <Box className="flex gap-2.5 items-center">
                                   <StyledLabel>Default Value</StyledLabel>
-                                  <Tooltip
-                                    title={"Default Value"}
-                                    placement="right-end"
-                                    componentsProps={{
-                                      tooltip: {
-                                        sx: {
-                                          padding: "16px",
-                                          background: "#FFFFFF",
-                                          color: "#666666",
-                                          boxShadow:
-                                            "0px 8px 16px 0px #7B7F8229",
-                                          fontFamily: "Inter",
-                                          fontWeight: 400,
-                                          fontSize: "14px",
-                                          lineHeight: "20px",
-                                        },
-                                      },
-                                    }}
-                                  >
-                                    <InfoOutlinedIcon
-                                      sx={{
-                                        color: "#666666",
-                                        width: "17px",
-                                        height: "17px",
-                                        cursor: "pointer",
-                                      }}
-                                    />
-                                  </Tooltip>
                                 </Box>
 
                                 {index > 0 &&

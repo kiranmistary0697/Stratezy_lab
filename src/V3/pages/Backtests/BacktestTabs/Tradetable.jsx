@@ -126,7 +126,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "symbol",
       headerName: "Symbol",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -141,7 +141,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "buyTime",
       headerName: "Buy Time",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -157,7 +157,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "buyPrice",
       headerName: "Buy Price",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
       renderCell: (params) => (
@@ -173,7 +173,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "sellTime",
       headerName: "Sell Time",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -188,7 +188,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "sellPrice",
       headerName: "Sell Price",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
       renderCell: (params) => (
@@ -204,7 +204,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "number",
       headerName: "Quantity",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) => (row.number ? parseFloat(row.number) : 0),
       renderCell: (params) => (
@@ -220,7 +220,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "investment",
       headerName: "Investment",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) =>
         row.investment ? parseFloat(row.investment) : 0,
@@ -237,7 +237,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "risk1R",
       headerName: "Risk1R",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -252,7 +252,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "principal",
       headerName: "Principal",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
       renderCell: (params) => (
@@ -268,7 +268,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "duration",
       headerName: "Duration",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -283,7 +283,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "annualPrf",
       headerName: "Annual Profit",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) => (row.annualPrf ? parseFloat(row.annualPrf) : 0),
       renderCell: (params) => (
@@ -299,7 +299,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "netProfit",
       headerName: "Net Profit",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
       renderCell: (params) => (
@@ -315,7 +315,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "profit",
       headerName: "Profit %",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
       renderCell: (params) => (
@@ -331,7 +331,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "closeReason",
       headerName: "Close Reason",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography
@@ -346,7 +346,7 @@ const Tradetable = forwardRef((props, ref) => {
     {
       field: "moreaction",
       headerName: "",
-      minWidth: 50,
+      // minWidth: 50,
       maxWidth: 60,
       flex: 0, // prevent it from growing or shrinking
       sortable: false,
@@ -407,6 +407,7 @@ const Tradetable = forwardRef((props, ref) => {
         }}
       >
         <DataGrid
+          disableColumnSelector
           rows={combinedArrayWithId}
           columns={visibleColumns}
           className="h-full"

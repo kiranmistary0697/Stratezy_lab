@@ -353,7 +353,7 @@ const FunctionTable = ({ query }) => {
     {
       field: "func",
       headerName: "Function Name",
-      minWidth: 280,
+      // minWidth: 280,
       flex: 1,
       renderCell: (params) => (
         <div
@@ -371,7 +371,7 @@ const FunctionTable = ({ query }) => {
     {
       field: "type",
       headerName: "Type",
-      minWidth: 150,
+      // minWidth: 150,
       flex: 1,
       renderHeader: () => (
         <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -498,7 +498,7 @@ const FunctionTable = ({ query }) => {
     {
       field: "subType",
       headerName: "Sub Type",
-      minWidth: 150,
+      // minWidth: 150,
       flex: 1,
       renderHeader: () => (
         <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -622,12 +622,12 @@ const FunctionTable = ({ query }) => {
 
         return <div className="text-[#666666]">{formatted}</div>;
       },
-      minWidth: 150,
+      // minWidth: 150,
     },
     {
       field: "userDefined",
       headerName: "Created By",
-      minWidth: 150,
+      // minWidth: 150,
       flex: 1,
       renderHeader: () => (
         <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -689,7 +689,7 @@ const FunctionTable = ({ query }) => {
     {
       field: "desc",
       headerName: "Description",
-      minWidth: 150,
+      // minWidth: 150,
       flex: 1,
       renderCell: (params) => {
         const description = params?.row?.desc || "";
@@ -815,6 +815,7 @@ const FunctionTable = ({ query }) => {
         }}
       >
         <DataGrid
+          disableColumnSelector
           rows={filteredRows}
           loading={isLoading}
           columns={visibleColumns}

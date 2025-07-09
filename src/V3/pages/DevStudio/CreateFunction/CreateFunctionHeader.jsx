@@ -15,6 +15,7 @@ const CreateFunctionHeader = ({
   isSaving,
   handleVerify = () => {},
   showButtons = true,
+  isShowSave = false
 }) => {
   const [isCancelStrategy, setIsCancelStrategy] = useState(false);
 
@@ -89,9 +90,9 @@ const CreateFunctionHeader = ({
       </Box>
 
       {/* Button Section */}
-      {showButtons && (
+
       <nav className="flex flex-col md:flex-row gap-3 w-full md:w-auto md:ml-auto justify-end">
-        {isFunction && (
+        {/* {isFunction && showButtons && (
           <HeaderButton
             variant="primary"
             onClick={() => {
@@ -100,7 +101,7 @@ const CreateFunctionHeader = ({
           >
             Cancel
           </HeaderButton>
-        )}
+        )} */}
         {isVerify && (
           <HeaderButton variant="contained" onClick={handleVerify}>
             {isSaving && (
@@ -109,13 +110,12 @@ const CreateFunctionHeader = ({
             Verify
           </HeaderButton>
         )}
-        {!id && (
+        { showButtons && isShowSave && (
           <HeaderButton variant="contained" onClick={handleChange}>
             {buttonText}
           </HeaderButton>
         )}
       </nav>
-      )}
     </Box>
   );
 };

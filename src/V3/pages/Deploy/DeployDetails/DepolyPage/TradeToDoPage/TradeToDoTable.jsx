@@ -147,7 +147,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "symbol",
       headerName: "Symbol",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.symbol}</Typography>
@@ -156,7 +156,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "number",
       headerName: "Number",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.number}</Typography>
@@ -165,7 +165,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "buyPrice",
       headerName: "Buy Price",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.buyPrice}</Typography>
@@ -174,7 +174,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "sellPrice",
       headerName: "Sell Price",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>
@@ -185,7 +185,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "principal",
       headerName: "Principal",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>
@@ -196,7 +196,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "investment",
       headerName: "Investment",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>
@@ -207,7 +207,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "netProfit",
       headerName: "Net Profit",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>
@@ -218,7 +218,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "profit",
       headerName: "Profit",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.profit}</Typography>
@@ -227,7 +227,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "anPrf",
       headerName: "Annual Prf",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.anPrf}</Typography>
@@ -236,7 +236,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "buyTime",
       headerName: "Buy Time",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.buyTime}</Typography>
@@ -245,7 +245,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "sellTime",
       headerName: "Sell Time",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.sellTime}</Typography>
@@ -254,7 +254,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "duration",
       headerName: "Duration",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.duration}</Typography>
@@ -263,7 +263,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "risk1R",
       headerName: "Risk1R",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.risk1R}</Typography>
@@ -272,7 +272,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "prf1R",
       headerName: "Prf1R",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.prf1R}</Typography>
@@ -281,7 +281,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "closeReason",
       headerName: "Close Reason",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>
@@ -292,7 +292,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "openReason",
       headerName: "Open Reason",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>
@@ -303,7 +303,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
     {
       field: "action",
       headerName: "Action",
-      minWidth: 100,
+      // minWidth: 100,
       flex: 1,
       disableColumnMenu: true,
       renderHeader: () => (

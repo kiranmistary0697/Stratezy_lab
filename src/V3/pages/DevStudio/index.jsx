@@ -27,6 +27,8 @@ import VerifyOnStock from "./CreateFunction/VerifyOnStock";
 import Plot from "react-plotly.js";
 import AddFunctionModal from "./CreateFunction/AddFunctionModal";
 import EditorFunctionModal from "../Strategies/Modal/EditorFunctionModal";
+import WarningPopupModal from "../Strategies/CreateStratezy/WarningPopupModal";
+import { useRouterBlocker } from "../../hooks/useRouterBlocker";
 
 const CreateFunction = () => {
   useLabTitle("Dev Studio");
@@ -62,6 +64,11 @@ const CreateFunction = () => {
   //yyyy-mm-dd
   const [argsData, setArgsData] = useState([{ name: "", value: "" }]);
   const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
+    when: isDirty,
+  });
 
   const handleAddArgsData = () => {
     const modifiedArgsData = [...argsData, { name: "", value: "" }];
@@ -345,13 +352,25 @@ const CreateFunction = () => {
           handleClose={() => setOpenStockModal(false)}
           stockList={stockList}
           dateRange={dateRange}
-          setDateRange={setDateRange}
+          setDateRange={(e) => {
+            setDateRange(e);
+            setIsDirty(true);
+          }}
           selectedStock={selectedStock}
-          setSelectedStock={setSelectedStock}
+          setSelectedStock={(e) => {
+            setSelectedStock(e);
+            setIsDirty(true);
+          }}
           xAxisInput={xAxisInput}
-          setXAxisInput={setXAxisInput}
+          setXAxisInput={(e) => {
+            setXAxisInput(e);
+            setIsDirty(true);
+          }}
           yAxisInput={yAxisInput}
-          setYAxisInput={setYAxisInput}
+          setYAxisInput={(e) => {
+            setYAxisInput(e);
+            setIsDirty(true);
+          }}
           handleVerifyStock={handleVerifyStock}
           isSaving={isSaving}
         />
@@ -366,6 +385,7 @@ const CreateFunction = () => {
           selectedFunction={selectedFunction}
           title={"Create Function"}
           argsData={argsData}
+          setIsDirty={setIsDirty}
         />
       )}
 
@@ -382,6 +402,7 @@ const CreateFunction = () => {
           setIsFunctionDialogOpen={setIsFunctionDialogOpen}
           keywordData={keywordData}
           isNewFuncOrDuplicate={true}
+          setIsDirty={setIsDirty}
         />
       )}
 
@@ -395,17 +416,25 @@ const CreateFunction = () => {
           />
 
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
-          <FunctionSelect setSelectedFunction={setSelectedFunction} />
+          <FunctionSelect
+            setSelectedFunction={(e) => {
+              // setIsDirty(true);
+              setSelectedFunction(e);
+            }}
+            setIsDirty={setIsDirty}
+          />
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
           <CreateFunctionHeader
             title={FUNCTION_SUB_TITLE}
             tooltip={FUNCTION_SUB_TITLE_TOOLTIP}
-            buttonText={FUNCTION_SUB_TITLE_BUTTON}
-            handleChange={() => {
+            // buttonText={FUNCTION_SUB_TITLE_BUTTON}
+            handleVerify={() => {
               setOpenStockModal(true);
             }}
             isFunction
             systemDefine={true}
+            showButtons
+            isVerify
             // showButtons={true}
           />
           <Grid2
@@ -441,6 +470,7 @@ const CreateFunction = () => {
                 handleArgsDataChange={handleArgsDataChange}
                 setIsFunctionDialogOpen={setIsFunctionDialogOpen}
                 isNewFuncOrDuplicate={true}
+                setIsDirty={setIsDirty}
               />
             </Grid2>
 
@@ -459,6 +489,7 @@ const CreateFunction = () => {
                 handleVerify={() => {
                   setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
                 }}
+                isShowSave
                 isSaving={isSaving}
               />
               <Grid2
@@ -478,13 +509,25 @@ const CreateFunction = () => {
                   <VerifyOnStock
                     stockList={stockList}
                     dateRange={dateRange}
-                    setDateRange={setDateRange}
+                    setDateRange={(e) => {
+                      setDateRange(e);
+                      setIsDirty(true);
+                    }}
                     selectedStock={selectedStock}
-                    setSelectedStock={setSelectedStock}
+                    setSelectedStock={(e) => {
+                      setSelectedStock(e);
+                      setIsDirty(true);
+                    }}
                     xAxisInput={xAxisInput}
-                    setXAxisInput={setXAxisInput}
+                    setXAxisInput={(e) => {
+                      setXAxisInput(e);
+                      setIsDirty(true);
+                    }}
                     yAxisInput={yAxisInput}
-                    setYAxisInput={setYAxisInput}
+                    setYAxisInput={(e) => {
+                      setYAxisInput(e);
+                      setIsDirty(true);
+                    }}
                     handleVerifyStock={handleVerifyStock}
                     isSaving={isSaving}
                     triggerVerify={triggerVerify}
@@ -519,6 +562,16 @@ const CreateFunction = () => {
           )}
         </div>
       </div>
+      {showPrompt && (
+        <WarningPopupModal
+          isOpen={showPrompt}
+          handleClose={cancelNavigation}
+          title="Unsaved Changes"
+          description="You have unsaved changes. Are you sure you want to leave this page? Your changes will be lost if you don’t save them."
+          buttonText="Yes"
+          handleConfirm={confirmNavigation}
+        />
+      )}
     </>
   );
 };

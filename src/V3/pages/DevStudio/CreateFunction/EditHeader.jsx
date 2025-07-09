@@ -5,7 +5,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const EditHeader = ({
   stockData,
-  // handleChange = () => {},
+  handleChange = () => {},
   isDuplicate,
   handleDelete = () => {},
   handleDuplicate = () => {},
@@ -23,13 +23,7 @@ const EditHeader = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleChange = () => {
-    if (!editUserData) {
-      setEditUserData(true);
-    } else {
-      setEditUserData(false);
-    }
-  };
+
 
   return (
     <Box className="flex md:flex-row gap-2.5 items-center justify-between text-center md:text-left p-4">
@@ -91,7 +85,7 @@ const EditHeader = ({
             onClick={handleChange}
             disabled={isDuplicate ? false : !stockData?.userDefined}
           >
-           {editUserData ? "Lock" : "Edit"} 
+           Save 
           </HeaderButton>
         </Box>
       </div>

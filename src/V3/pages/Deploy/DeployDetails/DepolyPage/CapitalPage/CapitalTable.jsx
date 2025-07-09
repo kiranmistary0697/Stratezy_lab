@@ -246,7 +246,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "Date",
         headerName: "Date",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
         valueGetter: (_, row) => moment(row?.Date).format("DD MMM YYYY"),
         renderCell: (params) => (
@@ -258,7 +258,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "status",
         headerName: "Status",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Badge variant={params.row.status?.toLowerCase()}>
@@ -269,7 +269,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "Amount",
         headerName: "Amount",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>{params.row?.Amount}</Typography>
@@ -278,7 +278,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "Type",
         headerName: "Type",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Badge variant="version">{params.row?.Type}</Badge>
@@ -287,7 +287,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "Schedule",
         headerName: "Schedule",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>
@@ -298,7 +298,7 @@ const CapitalTable = ({ data }) => {
       {
         field: "manage",
         headerName: "Action",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
         renderCell: (params) => {
           return (
@@ -327,7 +327,7 @@ const CapitalTable = ({ data }) => {
         field: "moreaction",
         headerName: "",
         align: "center",
-        minWidth: 50,
+        // minWidth: 50,
         maxWidth: 60,
         sortable: false,
         disableColumnMenu: true,
@@ -393,6 +393,7 @@ const CapitalTable = ({ data }) => {
         }}
       >
         <DataGrid
+          disableColumnSelector
           rows={rows}
           columns={visibleColumns}
           initialState={{

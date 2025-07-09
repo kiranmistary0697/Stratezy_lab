@@ -322,13 +322,13 @@ const BacktestTable = () => {
       {
         field: "requestId",
         headerName: "Request ID",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
       },
       {
         field: "name",
         headerName: "Strategy Name",
-        minWidth: 220,
+        // minWidth: 220,
         flex: 1.2,
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
@@ -372,7 +372,7 @@ const BacktestTable = () => {
       {
         field: "version",
         headerName: "Version",
-        minWidth: 138,
+        // minWidth: 138,
         renderCell: (params) => (
           <Badge variant="version">{params.row.version || "v1"}</Badge>
         ),
@@ -380,7 +380,7 @@ const BacktestTable = () => {
       {
         field: "executionTime",
         headerName: "Created At",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         renderCell: (params) => (
           <span className="text-[#666666]">
@@ -391,6 +391,12 @@ const BacktestTable = () => {
       {
         field: "status",
         headerName: "Status",
+        valueGetter: (_, row) => {
+          const summary = row.summary || "";
+          if (summary.includes("still running")) return "In Progress";
+          if (summary.includes("Backtest summary for")) return "Complete";
+          return "Failed";
+        },
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
             <span
@@ -416,7 +422,7 @@ const BacktestTable = () => {
             </IconButton>
           </Box>
         ),
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         renderCell: (params) => {
           const summary = params.row.summary || "";
@@ -445,7 +451,7 @@ const BacktestTable = () => {
       {
         field: "timeFrame",
         headerName: "Time Frame",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) => `${row.startDate} to ${row.endDate}`,
         renderCell: (params) => (
@@ -455,7 +461,7 @@ const BacktestTable = () => {
       {
         field: "initialCapital",
         headerName: "Initial Capital",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         renderCell: (params) => (
           <span className="text-[#666666]">{params.row.initialCapital}</span>
@@ -464,7 +470,7 @@ const BacktestTable = () => {
       {
         field: "netProfit",
         headerName: "Net Profit",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
           row.netProfit ? parseFloat(row.netProfit) : 0,
@@ -475,7 +481,7 @@ const BacktestTable = () => {
       {
         field: "avgAnnualProfit",
         headerName: "Avg Annual Profit",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
           row.avgAnnualProfit ? parseFloat(row.avgAnnualProfit) : 0,
@@ -488,7 +494,7 @@ const BacktestTable = () => {
       {
         field: "totalTrades",
         headerName: "Total Trades",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
           row.backtestSummary?.["Total number of trades"]
@@ -503,7 +509,7 @@ const BacktestTable = () => {
       {
         field: "moreaction",
         headerName: "",
-        minWidth: 50,
+        // minWidth: 50,
         maxWidth: 60,
         flex: 0, // prevent it from growing or shrinking
         sortable: false,
@@ -601,6 +607,7 @@ const BacktestTable = () => {
           onRowClick={handleRowClick}
           filterModel={filterModel}
           onFilterModelChange={setFilterModel}
+          disableColumnSelector
           initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
           loading={isLoading}
           slotProps={{

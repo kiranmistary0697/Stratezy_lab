@@ -61,10 +61,6 @@ const VerfiyStockModal = ({
     handleVerifyStock({ xAxis: xAxisArray, yAxis: yAxisArray });
   };
 
-  useEffect(() => {
-    console.log("selectedStock", selectedStock?.symbol);
-  }, [selectedStock]);
-
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogContent className="!p-[30px]">

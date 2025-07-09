@@ -238,7 +238,7 @@ const DeployTable = ({
       {
         field: "name",
         headerName: "Strategy Name",
-        minWidth: 200,
+        // minWidth: 200,
         flex: 1,
         renderCell: (params) => (
           <Link
@@ -257,7 +257,7 @@ const DeployTable = ({
       {
         field: "version",
         headerName: "Version",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Badge variant="version">{params.row.version || "v1"}</Badge>
@@ -267,7 +267,7 @@ const DeployTable = ({
         field: "deployedDate",
         headerName: "Deployed On",
         flex: 1,
-        minWidth: 170,
+        // minWidth: 170,
         valueGetter: (_, row) =>
           moment(row.deployedDate, "YYYY/MM/DD").format("Do MMM YYYY"),
         renderCell: (params) => (
@@ -282,7 +282,7 @@ const DeployTable = ({
         field: "dataDate",
         headerName: "Date",
         flex: 1,
-        minWidth: 170,
+        // minWidth: 170,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>{params.row.dataDate || "-"}</Typography>
         ),
@@ -290,7 +290,7 @@ const DeployTable = ({
       {
         field: "state",
         headerName: "Status",
-        minWidth: 150,
+        // minWidth: 150,
         flex: 1,
         renderCell: (params) => (
           <Badge variant={params.row.state?.toLowerCase() || "default"}>
@@ -301,7 +301,7 @@ const DeployTable = ({
       {
         field: "brokerage",
         headerName: "Brokerage",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
@@ -312,7 +312,7 @@ const DeployTable = ({
       {
         field: "initialCapital",
         headerName: "Initial Capital",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         valueGetter: (_, row) =>
           row.initialCapital ? parseFloat(row.initialCapital) : 0,
@@ -325,7 +325,7 @@ const DeployTable = ({
       {
         field: "currentCapital",
         headerName: "Current Capital",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         valueGetter: (_, row) =>
           row.currentCapital && row.currentCapital !== "N/A"
@@ -340,7 +340,7 @@ const DeployTable = ({
       {
         field: "avgAnProfit",
         headerName: "Average Profit",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         valueGetter: (_, row) =>
           row.avgAnProfit ? parseFloat(row.avgAnProfit) : 0,
@@ -353,7 +353,7 @@ const DeployTable = ({
       {
         field: "avgProfitPerTrade",
         headerName: "Average Profit Per Trade",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         valueGetter: (_, row) =>
           row.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
@@ -366,7 +366,7 @@ const DeployTable = ({
       {
         field: "maxDrawdown",
         headerName: "Max Drawdown",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         valueGetter: (_, row) =>
           row.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
@@ -379,7 +379,7 @@ const DeployTable = ({
       {
         field: "netProfit",
         headerName: "Net Profit",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         valueGetter: (_, row) =>
           row.netProfit ? parseFloat(row.netProfit) : 0,
@@ -392,7 +392,7 @@ const DeployTable = ({
       {
         field: "exchange",
         headerName: "Exchange",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>{params.row.exchange || "-"}</Typography>
@@ -401,7 +401,7 @@ const DeployTable = ({
       {
         field: "action",
         headerName: "Action",
-        minWidth: 170,
+        // minWidth: 170,
         flex: 1,
         renderCell: (params) => {
           const isColor = params.row.active === "Yes" ? "#CD3D64" : "#3D69D3";
@@ -545,6 +545,7 @@ const DeployTable = ({
         sx={{ border: "1px solid #E0E0E0", borderRadius: 2 }}
       >
         <DataGrid
+          disableColumnSelector
           rows={filterRow}
           columns={visibleColumns}
           disableSelectionOnClick

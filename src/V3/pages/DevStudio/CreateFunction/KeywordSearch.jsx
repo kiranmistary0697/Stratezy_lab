@@ -53,7 +53,7 @@ const KeywordSearch = ({ keywordData, fullHeight = false }) => {
       <Box className="flex flex-col w-full text-sm leading-none text-stone-500">
         <TextField
           variant="outlined"
-          placeholder="Search Premitives"
+          placeholder="Search Primitives"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           size="small"

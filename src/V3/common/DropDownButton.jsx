@@ -101,7 +101,7 @@ const ActionMenu = ({
               color: "#666666",
               fontSize: "14px",
               padding: "8px 12px",
-              marginBottom: "5px",
+              // marginBottom: "1px",
               fontFamily: "Inter",
             }}
             onClick={() => {

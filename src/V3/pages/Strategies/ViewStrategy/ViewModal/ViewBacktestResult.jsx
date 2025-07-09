@@ -278,13 +278,13 @@ const ViewBacktestResult = ({
       {
         field: "requestId",
         headerName: "Request ID",
-        minWidth: 100,
+        // minWidth: 100,
         flex: 1,
       },
       {
         field: "name",
         headerName: "Strategy Name",
-        minWidth: 220,
+        // minWidth: 220,
         flex: 1.2,
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
@@ -325,7 +325,7 @@ const ViewBacktestResult = ({
       {
         field: "version",
         headerName: "Version",
-        minWidth: 138,
+        // minWidth: 138,
         renderCell: (params) => (
           <Badge variant="version">{params.row.version || "v1"}</Badge>
         ),
@@ -333,7 +333,7 @@ const ViewBacktestResult = ({
       {
         field: "executionTime",
         headerName: "Created At",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         renderCell: (params) => (
           <span>{useDateTime(params.row?.executionTime) || "-"}</span>
@@ -364,7 +364,7 @@ const ViewBacktestResult = ({
             </IconButton>
           </Box>
         ),
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) => {
           return row.summary.includes("still running")
@@ -390,7 +390,7 @@ const ViewBacktestResult = ({
       {
         field: "timeFrame",
         headerName: "Time Frame",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) => `${row.startDate} to ${row.endDate}`,
         renderCell: (params) => (
@@ -400,13 +400,13 @@ const ViewBacktestResult = ({
       {
         field: "initialCapital",
         headerName: "Initial Capital",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
       },
       {
         field: "netProfit",
         headerName: "Net Profit",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
           parseFloat(
@@ -422,7 +422,7 @@ const ViewBacktestResult = ({
       {
         field: "avgAnnualProfit",
         headerName: "Avg Annual Profit",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
           parseFloat(
@@ -440,7 +440,7 @@ const ViewBacktestResult = ({
       {
         field: "totalTrades",
         headerName: "Total Trades",
-        minWidth: 140,
+        // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
           parseFloat(row.backtestSummary?.["Total number of trades"]) || 0,
@@ -453,7 +453,7 @@ const ViewBacktestResult = ({
       {
         field: "moreaction",
         headerName: "",
-        minWidth: 50,
+        // minWidth: 50,
         maxWidth: 60,
         flex: 0, // prevent it from growing or shrinking
         sortable: false,
@@ -544,6 +544,7 @@ const ViewBacktestResult = ({
         }}
       >
         <DataGrid
+          disableColumnSelector
           rows={filteredRows}
           columns={visibleColumns}
           // hideFooter

@@ -33,6 +33,7 @@ const EditorFunction = ({
   stockData,
   code,
   setCode = () => {},
+  setIsDirty = () => {},
   editUserData = false,
   argsData,
   handleAddArgsData,
@@ -44,6 +45,7 @@ const EditorFunction = ({
   const [showArgs, setShowArgs] = useState(false); // toggles the side panel
 
   const handleChange = (newValue, e) => {
+    setIsDirty(true);
     setCode(newValue);
     localStorage.setItem("editorFunctionCode", JSON.stringify(newValue));
   };

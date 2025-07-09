@@ -21,11 +21,11 @@ const chartOptions = [
   { value: "parameters", label: "Parameter" },
   { value: "drawdown", label: "Drawdown" },
   { value: "profits", label: "Profit" },
-  { value: "avg1r", label: "avg1r" },
-  { value: "opentrades", label: "opentrades" },
-  { value: "totaltrades", label: "totaltrades" },
-  { value: "duration", label: "duration" },
-  { value: "symbol", label: "symbol" },
+  { value: "avg1r", label: "Avg1r" },
+  { value: "opentrades", label: "Open Trades" },
+  { value: "totaltrades", label: "Tota Trades" },
+  { value: "duration", label: "Duration" },
+  { value: "symbol", label: "Symbol" },
 ];
 
 const Visualisation = ({ id }) => {
