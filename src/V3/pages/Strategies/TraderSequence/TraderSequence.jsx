@@ -88,7 +88,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
 
   const handleChange = async (index, key, value) => {
     const updated = [...values.tradeSequence];
-    updated[index][key] = value?.shortFuncName;
+    updated[index][key] = value?.func;
     setIsDirty(true);
 
     // If a new filter name is selected, fetch args/adesc
@@ -208,7 +208,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                   options={traderSequenceOptions}
                   value={
                     traderSequenceOptions.find(
-                      (o) => o.shortFuncName === filter?.name
+                      (o) => o.func === filter?.name
                     ) || null
                   }
                   // value={filter?.name || null}
@@ -231,13 +231,13 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                   getOptionLabel={(option) => {
                     if (typeof option === "string") return option;
                     if (option && typeof option === "object") {
-                      return option.shortFuncName || "";
+                      return option.func || "";
                     }
                     return "";
                   }}
                   isOptionEqualToValue={(option, value) =>
-                    option?.shortFuncName ===
-                    (typeof value === "string" ? value : value?.shortFuncName)
+                    option?.func ===
+                    (typeof value === "string" ? value : value?.func)
                   }
                   // className="custom-select max-md:w-full"
                   PopperComponent={CustomPopper}
@@ -245,12 +245,24 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                   renderInput={(params) => {
                     const selectedOption =
                       traderSequenceOptions.find(
-                        (opt) => opt.shortFuncName === filter?.name
+                        (opt) => opt.func === filter?.name
                       ) || {}; // {} when nothing selected
 
                     return (
                       <Tooltip
-                        title={selectedOption.desc || ""}
+                        // title={selectedOption.desc || ""}
+                        title={
+                          <Box>
+                            <Typography
+                              sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                            >
+                              {selectedOption?.func}
+                            </Typography>
+                            <Typography variant="string">
+                              {selectedOption?.desc}
+                            </Typography>
+                          </Box>
+                        }
                         placement="right"
                         componentsProps={{
                           tooltip: {
@@ -284,7 +296,19 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                   renderOption={(props, option) => (
                     <li {...props} key={option}>
                       <Tooltip
-                        title={option?.desc}
+                        // title={option?.desc}
+                        title={
+                          <Box>
+                            <Typography
+                              sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                            >
+                              {option?.func}
+                            </Typography>
+                            <Typography variant="string">
+                              {option?.desc}
+                            </Typography>
+                          </Box>
+                        }
                         placement="right"
                         componentsProps={{
                           tooltip: {
@@ -307,7 +331,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                             variant="body2"
                             className="text-neutral-950"
                           >
-                            {option?.shortFuncName}
+                            {option?.func}
                           </Typography>
                         </Box>
                       </Tooltip>

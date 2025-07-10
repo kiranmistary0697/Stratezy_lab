@@ -108,7 +108,8 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
 
   const handleFilterChange = async (type, index, key, value) => {
     const updated = [...values.stockEntryExit[type]];
-    updated[index][key] = value?.shortFuncName;
+    // updated[index][key] = value?.shortFuncName;
+    updated[index][key] = value?.func;
     setIsDirty(true);
 
     if (key === "name") {
@@ -220,19 +221,28 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
             disabled={isView}
             getOptionLabel={(option) =>
               // option can be string *or* object depending on where MUI calls it from
-              typeof option === "string" ? option : option?.shortFuncName || ""
+              typeof option === "string" ? option : option?.func || ""
             }
             isOptionEqualToValue={(option, value) =>
-              option?.shortFuncName ===
-              (typeof value === "string" ? value : value?.shortFuncName)
+              option?.func === (typeof value === "string" ? value : value?.func)
             }
             renderInput={(params) => {
               const selectedOption =
-                options.find((opt) => opt.shortFuncName === filter?.name) || {}; // {} when nothing selected
+                options.find((opt) => opt.func === filter?.name) || {}; // {} when nothing selected
 
               return (
                 <Tooltip
-                  title={selectedOption.desc || ""}
+                  // title={selectedOption.desc || ""}
+                  title={
+                    <Box>
+                      <Typography sx={{ fontWeight: 500, fontFamily: "Inter" }}>
+                        {selectedOption?.func}
+                      </Typography>
+                      <Typography variant="string">
+                        {selectedOption?.desc}
+                      </Typography>
+                    </Box>
+                  }
                   placement="right"
                   componentsProps={{
                     tooltip: {
@@ -270,7 +280,15 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
             renderOption={(props, option) => (
               <li {...props} key={option}>
                 <Tooltip
-                  title={option?.desc}
+                  // title={option?.desc}
+                  title={
+                    <Box>
+                      <Typography sx={{ fontWeight: 500, fontFamily: "Inter" }}>
+                        {option?.func}
+                      </Typography>
+                      <Typography variant="string">{option?.desc}</Typography>
+                    </Box>
+                  }
                   placement="right"
                   componentsProps={{
                     tooltip: {
@@ -290,7 +308,7 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
                 >
                   <Box className="flex gap-2 items-center w-full">
                     <Typography variant="body2" className="text-neutral-950">
-                      {option?.shortFuncName}
+                      {option?.func}
                     </Typography>
                   </Box>
                 </Tooltip>

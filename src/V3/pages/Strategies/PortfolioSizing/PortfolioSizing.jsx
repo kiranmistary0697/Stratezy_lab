@@ -125,10 +125,7 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
         }).unwrap();
 
         // Update all related fields from the API response
-        setFieldValue(
-          "portfolioSizing.selectedPortfolio",
-          value?.shortFuncName
-        );
+        setFieldValue("portfolioSizing.selectedPortfolio", value?.func);
         setFieldValue("portfolioSizing.adesc", data?.adesc || []);
         setFieldValue("portfolioSizing.args", data?.args || []);
       } catch (err) {
@@ -136,7 +133,7 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
       }
     } else {
       // For other keys
-      setFieldValue(`portfolioSizing.${key}`, value?.shortFuncName);
+      setFieldValue(`portfolioSizing.${key}`, value?.func);
     }
   };
 
@@ -212,8 +209,7 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                 value={
                   portfolioSizingOptions.find(
                     (opt) =>
-                      opt?.shortFuncName ===
-                      values.portfolioSizing?.selectedPortfolio
+                      opt?.func === values.portfolioSizing?.selectedPortfolio
                   ) || null
                 }
                 // value={values.portfolioSizing?.selectedPortfolio || ""}
@@ -237,20 +233,31 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                 disableClearable
                 selectOnFocus
                 isOptionEqualToValue={(option, value) =>
-                  option?.shortFuncName === (value?.shortFuncName || value)
+                  option?.func === (value?.func || value)
                 }
-                getOptionLabel={(option) => option?.shortFuncName || ""}
+                getOptionLabel={(option) => option?.func || ""}
                 renderInput={(params) => {
                   const selectedOption =
                     portfolioSizingOptions.find(
                       (opt) =>
-                        opt.shortFuncName ===
-                        values.portfolioSizing?.selectedPortfolio
+                        opt.func === values.portfolioSizing?.selectedPortfolio
                     ) || {}; // {} when nothing selected
 
                   return (
                     <Tooltip
-                      title={selectedOption.desc || ""}
+                      // title={selectedOption.desc || ""}
+                      title={
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                          >
+                            {selectedOption?.func}
+                          </Typography>
+                          <Typography variant="string">
+                            {selectedOption?.desc}
+                          </Typography>
+                        </Box>
+                      }
                       placement="right"
                       componentsProps={{
                         tooltip: {
@@ -284,7 +291,19 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                 renderOption={(props, option) => (
                   <li {...props} key={option}>
                     <Tooltip
-                      title={option?.desc}
+                      // title={option?.desc}
+                      title={
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                          >
+                            {option?.func}
+                          </Typography>
+                          <Typography variant="string">
+                            {option?.desc}
+                          </Typography>
+                        </Box>
+                      }
                       placement="right"
                       componentsProps={{
                         tooltip: {
@@ -307,7 +326,7 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                           variant="body2"
                           className="text-neutral-950"
                         >
-                          {option?.shortFuncName}
+                          {option?.func}
                         </Typography>
                       </Box>
                     </Tooltip>

@@ -33,7 +33,13 @@ const CustomFilterPanel = ({
   };
 
   return (
-    <Paper sx={{ p: 2, width: 300 }}>
+    <Paper
+      sx={{
+        p: 2,
+        width: 300,
+        boxShadow: "0px 0px 0px 0px",
+      }}
+    >
       <strong>{title}</strong>
       {data.length > 0 ? (
         <FormGroup>

@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import HeaderButton from "../../../common/Table/HeaderButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -24,14 +31,36 @@ const EditHeader = ({
     setAnchorEl(null);
   };
 
-
   return (
     <Box className="flex md:flex-row gap-2.5 items-center justify-between text-center md:text-left p-4">
       <div className="flex flex-col gap-3">
         <Box className="flex items-center gap-2">
-          <div className="text-xl font-semibold leading-tight text-neutral-950">
-            {isDuplicate ? `${stockData?.func} duplicate` : stockData?.func}
-          </div>
+          <Tooltip
+            title={
+              isDuplicate
+                ? `${stockData?.shortFuncName} duplicate`
+                : stockData?.shortFuncName
+            }
+            placement="right-end"
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                },
+              },
+            }}
+          >
+            <div className="text-xl font-semibold leading-tight text-neutral-950">
+              {isDuplicate ? `${stockData?.func} duplicate` : stockData?.func}
+            </div>
+          </Tooltip>
         </Box>
         <div className="text-[14px] font-normal leading-tight text-[#666666]">
           {stockData?.desc}
@@ -85,7 +114,7 @@ const EditHeader = ({
             onClick={handleChange}
             disabled={isDuplicate ? false : !stockData?.userDefined}
           >
-           Save 
+            Save
           </HeaderButton>
         </Box>
       </div>

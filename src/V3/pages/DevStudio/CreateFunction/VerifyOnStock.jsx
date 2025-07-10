@@ -17,12 +17,11 @@ import {
 } from "../../../../constants/CommonText";
 import TimelineDateRangePicker from "../../../common/TimelineDateRangePicker";
 import moment from "moment";
+import CustomDatePicker from "../../../common/CustomDatePicker";
 
 const VerifyOnStock = ({
   title,
   stockList,
-  dateRange,
-  setDateRange,
   selectedStock,
   setSelectedStock,
   xAxisInput,
@@ -33,6 +32,10 @@ const VerifyOnStock = ({
   isSaving,
   triggerVerify,
   setTriggerVerify,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
 }) => {
   const [dateRangeError, setDateRangeError] = useState(false);
 
@@ -177,8 +180,33 @@ const VerifyOnStock = ({
                 />
               </Tooltip>
             </Box>
+            <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
+              <Box>
+                <label className="text-sm font-semibold text-neutral-850">
+                  Start Date
+                </label>
+                <CustomDatePicker
+                  label="Start Date"
+                  value={startDate}
+                  onChange={(val) => setStartDate(val)}
+                  name="startDate"
+                />
+              </Box>
+              <Box>
+                <label className="text-sm font-semibold text-neutral-950">
+                  End Date
+                </label>
 
-            <TimelineDateRangePicker
+                <CustomDatePicker
+                  label="End Date"
+                  value={endDate}
+                  onChange={(val) => setEndDate(val)}
+                  name="endDate"
+                />
+              </Box>
+            </Box>
+
+            {/* <TimelineDateRangePicker
               range={dateRange}
               onChange={(r) => {
                 setDateRange(r);
@@ -186,7 +214,7 @@ const VerifyOnStock = ({
               }}
               error={dateRangeError}
               errorMessage="Start date and end date cannot be the same."
-            />
+            /> */}
           </Box>
 
           {/* X Axis */}

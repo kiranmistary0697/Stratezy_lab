@@ -87,9 +87,11 @@ const ActionMenu = ({
         onClose={() => setAnchorEl(false)}
         PaperProps={{
           sx: {
+            fontFamily:"Inter",
             borderRadius: "2px",
             border: "1px solid #E0E0E0",
-            padding: "5px",
+            padding: "0px 5px",
+            boxShadow:"0px 0px 0px 0px",
             width: "auto",
             boxSizing: "border-box",
           },

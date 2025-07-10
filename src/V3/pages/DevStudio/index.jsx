@@ -51,11 +51,11 @@ const CreateFunction = () => {
   const [openAddFunctionModal, setOpenAddFunctionModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
 
-  const [dateRange, setDateRange] = useState({
-    startDate: oneMonthAgo,
-    endDate: new Date(),
-    key: "selection",
-  });
+  const [startDate, setStartDate] = useState(
+    moment().subtract(1, "month").format("DD/MM/YYYY")
+  );
+  const [endDate, setEndDate] = useState(moment().format("DD/MM/YYYY"));
+
   const [xAxisInput, setXAxisInput] = useState("");
   const [yAxisInput, setYAxisInput] = useState("");
   const [code, setCode] = useState("");
@@ -90,8 +90,6 @@ const CreateFunction = () => {
     localStorage.setItem("argsData", JSON.stringify(modifiedArgsData));
   };
 
-  const startDate = moment(dateRange.startDate).format("YYYY-MM-DD");
-  const endDate = moment(dateRange.endDate).format("YYYY-MM-DD");
   const selectedSymbol = selectedStock?.symbol;
 
   //stock-analysis-function/abcggg
@@ -147,8 +145,8 @@ const CreateFunction = () => {
         endpoint: `command/chart/request`,
         payload: {
           exchange: "nse",
-          zeroDate: endDate,
-          ndate: startDate,
+          zeroDate: moment(endDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+          ndate: moment(startDate, "YYYY/MM/DD").format("YYYY-MM-DD"),
           symbol: selectedSymbol,
           chartRule: {
             ruleType: "CHART_RULE",
@@ -351,9 +349,14 @@ const CreateFunction = () => {
           isOpen={openStockModal}
           handleClose={() => setOpenStockModal(false)}
           stockList={stockList}
-          dateRange={dateRange}
-          setDateRange={(e) => {
-            setDateRange(e);
+          startDate={startDate}
+          setStartDate={(e) => {
+            setStartDate(e);
+            setIsDirty(true);
+          }}
+          endDate={endDate}
+          setEndDate={(e) => {
+            setEndDate(e);
             setIsDirty(true);
           }}
           selectedStock={selectedStock}
@@ -420,6 +423,7 @@ const CreateFunction = () => {
             setSelectedFunction={(e) => {
               // setIsDirty(true);
               setSelectedFunction(e);
+              console.log(e);
             }}
             setIsDirty={setIsDirty}
           />
@@ -508,9 +512,14 @@ const CreateFunction = () => {
                 >
                   <VerifyOnStock
                     stockList={stockList}
-                    dateRange={dateRange}
-                    setDateRange={(e) => {
-                      setDateRange(e);
+                    startDate={startDate}
+                    setStartDate={(e) => {
+                      setStartDate(e);
+                      setIsDirty(true);
+                    }}
+                    endDate={startDate}
+                    setEndDate={(e) => {
+                      setEndDate(e);
                       setIsDirty(true);
                     }}
                     selectedStock={selectedStock}

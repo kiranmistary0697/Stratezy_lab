@@ -57,11 +57,11 @@ const EditFunction = () => {
   const [selectedStock, setSelectedStock] = useState(null);
   const [internalData, setInternalData] = useState(null);
   const [selectedFunction, setSelectedFunction] = useState({});
-  const [dateRange, setDateRange] = useState({
-    startDate: oneMonthAgo,
-    endDate: new Date(),
-    key: "selection",
-  });
+  const [startDate, setStartDate] = useState(
+    moment().subtract(1, "month").format("DD/MM/YYYY")
+  );
+  const [endDate, setEndDate] = useState(moment().format("DD/MM/YYYY"));
+
   const [xAxisInput, setXAxisInput] = useState("");
   const [yAxisInput, setYAxisInput] = useState("");
   const [code, setCode] = useState("");
@@ -83,8 +83,6 @@ const EditFunction = () => {
   const id = queryParams.get("name");
   const isDuplicate = queryParams.get("duplicate");
 
-  const startDate = moment(dateRange.startDate).format("YYYY-MM-DD");
-  const endDate = moment(dateRange.endDate).format("YYYY-MM-DD");
   const selectedSymbol = selectedStock?.symbol;
 
   //stock-analysis-function/abcggg stock-analysis-function/keywords
@@ -200,8 +198,8 @@ const EditFunction = () => {
         endpoint: `command/chart/request`,
         payload: {
           exchange: "nse",
-          zeroDate: endDate,
-          ndate: startDate,
+          zeroDate: moment(endDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+          ndate: moment(startDate, "YYYY/MM/DD").format("YYYY-MM-DD"),
           symbol: selectedSymbol,
           chartRule: {
             ruleType: "CHART_RULE",
@@ -427,8 +425,14 @@ const EditFunction = () => {
           isOpen={openStockModal}
           handleClose={() => setOpenStockModal(false)}
           stockList={stockList}
-          dateRange={dateRange}
-          setDateRange={setDateRange}
+          startDate={startDate}
+          setStartDate={(e) => {
+            setStartDate(e);
+          }}
+          endDate={endDate}
+          setEndDate={(e) => {
+            setEndDate(e);
+          }}
           selectedStock={selectedStock}
           setSelectedStock={setSelectedStock}
           xAxisInput={xAxisInput}
@@ -592,9 +596,14 @@ const EditFunction = () => {
                 >
                   <VerifyOnStock
                     stockList={stockList}
-                    dateRange={dateRange}
-                    setDateRange={(e) => {
-                      setDateRange(e);
+                    startDate={startDate}
+                    setStartDate={(e) => {
+                      setStartDate(e);
+                      setIsDirty(true);
+                    }}
+                    endDate={endDate}
+                    setEndDate={(e) => {
+                      setEndDate(e);
                       setIsDirty(true);
                     }}
                     selectedStock={selectedStock}

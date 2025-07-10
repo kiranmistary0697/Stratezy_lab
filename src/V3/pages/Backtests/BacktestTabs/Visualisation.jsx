@@ -22,8 +22,9 @@ const chartOptions = [
   { value: "drawdown", label: "Drawdown" },
   { value: "profits", label: "Profit" },
   { value: "avg1r", label: "Avg1r" },
+  { value: "CompareWithIndex", label: "Compare With Index" },
   { value: "opentrades", label: "Open Trades" },
-  { value: "totaltrades", label: "Tota Trades" },
+  { value: "totaltrades", label: "Total Trades" },
   { value: "duration", label: "Duration" },
   { value: "symbol", label: "Symbol" },
 ];
@@ -235,7 +236,7 @@ const Visualisation = ({ id }) => {
           </Box>
           <Typography className="text-xs font-semibold text-[#6B7280]">
             Capital Graph plots profit, average profit etc. against time to give
-            a better point of view.
+            a better point of view. {selectedOption.value}
           </Typography>
         </Box>
       </Box>

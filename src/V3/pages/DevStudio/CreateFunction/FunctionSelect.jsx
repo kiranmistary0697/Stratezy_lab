@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -129,28 +130,77 @@ const FunctionSelect = ({
       utility: selectedTypes.utility,
     };
 
-    if (Array.isArray(selectedValues.stockEntryExit)) {
+    if (
+      selectedTypes.stockEntryExit &&
+      !selectedValues.stockEntryExit.includes("Entry") &&
+      !selectedValues.stockEntryExit.includes("Exit")
+    ) {
+      updatedFunction.entry = true;
+    } else if (
+      selectedTypes.stockEntryExit &&
+      Array.isArray(selectedValues.stockEntryExit)
+    ) {
       if (selectedValues.stockEntryExit.includes("Entry")) {
         updatedFunction.entry = true;
       }
       if (selectedValues.stockEntryExit.includes("Exit")) {
         updatedFunction.exit = true;
       }
+    } else {
+      updatedFunction.entry = false;
+      updatedFunction.exit = false;
     }
 
-    if (Array.isArray(selectedValues.globalEntryExit)) {
+    if (
+      selectedTypes.globalEntryExit &&
+      !selectedValues.globalEntryExit.includes("Entry") &&
+      !selectedValues.globalEntryExit.includes("Exit")
+    ) {
+      updatedFunction.gentry = true;
+    } else if (
+      selectedTypes.globalEntryExit &&
+      Array.isArray(selectedValues.globalEntryExit)
+    ) {
       if (selectedValues.globalEntryExit.includes("Entry")) {
         updatedFunction.gentry = true;
       }
       if (selectedValues.globalEntryExit.includes("Exit")) {
         updatedFunction.gexit = true;
       }
+    } else {
+      updatedFunction.gentry = false;
+      updatedFunction.gexit = false;
     }
 
     if (Array.isArray(selectedValues.filterRule)) {
-      if (selectedValues.filterRule.includes("Static")) {
+      if (
+        selectedTypes.filterRule &&
+        selectedValues.filterRule.includes("Static")
+      ) {
         updatedFunction.stockList = true;
       }
+    }
+    //payload modification
+    if (Object.values(selectedTypes).every((val) => val == false)) {
+      updatedFunction.utility = true;
+    }
+
+    if (
+      selectedTypes.filterRule &&
+      (!selectedValues.filterRule.includes("Static") ||
+        !selectedValues.filterRule.includes("Dynamic"))
+    ) {
+      updatedFunction.filterRule = true;
+    } else {
+      updatedFunction.filterRule = false;
+    }
+
+    if (selectedTypes.tradeRule && selectedValues.tradeRule.includes("Buy")) {
+      updatedFunction.tradeRule = true;
+    } else if (selectedTypes.tradeRule) {
+      updatedFunction.tradeRule = true;
+    } else {
+      updatedFunction.tradeRule = false;
     }
 
     setSelectedFunction(updatedFunction);

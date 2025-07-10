@@ -1,6 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, IconButton, Popover, Tooltip } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  Popover,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  Settings as SettingsIcon,
+  CheckBox as CheckBoxIcon,
+  CheckBoxOutlineBlank as CheckBoxOutlinedIcon,
+} from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import StarIcon from "@mui/icons-material/Star";
 import { FilterList as FilterListIcon } from "@mui/icons-material";
@@ -62,6 +76,7 @@ const TableRow = () => {
   const [hoveredStrategy, setHoveredStrategy] = useState(null);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
+  const [hiddenColumns, setHiddenColumns] = useState([]);
 
   const [isDeleteCase, setIsDeleteCase] = useState(false);
   const [deleteRow, setDeleteRow] = useState({});
@@ -118,6 +133,14 @@ const TableRow = () => {
     localStorage.removeItem("portfolioSizing-saved");
   };
 
+  const handleColumnToggle = (field) => {
+    setHiddenColumns((prev) =>
+      prev.includes(field)
+        ? prev.filter((col) => col !== field)
+        : [...prev, field]
+    );
+  };
+
   const handleEditStrategy = (id, name, version) => {
     // Called when user clicks an Edit button
     handleStrategyNavigation("edit", id, name, false, version);
@@ -169,6 +192,53 @@ const TableRow = () => {
             isStatus
             isSquare={false}
           />
+        );
+
+      case "column":
+        return (
+          <FormGroup sx={{ padding: 2 }}>
+            <Typography
+              sx={{
+                fontFamily: "Inter",
+                fontWeight: 500,
+                fontSize: "14px",
+                lineHeight: "120%",
+                letterSpacing: "0%",
+                color: "#0A0A0A",
+              }}
+            >
+              Select Column
+            </Typography>
+            {columns
+              .filter(({ field }) => true) // Remove !["moreActions"].includes(field)
+              .map((col) => (
+                <FormControlLabel
+                  key={col.field}
+                  control={
+                    <Checkbox
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxIcon />}
+                      checked={!hiddenColumns.includes(col.field)}
+                      onChange={() => handleColumnToggle(col.field)}
+                    />
+                  }
+                  label={
+                    <Typography
+                      sx={{
+                        fontFamily: "Inter",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        lineHeight: "120%",
+                        letterSpacing: "0%",
+                        color: "#0A0A0A",
+                      }}
+                    >
+                      {col.field === "moreActions" ? "Actions" : col.headerName}
+                    </Typography>
+                  }
+                />
+              ))}
+          </FormGroup>
         );
 
       default:
@@ -252,7 +322,7 @@ const TableRow = () => {
       {
         field: "favorite",
         headerName: "",
-        minWidth: 30,
+        // minWidth: 30,
         disableColumnMenu: true,
         flex: 1,
         renderCell: (params) =>
@@ -266,7 +336,7 @@ const TableRow = () => {
       {
         field: "name",
         headerName: "Name",
-        minWidth: 180,
+        // minWidth: 180,
         flex: 1,
         renderCell: (params) => (
           <div>
@@ -280,7 +350,7 @@ const TableRow = () => {
       {
         field: "version",
         headerName: "Version",
-        minWidth: 138,
+        // minWidth: 138,
         flex: 1,
         renderCell: (params) => (
           <Badge variant="version">{params?.row?.version || "v1"}</Badge>
@@ -305,12 +375,12 @@ const TableRow = () => {
           });
           return <div className="text-[#666666]">{formatted}</div>;
         },
-        minWidth: 150,
+        // minWidth: 150,
       },
       {
         field: "statusSort",
         headerName: "Status",
-        minWidth: 150,
+        // minWidth: 150,
         flex: 1,
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
@@ -347,7 +417,7 @@ const TableRow = () => {
       {
         field: "description",
         headerName: "Summary",
-        minWidth: 180,
+        // minWidth: 180,
         flex: 1,
         renderCell: (params) => (
           <div
@@ -387,7 +457,7 @@ const TableRow = () => {
       {
         field: "Backtests",
         headerName: "Backtests",
-        minWidth: 150,
+        // minWidth: 150,
         flex: 1,
         sortable: false,
         disableColumnMenu: true,
@@ -450,7 +520,7 @@ const TableRow = () => {
       {
         field: "Deploy",
         headerName: "Deploy",
-        minWidth: 150,
+        // minWidth: 150,
         flex: 1,
         disableColumnMenu: true,
         sortable: false,
@@ -521,6 +591,14 @@ const TableRow = () => {
         field: "moreActions",
         headerName: "",
         flex: 1,
+        renderHeader: () => (
+          <IconButton
+            size="small"
+            onClick={(e) => handlePopoverOpen(e, "column")}
+          >
+            <SettingsIcon fontSize="small" />
+          </IconButton>
+        ),
         renderCell: (params) => {
           return !params.row.demo ? (
             <ActionMenu
@@ -580,7 +658,12 @@ const TableRow = () => {
         headerClassName: "no-resize-header", // for CSS override
       },
     ],
-    [rows, selectedStatuses]
+    [rows, selectedStatuses, hiddenColumns]
+  );
+
+  const visibleColumns = useMemo(
+    () => columns.filter((col) => !hiddenColumns.includes(col.field)),
+    [columns, hiddenColumns]
   );
 
   return (
@@ -611,7 +694,8 @@ const TableRow = () => {
         <DataGrid
           disableColumnSelector
           rows={filteredRows}
-          columns={columns}
+          // columns={columns}
+          columns={visibleColumns}
           // hideFooter
           disableSelectionOnClick
           onRowClick={handleRowClick}
@@ -652,8 +736,8 @@ const TableRow = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         PaperProps={{
           sx: {
-            maxHeight: 150,
-            overflowY: "hidden",
+            maxHeight: 250,
+            overflowY: "scroll",
             overflowX: "hidden",
           },
         }}

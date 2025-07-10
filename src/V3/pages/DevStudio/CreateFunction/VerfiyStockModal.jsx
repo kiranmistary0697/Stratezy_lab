@@ -19,14 +19,13 @@ import {
   VERIFY_SUB_TITLE_TOOLTIP,
 } from "../../../../constants/CommonText";
 import moment from "moment";
+import CustomDatePicker from "../../../common/CustomDatePicker";
 
 const VerfiyStockModal = ({
   title,
   isOpen,
   handleClose,
   stockList,
-  dateRange,
-  setDateRange,
   selectedStock,
   setSelectedStock,
   xAxisInput,
@@ -35,14 +34,18 @@ const VerfiyStockModal = ({
   setYAxisInput,
   isSaving,
   handleVerifyStock = () => {},
+  startDate,
+  setStartDate = () => {},
+  endDate,
+  setEndDate = () => {},
 }) => {
   const [dateRangeError, setDateRangeError] = useState(false);
 
   const handlePlotGraph = () => {
-    const start = moment(dateRange.startDate).startOf("day");
-    const end = moment(dateRange.endDate).startOf("day");
+    const start = moment(startDate).startOf("day");
+    const end = moment(endDate).startOf("day");
 
-    if (start.isSame(end)) {
+    if (start == end) {
       setDateRangeError(true);
       return;
     }
@@ -217,16 +220,31 @@ const VerfiyStockModal = ({
                   />
                 </Tooltip>
               </Box>
+              <Box sx={{ display: "flex", gap:"10px", flexDirection: "column",}}>
+                <Box>
+                  <label className="text-sm font-semibold text-neutral-950">
+                    Start Date
+                  </label>
+                  <CustomDatePicker
+                    label="Start Date"
+                    value={startDate}
+                    onChange={(val) => setStartDate(val)}
+                    name="startDate"
+                  />
+                </Box>
+                <Box>
+                  <label className="text-sm font-semibold text-neutral-950">
+                    End Date
+                  </label>
 
-              <TimelineDateRangePicker
-                range={dateRange}
-                onChange={(r) => {
-                  setDateRange(r);
-                  setDateRangeError(false); // reset error on change
-                }}
-                error={dateRangeError}
-                errorMessage="Start date and end date cannot be the same."
-              />
+                  <CustomDatePicker
+                    label="End Date"
+                    value={endDate}
+                    onChange={(val) => setEndDate(val)}
+                    name="endDate"
+                  />
+                </Box>
+              </Box>
             </Box>
 
             {/* X Axis */}

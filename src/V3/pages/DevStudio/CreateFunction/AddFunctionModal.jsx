@@ -87,6 +87,7 @@ const AddFunctionModal = ({
         stockList: selectedFunction?.stockList || false,
       };
 
+
       try {
         const verifyResponse = await verifyNewStock({
           endpoint: "stock-analysis-function/verify",

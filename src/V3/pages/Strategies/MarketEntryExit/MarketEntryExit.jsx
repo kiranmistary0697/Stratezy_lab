@@ -127,7 +127,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
         }).unwrap();
 
         // Update all related fields from the API response
-        setFieldValue("marketEntryExit.entry.name", value?.shortFuncName);
+        setFieldValue("marketEntryExit.entry.name", value?.func);
         setFieldValue("marketEntryExit.entry.adesc", data?.adesc || []);
         setFieldValue("marketEntryExit.entry.args", data?.args || []);
       } catch (err) {
@@ -135,7 +135,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
       }
     } else {
       // For other keys
-      setFieldValue(`marketEntryExit.entry.${key}`, value.shortFuncName);
+      setFieldValue(`marketEntryExit.entry.${key}`, value.func);
     }
   };
   const handleChangeMarketExit = async (key, value) => {
@@ -148,7 +148,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
         }).unwrap();
 
         // Update all related fields from the API response
-        setFieldValue("marketEntryExit.exit.name", value?.shortFuncName);
+        setFieldValue("marketEntryExit.exit.name", value?.func);
         setFieldValue("marketEntryExit.exit.adesc", data?.adesc || []);
         setFieldValue("marketEntryExit.exit.args", data?.args || []);
       } catch (err) {
@@ -156,7 +156,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
       }
     } else {
       // For other keys
-      setFieldValue(`marketEntryExit.exit.${key}`, value?.shortFuncName);
+      setFieldValue(`marketEntryExit.exit.${key}`, value?.func);
     }
   };
 
@@ -268,7 +268,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                 value={
                   marketEntryOptions.find(
                     (opt) =>
-                      opt?.shortFuncName === values.marketEntryExit.entry?.name
+                      opt?.func === values.marketEntryExit.entry?.name
                   ) || null
                 }
                 // value={values.marketEntryExit.entry?.name || ""}
@@ -292,19 +292,31 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                   outline: "none",
                 }}
                 isOptionEqualToValue={(option, value) =>
-                  option?.shortFuncName === (value?.shortFuncName || value)
+                  option?.func === (value?.func || value)
                 }
-                getOptionLabel={(option) => option?.shortFuncName || ""}
+                getOptionLabel={(option) => option?.func || ""}
                 renderInput={(params) => {
                   const selectedOption =
                     marketEntryOptions.find(
                       (opt) =>
-                        opt.shortFuncName === values.marketEntryExit.entry?.name
+                        opt.func === values.marketEntryExit.entry?.name
                     ) || {}; // {} when nothing selected
 
                   return (
                     <Tooltip
-                      title={selectedOption.desc || ""}
+                      // title={selectedOption.desc || ""}
+                      title={
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                          >
+                            {selectedOption?.func}
+                          </Typography>
+                          <Typography variant="string">
+                            {selectedOption?.desc}
+                          </Typography>
+                        </Box>
+                      }
                       placement="right"
                       componentsProps={{
                         tooltip: {
@@ -338,7 +350,19 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                 renderOption={(props, option) => (
                   <li {...props} key={option}>
                     <Tooltip
-                      title={option?.desc}
+                      // title={option?.desc}
+                      title={
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                          >
+                            {option?.func}
+                          </Typography>
+                          <Typography variant="string">
+                            {option?.desc}
+                          </Typography>
+                        </Box>
+                      }
                       placement="right"
                       componentsProps={{
                         tooltip: {
@@ -361,7 +385,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                           variant="body2"
                           className="text-neutral-950"
                         >
-                          {option?.shortFuncName}
+                          {option?.func}
                         </Typography>
                       </Box>
                     </Tooltip>
@@ -462,7 +486,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                 value={
                   marketExitOptions.find(
                     (opt) =>
-                      opt?.shortFuncName === values.marketEntryExit.exit?.name
+                      opt?.func === values.marketEntryExit.exit?.name
                   ) || null
                 }
                 // value={values.marketEntryExit.exit?.name || ""}
@@ -486,19 +510,31 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                   outline: "none",
                 }}
                 isOptionEqualToValue={(option, value) =>
-                  option?.shortFuncName === (value?.shortFuncName || value)
+                  option?.func === (value?.func || value)
                 }
-                getOptionLabel={(option) => option?.shortFuncName || ""}
+                getOptionLabel={(option) => option?.func || ""}
                 renderInput={(params) => {
                   const selectedOption =
                     marketExitOptions.find(
                       (opt) =>
-                        opt.shortFuncName === values.marketEntryExit.exit?.name
+                        opt.func === values.marketEntryExit.exit?.name
                     ) || {}; // {} when nothing selected
 
                   return (
                     <Tooltip
-                      title={selectedOption.desc || ""}
+                      // title={selectedOption.desc || ""}
+                      title={
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                          >
+                            {selectedOption?.func}
+                          </Typography>
+                          <Typography variant="string">
+                            {selectedOption?.desc}
+                          </Typography>
+                        </Box>
+                      }
                       placement="right"
                       componentsProps={{
                         tooltip: {
@@ -532,7 +568,19 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                 renderOption={(props, option) => (
                   <li {...props} key={option}>
                     <Tooltip
-                      title={option?.desc}
+                      // title={option?.desc}
+                      title={
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                          >
+                            {option?.func}
+                          </Typography>
+                          <Typography variant="string">
+                            {option?.desc}
+                          </Typography>
+                        </Box>
+                      }
                       placement="right"
                       componentsProps={{
                         tooltip: {
@@ -555,7 +603,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                           variant="body2"
                           className="text-neutral-950"
                         >
-                          {option?.shortFuncName}
+                          {option?.func}
                         </Typography>
                       </Box>
                     </Tooltip>

@@ -199,7 +199,7 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
                 isOptionEqualToValue={(option, value) =>
                   option?.shortFuncName === (value?.shortFuncName || value)
                 }
-                getOptionLabel={(option) => option?.shortFuncName || ""}
+                getOptionLabel={(option) => option?.func || ""}
                 renderInput={(params) => {
                   const selectedOption =
                     tradeRuleOptions.find(
@@ -245,12 +245,24 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
                   return (
                     <li {...props} key={option}>
                       <Tooltip
-                        title={option?.desc}
+                        // title={option?.desc}
+                        title={
+                          <Box>
+                            <Typography
+                              sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                            >
+                              {option?.func}
+                            </Typography>
+                            <Typography variant="string">
+                              {option?.desc}
+                            </Typography>
+                          </Box>
+                        }
                         placement="right"
                         componentsProps={{
                           tooltip: {
                             sx: {
-                              fontFamily: "inherit",
+                              fontFamily: "Inter",
                               fontWeight: 400,
                               fontSize: "14px",
                               maxWidth: 400,
@@ -268,7 +280,7 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
                             variant="body2"
                             className="text-neutral-950"
                           >
-                            {option?.shortFuncName}
+                            {option?.func}
                           </Typography>
                         </Box>
                       </Tooltip>

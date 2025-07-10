@@ -102,7 +102,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
 
   const handleChangeStockBundle = async (index, key, value) => {
     const updated = [...values.stockBundle];
-    updated[index][key] = value.shortFuncName;
+    updated[index][key] = value.func;
     setIsDirty(true);
     // If a new filter name is selected, fetch args/adesc
     if (key === "name") {
@@ -246,7 +246,6 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
             const type = stockBundleOptions?.find(
               (item) => item.shortFuncName === filter?.name
             )?.stockList;
-
             return (
               <Box
                 key={index}
@@ -298,29 +297,37 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                       selectOnFocus
                       getOptionLabel={(option) =>
                         // option can be string *or* object depending on where MUI calls it from
-                        typeof option === "string"
-                          ? option
-                          : option?.shortFuncName || ""
+                        typeof option === "string" ? option : option?.func || ""
                       }
                       isOptionEqualToValue={(option, value) =>
-                        option?.shortFuncName ===
-                        (typeof value === "string"
-                          ? value
-                          : value?.shortFuncName)
+                        option?.func ===
+                        (typeof value === "string" ? value : value?.func)
                       }
                       renderInput={(params) => {
                         const selectedOption =
                           typeof filter?.name === "string"
                             ? stockBundleOptions.find(
-                                (opt) => opt.shortFuncName === filter.name
+                                (opt) => opt.func === filter.name
                               )
                             : filter?.name;
 
-                        const tooltipTitle = selectedOption?.desc || "";
+                        // const tooltipTitle = selectedOption?.desc || "";
 
                         return (
                           <Tooltip
-                            title={tooltipTitle}
+                            // title={tooltipTitle}
+                            title={
+                              <Box>
+                                <Typography
+                                  sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                                >
+                                  {selectedOption?.func}
+                                </Typography>
+                                <Typography variant="string">
+                                  {selectedOption?.desc}
+                                </Typography>
+                              </Box>
+                            }
                             placement="right"
                             componentsProps={{
                               tooltip: {
@@ -376,7 +383,22 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                         return (
                           <li {...props} key={option}>
                             <Tooltip
-                              title={option?.desc}
+                              // title={option?.desc}
+                              title={
+                                <Box>
+                                  <Typography
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontFamily: "Inter",
+                                    }}
+                                  >
+                                    {option?.func}
+                                  </Typography>
+                                  <Typography variant="string">
+                                    {option?.desc}
+                                  </Typography>
+                                </Box>
+                              }
                               placement="right"
                               componentsProps={{
                                 tooltip: {
@@ -396,7 +418,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                             >
                               <Box className="flex gap-2 items-center w-full">
                                 <Typography variant="body2">
-                                  {option?.shortFuncName}
+                                  {option?.func}
                                 </Typography>
                                 <Typography
                                   variant="caption"
