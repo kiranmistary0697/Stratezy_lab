@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Typography,
@@ -278,7 +278,7 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
               );
             }}
             renderOption={(props, option) => (
-              <li {...props} key={option}>
+              <li {...props} key={option?.func}>
                 <Tooltip
                   // title={option?.desc}
                   title={

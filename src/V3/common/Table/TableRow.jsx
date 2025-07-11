@@ -73,7 +73,6 @@ const TableRow = () => {
   const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [rows, setRows] = useState([]);
 
-  const [hoveredStrategy, setHoveredStrategy] = useState(null);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
   const [hiddenColumns, setHiddenColumns] = useState([]);
@@ -420,11 +419,7 @@ const TableRow = () => {
         // minWidth: 180,
         flex: 1,
         renderCell: (params) => (
-          <div
-            onMouseEnter={() => setHoveredStrategy(params.row)} // Set hovered row data
-            onMouseLeave={() => setHoveredStrategy(null)} // Clear on mouse leave
-            className="text-[#666666]"
-          >
+          <div className="text-[#666666]">
             <Tooltip
               PopperProps={{
                 modifiers: [

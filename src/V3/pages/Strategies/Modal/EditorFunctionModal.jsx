@@ -166,7 +166,7 @@ const EditorFunctionModal = ({
                 <Box className="flex gap-4 mt-4" sx={{ alignItems: "center" }}>
                   <Box sx={{ minWidth: "150px" }}>
                     {argsData.map((item, index) => {
-                      const labelIndex = `@@${index + 1} Name`;
+                      const labelIndex = `ARG${index + 1} Name`;
                       return (
                         <Box
                           key={index}

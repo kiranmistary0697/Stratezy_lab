@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Box, Divider, Grid2, useTheme } from "@mui/material";
+import { Box, Divider, Grid, IconButton, useTheme } from "@mui/material";
 import CreateFunctionHeader from "./CreateFunction/CreateFunctionHeader";
 import FunctionSelect from "./CreateFunction/FunctionSelect";
 import KeywordSearch from "./CreateFunction/KeywordSearch";
@@ -14,7 +14,6 @@ import { useLazyGetQuery, usePostMutation } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
 import {
   FUNCTION_SUB_TITLE,
-  FUNCTION_SUB_TITLE_BUTTON,
   FUNCTION_SUB_TITLE_TOOLTIP,
   FUNCTION_TITLE,
   FUNCTION_TITLE_BUTTON,
@@ -29,6 +28,9 @@ import AddFunctionModal from "./CreateFunction/AddFunctionModal";
 import EditorFunctionModal from "../Strategies/Modal/EditorFunctionModal";
 import WarningPopupModal from "../Strategies/CreateStratezy/WarningPopupModal";
 import { useRouterBlocker } from "../../hooks/useRouterBlocker";
+
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import CommonModal from "./CreateFunction/CommonModal";
 
 const CreateFunction = () => {
   useLabTitle("Dev Studio");
@@ -64,6 +66,7 @@ const CreateFunction = () => {
   //yyyy-mm-dd
   const [argsData, setArgsData] = useState([{ name: "", value: "" }]);
   const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
+  const [isFullGraphOpen, setIsFullGraphOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
   const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
@@ -441,12 +444,12 @@ const CreateFunction = () => {
             isVerify
             // showButtons={true}
           />
-          <Grid2
+          <Grid
             container
             spacing={2}
             className="w-full  h-[calc(100%-76px)] overflow-auto px-4 border border-zinc-200 "
           >
-            <Grid2
+            <Grid
               // className="md:border-r md:border-r-zinc-200"
               item
               size={{
@@ -456,8 +459,8 @@ const CreateFunction = () => {
               }}
             >
               <KeywordSearch keywordData={keywordData} fullHeight={false} />
-            </Grid2>
-            <Grid2
+            </Grid>
+            <Grid
               item
               size={{
                 xs: 12,
@@ -476,10 +479,10 @@ const CreateFunction = () => {
                 isNewFuncOrDuplicate={true}
                 setIsDirty={setIsDirty}
               />
-            </Grid2>
+            </Grid>
 
             {/* Stock Bundle Step - Full Width on Small Screens, Half on Medium+, 6.7/12 on Large+ */}
-          </Grid2>
+          </Grid>
           {internalData && (
             <>
               <CreateFunctionHeader
@@ -496,12 +499,12 @@ const CreateFunction = () => {
                 isShowSave
                 isSaving={isSaving}
               />
-              <Grid2
+              <Grid
                 container
                 spacing={2}
                 className="w-full  h-[calc(100%-76px)] overflow-auto px-4 border border-zinc-200"
               >
-                <Grid2
+                <Grid
                   className="md:border-r md:border-r-zinc-200"
                   item
                   size={{
@@ -542,8 +545,8 @@ const CreateFunction = () => {
                     triggerVerify={triggerVerify}
                     setTriggerVerify={setTriggerVerify}
                   />
-                </Grid2>
-                <Grid2
+                </Grid>
+                <Grid
                   item
                   size={{
                     xs: 12,
@@ -551,7 +554,28 @@ const CreateFunction = () => {
                     lg: 8,
                   }}
                 >
-                  <Box sx={{ width: "100%", height: 600 }}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: 600,
+                      position: "relative",
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => setIsFullGraphOpen(true)}
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        zIndex: 10,
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
+                        "&:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 1)",
+                        },
+                      }}
+                    >
+                      <FullscreenIcon fontSize="large" />
+                    </IconButton>
                     <Plot
                       data={traces}
                       layout={layout}
@@ -565,12 +589,32 @@ const CreateFunction = () => {
                     />
                   </Box>
                   {/* <CapitalChart selectedOption={"capital"} /> */}
-                </Grid2>
-              </Grid2>
+                </Grid>
+              </Grid>
             </>
           )}
         </div>
       </div>
+
+      {isFullGraphOpen && (
+        <CommonModal
+          isOpen={isFullGraphOpen}
+          handleClose={() => setIsFullGraphOpen(false)}
+          title={""}
+        >
+          <Plot
+            data={traces}
+            layout={layout}
+            config={{
+              responsive: true,
+              displayModeBar: false,
+              displaylogo: false,
+            }}
+            useResizeHandler
+            style={{ width: "100%", height: "100%" }}
+          />
+        </CommonModal>
+      )}
       {showPrompt && (
         <WarningPopupModal
           isOpen={showPrompt}

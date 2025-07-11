@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import ModalButton from "../../../common/Table/ModalButton";
+import { toast } from "react-toastify";
 
 const AddFunctionModal = ({
   isOpen,
@@ -87,7 +88,6 @@ const AddFunctionModal = ({
         stockList: selectedFunction?.stockList || false,
       };
 
-
       try {
         const verifyResponse = await verifyNewStock({
           endpoint: "stock-analysis-function/verify",
@@ -96,14 +96,23 @@ const AddFunctionModal = ({
         }).unwrap();
 
         if (!verifyResponse?.data?.success) {
+          handleClose();
           return;
         }
         // Save only if verification succeeded
-        await saveNewStock({
+        const saveStockResponse = await saveNewStock({
           endpoint: "stock-analysis-function/save",
           payload,
           tags: [tagTypes.GET_FILTERTYPE],
         }).unwrap();
+
+        if (saveStockResponse?.data?.success) {
+          toast.success(saveStockResponse?.data?.message || "Function Saved");
+        } else {
+          toast.error(
+            saveStockResponse?.data?.message || "Error Occured While Saving"
+          );
+        }
 
         localStorage.removeItem("argsData");
         localStorage.removeItem("editorFunctionCode");

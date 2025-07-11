@@ -348,7 +348,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                   );
                 }}
                 renderOption={(props, option) => (
-                  <li {...props} key={option}>
+                  <li {...props} key={option?.func}>
                     <Tooltip
                       // title={option?.desc}
                       title={
@@ -566,7 +566,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                   );
                 }}
                 renderOption={(props, option) => (
-                  <li {...props} key={option}>
+                  <li {...props} key={option?.func}>
                     <Tooltip
                       // title={option?.desc}
                       title={

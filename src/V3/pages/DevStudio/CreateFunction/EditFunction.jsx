@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useLazyGetQuery, usePostMutation } from "../../../../slices/api";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -7,7 +7,8 @@ import { tagTypes } from "../../../tagTypes";
 import {
   Box,
   Divider,
-  Grid2,
+  Grid,
+  IconButton,
   Tooltip,
   Typography,
   useTheme,
@@ -22,7 +23,6 @@ import VerfiyStockModal from "./VerfiyStockModal";
 
 import {
   FUNCTION_SUB_TITLE,
-  FUNCTION_SUB_TITLE_BUTTON,
   FUNCTION_SUB_TITLE_TOOLTIP,
   VERIFY_STOCK_TITLE,
   VERIFY_STOCK_TOOLTIP,
@@ -34,6 +34,9 @@ import EditorFunctionModal from "../../Strategies/Modal/EditorFunctionModal";
 import DeleteModal from "../../../common/DeleteModal";
 import { useRouterBlocker } from "../../../hooks/useRouterBlocker";
 import WarningPopupModal from "../../Strategies/CreateStratezy/WarningPopupModal";
+import CommonModal from "./CommonModal";
+
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 
 const EditFunction = () => {
   const theme = useTheme();
@@ -70,6 +73,7 @@ const EditFunction = () => {
   const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteFunctionName, setDeleteFunctionName] = useState({});
+  const [isFullGraphOpen, setIsFullGraphOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
   const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
@@ -516,12 +520,12 @@ const EditFunction = () => {
             isVerify
             // id={id}
           />
-          <Grid2
+          <Grid
             container
             spacing={2}
             className="w-full  h-[calc(100%-76px)] overflow-auto px-4 border border-zinc-200 "
           >
-            <Grid2
+            <Grid
               // className="md:border-r md:border-r-zinc-200"
               item
               size={{
@@ -531,8 +535,8 @@ const EditFunction = () => {
               }}
             >
               <KeywordSearch keywordData={keywordData} fullHeight={false} />
-            </Grid2>
-            <Grid2
+            </Grid>
+            <Grid
               item
               size={{
                 xs: 12,
@@ -555,10 +559,10 @@ const EditFunction = () => {
                   setIsDirty={setIsDirty}
                 />
               )}
-            </Grid2>
+            </Grid>
 
             {/* Stock Bundle Step - Full Width on Small Screens, Half on Medium+, 6.7/12 on Large+ */}
-          </Grid2>
+          </Grid>
           {internalData && (
             <>
               <CreateFunctionHeader
@@ -580,12 +584,12 @@ const EditFunction = () => {
                 // systemDefine={stockData?.userDefined}
                 // id={id}
               />
-              <Grid2
+              <Grid
                 container
                 spacing={2}
                 className="w-full  h-[calc(100%-76px)] overflow-auto px-4 border border-zinc-200"
               >
-                <Grid2
+                <Grid
                   className="md:border-r md:border-r-zinc-200"
                   item
                   size={{
@@ -626,8 +630,8 @@ const EditFunction = () => {
                     triggerVerify={triggerVerify}
                     setTriggerVerify={setTriggerVerify}
                   />
-                </Grid2>
-                <Grid2
+                </Grid>
+                <Grid
                   item
                   size={{
                     xs: 12,
@@ -635,7 +639,28 @@ const EditFunction = () => {
                     lg: 8,
                   }}
                 >
-                  <Box sx={{ width: "100%", height: 600 }}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: 600,
+                      position: "relative",
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => setIsFullGraphOpen(true)}
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        zIndex: 10,
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
+                        "&:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 1)",
+                        },
+                      }}
+                    >
+                      <FullscreenIcon fontSize="large" />
+                    </IconButton>
                     <Plot
                       data={traces}
                       layout={layout}
@@ -649,9 +674,29 @@ const EditFunction = () => {
                     />
                   </Box>
                   {/* <CapitalChart selectedOption={"capital"} /> */}
-                </Grid2>
-              </Grid2>
+                </Grid>
+              </Grid>
             </>
+          )}
+
+          {isFullGraphOpen && (
+            <CommonModal
+              isOpen={isFullGraphOpen}
+              handleClose={() => setIsFullGraphOpen(false)}
+              title={""}
+            >
+              <Plot
+                data={traces}
+                layout={layout}
+                config={{
+                  responsive: true,
+                  displayModeBar: false,
+                  displaylogo: false,
+                }}
+                useResizeHandler
+                style={{ width: "100%", height: "100%" }}
+              />
+            </CommonModal>
           )}
 
           {isDeleteOpen && (

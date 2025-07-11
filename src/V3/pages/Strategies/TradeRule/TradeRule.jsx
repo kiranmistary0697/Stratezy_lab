@@ -243,7 +243,7 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
                 }}
                 renderOption={(props, option) => {
                   return (
-                    <li {...props} key={option}>
+                    <li {...props} key={option?.func}>
                       <Tooltip
                         // title={option?.desc}
                         title={

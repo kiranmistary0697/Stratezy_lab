@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TradeHEader from "../TradeRule/TradeHEader";
 import {
@@ -294,7 +294,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                     );
                   }}
                   renderOption={(props, option) => (
-                    <li {...props} key={option}>
+                    <li {...props} key={option?.func}>
                       <Tooltip
                         // title={option?.desc}
                         title={

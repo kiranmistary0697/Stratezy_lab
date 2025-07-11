@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import { Grid2, Box, Divider } from "@mui/material";
+import { Grid, Divider } from "@mui/material";
 import * as Yup from "yup";
 
 import StockBundleStep from "../CreateStratezy/StockBundleStep";
@@ -501,12 +501,12 @@ const EditStrategy = () => {
           )}
 
           {(tabIndex === 0 || !view) && (
-            <Grid2
+            <Grid
               container
               spacing={2}
               className="w-full h-[calc(100%-201px)] overflow-auto px-4"
             >
-              <Grid2
+              <Grid
                 className="md:border-r md:border-r-zinc-200"
                 item
                 size={{ xs: 12, md: 6, lg: 4 }}
@@ -517,9 +517,9 @@ const EditStrategy = () => {
                   step={step}
                   goToStep={goToStep}
                 />
-              </Grid2>
+              </Grid>
 
-              <Grid2
+              <Grid
                 item
                 size={{
                   xs: 12,
@@ -541,8 +541,8 @@ const EditStrategy = () => {
                     setIsDirty={setIsDirty}
                   />
                 )}
-              </Grid2>
-            </Grid2>
+              </Grid>
+            </Grid>
           )}
 
           {view && tabIndex === 1 && (

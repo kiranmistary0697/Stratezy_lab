@@ -127,3 +127,24 @@ export const ARGUMENTS_TOOLTIP = "Arguments";
 export const PRIMITIVES_TOOLTIP = "Primitives";
 
 export const PLOT_GRAPH_TOOLTIP = "Plot Graph";
+
+export const CAPTITAL_DESC =
+  "Capital Graph plots profit, average profit etc. against time to give a better point of view.";
+export const PARAMETERS_DESC =
+  "Parameter Graph plots profit, average profit etc. against time to give a better point of view.";
+export const DRAWDOWN_DESC =
+  "Draw Down Graph plots profit, average profit etc. against time to give a better point of view.";
+export const PROFITS_DESC =
+  "Profits Graph plots profit, average profit etc. against time to give a better point of view.";
+export const AVG1R_DESC =
+  "AVG1R Graph plots profit, average profit etc. against time to give a better point of view.";
+export const COMPARE_WITH_INDEX_DESC =
+  "Compare with index Graph plots profit, average profit etc. against time to give a better point of view.";
+export const OPEN_TRADES_DESC =
+  "Open Trades Graph plots profit, average profit etc. against time to give a better point of view.";
+export const TOTAL_TRADES_DESC =
+  "Total trades Graph plots profit, average profit etc. against time to give a better point of view.";
+export const DURATION_DESC =
+  "Duration Graph plots profit, average profit etc. against time to give a better point of view.";
+export const SYMBOL_DESC =
+  "Symbol Graph plots profit, average profit etc. against time to give a better point of view.";

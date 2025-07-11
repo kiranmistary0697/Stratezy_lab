@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -476,6 +476,50 @@ const BacktestTable = () => {
           row.netProfit ? parseFloat(row.netProfit) : 0,
         renderCell: (params) => (
           <span>{params.row.backtestSummary?.["Net profit"] || "0"}</span>
+        ),
+      },
+      {
+        field: "maxDrawdown",
+        headerName: "Max Drawdown",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
+        renderCell: (params) => (
+          <span>{params.row.backtestSummary?.["Max Drawdown"] || "0"}</span>
+        ),
+      },
+      {
+        field: "avgProfitPerTrade",
+        headerName: "Average profit/trade",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
+        renderCell: (params) => (
+          <span>{params.row.backtestSummary?.["avg profit/trade"] || "0"}</span>
+        ),
+      },
+      {
+        field: "expectancy",
+        headerName: "Expectancy",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.expectancy ? parseFloat(row.expectancy) : 0,
+        renderCell: (params) => (
+          <span>{params.row.backtestSummary?.["Expectancy"] || "0"}</span>
+        ),
+      },
+      {
+        field: "expectancy",
+        headerName: "Expectancy",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.sharpeRatio ? parseFloat(row.sharpeRatio) : 0,
+        renderCell: (params) => (
+          <span>{params.row.backtestSummary?.["Sharpe ratio"] || "0"}</span>
         ),
       },
       {

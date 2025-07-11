@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Divider, Grid2 } from "@mui/material";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { Divider, Grid } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import DeployDetailHeader from "./DeployDetailHeader";
 import NavigationTabs from "../../Strategies/ViewStrategy/NavigationTabs";
@@ -27,7 +27,6 @@ const DeployPage = () => {
   const { search } = useLocation();
   const queryParams = useMemo(() => new URLSearchParams(search), [search]);
   const id = queryParams.get("id");
-  const name = queryParams.get("name");
 
   const [tabIndex, setTabIndex] = useState(0);
   const [deploy, setDeploy] = useState([]);
@@ -78,9 +77,9 @@ const DeployPage = () => {
         </div>
         {/* <div className="flex-grow overflow-auto"> */}
         <div className="p-8 space-y-4 flex-grow overflow-auto">
-          <Grid2 item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={6} lg={8}>
             <TabComponent data={deployFilterData} />
-          </Grid2>
+          </Grid>
         </div>
         {/* </div> */}
       </div>

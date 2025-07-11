@@ -11,7 +11,6 @@ import StatusBadge from "./StatusBadge";
 import HeaderButton from "../../../../../common/Table/HeaderButton";
 import TradeToDoTable from "./TradeToDoTable";
 import { CSVLink } from "react-csv";
-import { styled } from "@mui/system";
 import CustomDatePicker from "../../../../../common/CustomDatePicker";
 import moment from "moment";
 import { useLazyGetQuery, usePostMutation } from "../../../../../../slices/api";
@@ -32,6 +31,7 @@ const TradeToDo = ({ data = {} }) => {
   const [pendingDates, setPendingDates] = useState([]);
   const [wasMarkedComplete, setWasMarkedComplete] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [tradeData, setTradeData] = useState([]);
   const triggerDownload = () => {
     if (csvLink.current) {
       csvLink.current.link.click();
@@ -41,8 +41,6 @@ const TradeToDo = ({ data = {} }) => {
   const handleDateChange = (newDate) => {
     setStartDate(newDate); // Update the start date with the selected date
   };
-
-  const [tradeData, setTradeData] = useState([]);
 
   // const fetchDeployAndTradeData = async () => {
   //   setLoading(true);
@@ -133,6 +131,18 @@ const TradeToDo = ({ data = {} }) => {
     }
   };
 
+  const fetchDeployData = async () => {
+    try {
+      const { data } = await getTradeToDoData({
+        endpoint: `deploy/strategy/viewn?name=${name}&days=${pendingDates?.length}&exchange=${exchange}&brokerage=${brokerage}&version=${version}`,
+        tags: [tagTypes.GET_TRADETODO],
+      }).unwrap();
+      setTradeData(data);
+    } catch (error) {
+      console.error("Failed to fetch deploy data:", error);
+    }
+  };
+
   const handleMarkComplete = async () => {
     const todayStr = moment().format("YYYY-MM-DD");
 
@@ -160,21 +170,10 @@ const TradeToDo = ({ data = {} }) => {
       setWasMarkedComplete(pendingDatesArray.length > 0);
 
       await fetchDeployAndTradeData(); // helper function to rerun full pipeline
+      await fetchDeployData();
     } catch (error) {
       console.error("Error marking date as complete:", error);
       setWasMarkedComplete(false);
-    }
-  };
-
-  const fetchDeployData = async () => {
-    try {
-      const { data } = await getTradeToDoData({
-        endpoint: `deploy/strategy/viewn?name=${name}&days=${pendingDates?.length}&exchange=${exchange}&brokerage=${brokerage}&version=${version}`,
-        tags: [tagTypes.GET_TRADETODO],
-      }).unwrap();
-      setTradeData(data);
-    } catch (error) {
-      console.error("Failed to fetch deploy data:", error);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
@@ -314,6 +314,7 @@ const FunctionTable = ({ query }) => {
     if (row.psizing) rowTypes.push("Portfolio Sizing");
 
     if (row.sort) rowTypes.push("Trade Sequence");
+    if (row.ulying) rowTypes.push("Utility");
 
     rowCreatedBy.push(row.userDefined ? "User" : "System");
 
@@ -414,6 +415,7 @@ const FunctionTable = ({ query }) => {
                 { status: "Stock Exit" },
                 { status: "Portfolio Sizing" },
                 { status: "Trade Sequence" },
+                { status: "Utility" },
               ]}
               fieldName="status"
               applyValue={handleStatusFilterChange}
@@ -471,6 +473,9 @@ const FunctionTable = ({ query }) => {
         }
         if (row.psizing) badges.push("Portfolio Sizing");
         if (row.sort) badges.push("Trade Sequence");
+        if (row.ulying) badges.push("Utility");
+
+        // if(!row.filter && !row.buysell && !row.gentry && !row.gexit && !row.entry && !row.exit)
 
         return (
           <Box
@@ -482,15 +487,11 @@ const FunctionTable = ({ query }) => {
               height: "100%",
             }}
           >
-            {badges.length > 0 ? (
-              badges.map((label, idx) => (
-                <Badge key={idx} variant="version">
-                  <span>{label}</span>
-                </Badge>
-              ))
-            ) : (
-              <span>NA</span>
-            )}
+            {badges.map((label, idx) => (
+              <Badge key={idx} variant="version">
+                <span>{label}</span>
+              </Badge>
+            ))}
           </Box>
         );
       },

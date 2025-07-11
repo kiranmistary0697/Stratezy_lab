@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -286,7 +286,27 @@ const FunctionSelect = ({
           </Tooltip>
         </Box>
 
-        <FormGroup row className="flex flex-wrap gap-4">
+        <FormGroup
+          sx={{
+            display: {
+              xs: "grid",
+              sm: "grid",
+              md: "flex",
+            },
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+            },
+            flexDirection: {
+              md: "row",
+            },
+            flexWrap: {
+              md: "wrap",
+            },
+            gap: { xs: 1, sm: 2, md: 4 },
+            width: { md: "100%" },
+          }}
+        >
           {Object.entries(selectedTypes).map(([key, value]) => {
             const shouldHide =
               key === "utility" && stockData?.filter && stockData?.stockList;
@@ -308,6 +328,10 @@ const FunctionSelect = ({
                     {typeLabels[key]}
                   </div>
                 }
+                sx={{
+                  marginRight: 0,
+                  marginBottom: 0,
+                }}
               />
             );
           })}

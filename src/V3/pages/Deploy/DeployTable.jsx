@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -339,7 +339,7 @@ const DeployTable = ({
       },
       {
         field: "avgAnProfit",
-        headerName: "Average Profit",
+        headerName: "Avg Annual Profit",
         // minWidth: 170,
         flex: 1,
         valueGetter: (_, row) =>

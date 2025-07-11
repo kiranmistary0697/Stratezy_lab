@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import useLabTitle from "../../hooks/useLabTitle";
 import Grid from "@mui/material/Grid";
@@ -35,24 +34,27 @@ const Strategies = () => {
     <div className="p-8 space-y-4">
       <Grid
         container
-        alignItems="center"
-        justifyContent="space-between"
         spacing={2}
-        direction="row"
-        wrap="wrap"
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+        }}
       >
         <Grid
           item
           xs={12}
-          sm={12}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          flexWrap="wrap"
-          gap={2}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 2,
+            width: "100%",
+          }}
         >
           {/* Title with Tooltip */}
-          <Box display="flex" alignItems="center" gap={1}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <div className="font-semibold text-xl">Strategy</div>
             <Tooltip
               title={STRATEGY_TOOLTIP_TITLE}

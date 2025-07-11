@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AceEditor from "react-ace";
 
-import { Box, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 
 // import 'ace-builds/src-noconflict/mode-javascript';
 // import 'ace-builds/src-noconflict/theme-github';
@@ -113,7 +113,7 @@ const EditorFunction = ({
           <Box className="flex gap-4 mt-4" sx={{ alignItems: "center" }}>
             <Box sx={{ minWidth: "150px" }}>
               {argsData.map((item, index) => {
-                const labelIndex = `@@${index + 1} Name`;
+                const labelIndex = `ARG${index + 1} Name`;
                 return (
                   <Box
                     key={index}

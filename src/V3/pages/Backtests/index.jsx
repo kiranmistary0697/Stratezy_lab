@@ -1,7 +1,5 @@
-import React from "react";
 import BacktestHeader from "./BacktestHeader";
-import { Divider, Box, Grid2 } from "@mui/material";
-import ViewBacktestResult from "../Strategies/ViewStrategy/ViewModal/ViewBacktestResult";
+import { Box } from "@mui/material";
 import BacktestTable from "./BacktestTable";
 import useLabTitle from "../../hooks/useLabTitle";
 

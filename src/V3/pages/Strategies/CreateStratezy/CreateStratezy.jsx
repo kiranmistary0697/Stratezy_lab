@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useFormik } from "formik";
-import { Divider, Grid2 } from "@mui/material";
+import { Divider, Grid } from "@mui/material";
 import * as Yup from "yup";
 
 import useLabTitle from "../../../hooks/useLabTitle";
@@ -230,12 +230,12 @@ const CreateStrategy = () => {
 
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
 
-          <Grid2
+          <Grid
             container
             spacing={2}
             className="w-full  h-[calc(100%-76px)] overflow-auto px-4"
           >
-            <Grid2
+            <Grid
               className="p-5 md:border-r md:border-r-zinc-200"
               item
               size={{
@@ -250,8 +250,8 @@ const CreateStrategy = () => {
                 step={step}
                 goToStep={goToStep}
               />
-            </Grid2>
-            <Grid2
+            </Grid>
+            <Grid
               item
               size={{
                 xs: 12,
@@ -260,8 +260,8 @@ const CreateStrategy = () => {
               }}
             >
               <CurrentStepComponent setIsDirty={setIsDirty} formik={formik} />
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </div>
       </div>
     </>

@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import NavigationTabs from "../Strategies/ViewStrategy/NavigationTabs";
 import BacktestDetailHeader from "./BacktestDetailHeader";
-import { Divider, Box, Grid2 } from "@mui/material";
+import { Divider, Grid } from "@mui/material";
 import Output from "./BacktestTabs/Output";
 import Visualisation from "./BacktestTabs/Visualisation";
 import Tradetable from "./BacktestTabs/Tradetable";
@@ -11,7 +11,6 @@ import Tradetable from "./BacktestTabs/Tradetable";
 import { useSelector } from "react-redux";
 import { useLazyGetQuery } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
-import BacktestTimeLine from "./BacktestTimeLine";
 
 const BackTestOutput = () => {
   const { backTestData } = useSelector((state) => ({
@@ -127,7 +126,7 @@ const BackTestOutput = () => {
         <div className="flex-grow overflow-auto">
           {tabIndex === 0 && (
             <div className="p-8 space-y-4 ">
-              <Grid2
+              <Grid
                 item
                 size={{
                   xs: 12,
@@ -136,12 +135,12 @@ const BackTestOutput = () => {
                 }}
               >
                 <Output summary={summaryData} data={backTestIdData} />
-              </Grid2>
+              </Grid>
             </div>
           )}
           {tabIndex === 1 && (
             <div className="p-8 space-y-4">
-              <Grid2
+              <Grid
                 item
                 size={{
                   xs: 12,
@@ -150,7 +149,7 @@ const BackTestOutput = () => {
                 }}
               >
                 <Visualisation id={id} />
-              </Grid2>
+              </Grid>
             </div>
           )}
           {tabIndex === 2 && (

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import BacktestDetailHeader from "./BacktestDetailHeader";
-import { Box, Divider, Grid2 } from "@mui/material";
+import { Divider } from "@mui/material";
 import BacktestTimeLine from "./BacktestTimeLine";
-import { backtestDemo } from "../../../../backtestdata";
 import { useLazyGetQuery } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
 import { useSelector } from "react-redux";
@@ -16,7 +15,7 @@ const BacktestDetail = () => {
     backTestData: state.Stock.backTestData,
   }));
 
-  const { search, state } = useLocation();
+  const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const strategyName = queryParams.get("name");
   const id = queryParams.get("id");

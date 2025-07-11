@@ -1,10 +1,5 @@
-import React, { useState } from "react";
-import {
-  Grid2,
-  InputAdornment,
-  TextField,
-  Tooltip,
-} from "@mui/material";
+import { useState } from "react";
+import { Grid, InputAdornment, TextField, Tooltip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import useLabTitle from "../../hooks/useLabTitle";
@@ -23,14 +18,14 @@ const gobalFunction = () => {
 
   return (
     <div className="space-y-4 h-full sm:h-[calc(100vh-100px)] overflow-auto p-4 sm:p-8">
-      <Grid2
+      <Grid
         container
         spacing={2}
         justifyContent="space-between"
         alignItems="center"
       >
         {/* Title and tooltip */}
-        <Grid2
+        <Grid
           item
           xs={12}
           sm={6}
@@ -65,10 +60,10 @@ const gobalFunction = () => {
               sx={{ color: "#666666", width: "17px", height: "17px" }}
             />
           </Tooltip>
-        </Grid2>
+        </Grid>
 
         {/* Search and Button */}
-        <Grid2 item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <div className="flex  gap-3 w-full">
             <TextField
               size="small"
@@ -100,8 +95,8 @@ const gobalFunction = () => {
               Create Function
             </HeaderButton>
           </div>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
 
       {/* Function table */}
       <FunctionTable query={query} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   MenuItem,
@@ -14,26 +14,41 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Plot from "react-plotly.js";
 import { useLazyGetQuery } from "../../../../slices/api";
 import { tagTypes } from "../../../tagTypes";
-import { PLOT_GRAPH_TOOLTIP } from "../../../../constants/CommonText";
+import {
+  CAPTITAL_DESC,
+  PARAMETERS_DESC,
+  DRAWDOWN_DESC,
+  PROFITS_DESC,
+  AVG1R_DESC,
+  COMPARE_WITH_INDEX_DESC,
+  OPEN_TRADES_DESC,
+  TOTAL_TRADES_DESC,
+  DURATION_DESC,
+  SYMBOL_DESC,
+  PLOT_GRAPH_TOOLTIP,
+} from "../../../../constants/CommonText";
 
 const chartOptions = [
-  { value: "capital", label: "Capital" },
-  { value: "parameters", label: "Parameter" },
-  { value: "drawdown", label: "Drawdown" },
-  { value: "profits", label: "Profit" },
-  { value: "avg1r", label: "Avg1r" },
-  { value: "CompareWithIndex", label: "Compare With Index" },
-  { value: "opentrades", label: "Open Trades" },
-  { value: "totaltrades", label: "Total Trades" },
-  { value: "duration", label: "Duration" },
-  { value: "symbol", label: "Symbol" },
+  { value: "capital", label: "Capital", desc: CAPTITAL_DESC },
+  { value: "parameters", label: "Parameter", desc: PARAMETERS_DESC },
+  { value: "drawdown", label: "Drawdown", desc: DRAWDOWN_DESC },
+  { value: "profits", label: "Profit", desc: PROFITS_DESC },
+  { value: "avg1r", label: "Avg1r", desc: AVG1R_DESC },
+  {
+    value: "CompareWithIndex",
+    label: "Compare With Index",
+    desc: COMPARE_WITH_INDEX_DESC,
+  },
+  { value: "opentrades", label: "Open Trades", desc: OPEN_TRADES_DESC },
+  { value: "totaltrades", label: "Total Trades", TOTAL_TRADES_DESC },
+  { value: "duration", label: "Duration", desc: DURATION_DESC },
+  { value: "symbol", label: "Symbol", desc: SYMBOL_DESC },
 ];
 
 const Visualisation = ({ id }) => {
   const theme = useTheme();
   const [getChartData] = useLazyGetQuery([]);
   const [selectedOption, setSelectedOption] = useState(chartOptions[0]);
-  const [chartData, setChartData] = useState([]);
   const [symbolName, setSymbolName] = useState(""); // default symbol
   const [preparedData, setPreparedData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -234,10 +249,11 @@ const Visualisation = ({ id }) => {
               {`${selectedOption.label} Graph`}
             </label>
           </Box>
-          <Typography className="text-xs font-semibold text-[#6B7280]">
-            Capital Graph plots profit, average profit etc. against time to give
-            a better point of view. {selectedOption.value}
-          </Typography>
+          {
+            <Typography className="text-xs font-semibold text-[#6B7280]">
+              {selectedOption.desc}
+            </Typography>
+          }
         </Box>
       </Box>
 
