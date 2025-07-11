@@ -7,7 +7,6 @@ import KeywordSearch from "./CreateFunction/KeywordSearch";
 import EditorFunction from "./CreateFunction/EditorFunction";
 
 import VerfiyStockModal from "./CreateFunction/VerfiyStockModal";
-import { useLocation } from "react-router-dom";
 
 import useLabTitle from "../../hooks/useLabTitle";
 import { useLazyGetQuery, usePostMutation } from "../../../slices/api";
@@ -45,7 +44,6 @@ const CreateFunction = () => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [openStockModal, setOpenStockModal] = useState(false);
-  const { search, state } = useLocation();
   const [stockList, setStockList] = useState([]);
   const [keywordData, setKeywordData] = useState([]);
   const [selectedFunction, setSelectedFunction] = useState({});
