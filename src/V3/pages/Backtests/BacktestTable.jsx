@@ -512,8 +512,8 @@ const BacktestTable = () => {
         ),
       },
       {
-        field: "expectancy",
-        headerName: "Expectancy",
+        field: "sharpeRatio",
+        headerName: "Sharpe ratio",
         // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>

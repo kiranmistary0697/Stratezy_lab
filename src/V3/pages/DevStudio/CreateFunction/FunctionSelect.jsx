@@ -219,10 +219,23 @@ const FunctionSelect = ({
 
   const handleSelectChange = (key, value) => {
     const selected = Array.isArray(value) ? value : [value];
-    setSelectedValues((prev) => ({
-      ...prev,
-      [key]: key === "filterRule" ? [selected[selected.length - 1]] : selected,
-    }));
+
+    setSelectedValues((prev) => {
+      if (
+        selected.length === 0 ||
+        (selected.length === 1 && selected[0] === undefined)
+      ) {
+        return {
+          ...prev,
+          [key]: key === "filterRule" ? [] : [],
+        };
+      }
+      return {
+        ...prev,
+        [key]:
+          key === "filterRule" ? [selected[selected.length - 1]] : selected,
+      };
+    });
   };
 
   const allOptions = {
