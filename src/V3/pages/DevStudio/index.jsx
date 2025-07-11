@@ -426,7 +426,6 @@ const CreateFunction = () => {
             setSelectedFunction={(e) => {
               // setIsDirty(true);
               setSelectedFunction(e);
-              console.log(e);
             }}
             setIsDirty={setIsDirty}
           />
