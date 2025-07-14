@@ -72,7 +72,11 @@ const CreateStock = ({
   });
 
   const filteredStockList = useMemo(() => {
-    const flatList = stockList.flat();
+    // const flatList = stockList.flat();
+    const flatList = stockList
+      .flat()
+      .sort((a, b) => a.symbol.localeCompare(b.symbol));
+
     const keyword = debouncedInput.toLowerCase();
 
     return flatList.filter(
@@ -190,6 +194,7 @@ const CreateStock = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    placeholder="Search Stock by Symbol or Company Name"
                     label="Select a Stock"
                     variant="outlined"
                     fullWidth

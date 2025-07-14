@@ -266,7 +266,7 @@ function CustomChartVisualization({
                 showline: true,
                 showgrid: false,
                 zeroline: true,
-                showticklabels: true,
+                showticklabels: false,
                 showspikes: true,
                 spikemode: 'across',
                 spikesnap: 'cursor',

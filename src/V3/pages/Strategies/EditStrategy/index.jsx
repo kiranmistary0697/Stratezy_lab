@@ -63,7 +63,6 @@ const EditStrategy = () => {
   const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
     when: isDirty,
   });
-
   const title =
     tabIndex === 0
       ? "View Strategy"
@@ -473,6 +472,7 @@ const EditStrategy = () => {
               demoStrategy={demoStrategy}
               disableDeploy={!rows.length}
               version={version}
+              setIsDirty={setIsDirty}
             />
           ) : (
             <>
@@ -483,6 +483,7 @@ const EditStrategy = () => {
                 formik={formik}
                 strategyName={strategyName}
                 id={id}
+                setIsDirty={setIsDirty}
               />
               <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
             </>

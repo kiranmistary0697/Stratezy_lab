@@ -19,6 +19,7 @@ const CustomizedDialogs = ({
   title,
   isOpen,
   handleClose = () => {},
+  setIsDirty = () => {},
   formik = {},
   isDuplicate = false,
   id,
@@ -362,6 +363,7 @@ const CustomizedDialogs = ({
     };
 
     try {
+      setIsDirty(false);
       if (defaultVersion !== versionName) {
         await createStock({
           endpoint: `strategystore/save`,
@@ -394,7 +396,10 @@ const CustomizedDialogs = ({
       localStorage.removeItem("stockExit");
       localStorage.removeItem("portfolioSizing-saved");
       localStorage.removeItem("tradeSequence");
-      navigate("/Strategies");
+
+      setTimeout(() => {
+        navigate("/Strategies");
+      }, 2000);
     } catch (error) {
       console.error("❌ Save failed:", error);
     }

@@ -9,6 +9,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  createFilterOptions,
   Divider,
   FormGroup,
   Paper,
@@ -152,6 +153,13 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
     });
   };
 
+  const customFilterOptions = createFilterOptions({
+    matchFrom: "any",
+    stringify: (option) => {
+      return `${option?.func?.toLowerCase()} ${option?.shortFuncName?.toLowerCase()}`;
+    },
+  });
+
   return (
     <>
       {openConfig && (
@@ -206,6 +214,7 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
             <FormGroup>
               <Autocomplete
                 options={portfolioSizingOptions}
+                filterOptions={customFilterOptions}
                 value={
                   portfolioSizingOptions.find(
                     (opt) =>
@@ -271,6 +280,10 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                             color: "#0A0A0A",
                             borderRadius: "4px",
                             boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                            visibility: values.portfolioSizing
+                              ?.selectedPortfolio
+                              ? "visible"
+                              : "hidden",
                           },
                         },
                       }}
@@ -371,16 +384,18 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
               <Box className="flex flex-row md:flex-row items-center justify-between md:justify-end gap-2">
                 {!isView && (
                   <Box
-                    onClick={handleDelete} // adjust this function for single object
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "red")}
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.color = "transparent")
-                    }
-                    style={{ color: "transparent", cursor: "pointer" }}
+                    onClick={handleDelete}
+                    sx={{
+                      color: "red",
+                      cursor: "pointer",
+                      opacity: 0.4,
+                      "&:hover": {
+                        color: "red",
+                        opacity: 1,
+                      },
+                    }}
                   >
-                    <DeleteOutlineOutlinedIcon
-                      sx={{ "&:hover": { color: "red" } }}
-                    />
+                    <DeleteOutlineOutlinedIcon />
                   </Box>
                 )}
                 <div

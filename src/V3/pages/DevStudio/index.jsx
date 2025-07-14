@@ -147,7 +147,7 @@ const CreateFunction = () => {
         payload: {
           exchange: "nse",
           zeroDate: moment(endDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
-          ndate: moment(startDate, "YYYY/MM/DD").format("YYYY-MM-DD"),
+          ndate: moment(startDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
           symbol: selectedSymbol,
           chartRule: {
             ruleType: "CHART_RULE",
@@ -298,7 +298,7 @@ const CreateFunction = () => {
         showline: true,
         showgrid: false,
         zeroline: true,
-        showticklabels: true,
+        showticklabels: false,
         showspikes: true,
         spikemode: "across",
         spikesnap: "cursor",

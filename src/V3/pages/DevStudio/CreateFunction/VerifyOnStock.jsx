@@ -40,10 +40,10 @@ const VerifyOnStock = ({
   const [dateRangeError, setDateRangeError] = useState(false);
 
   const handlePlotGraph = () => {
-    const start = moment(dateRange.startDate).startOf("day");
-    const end = moment(dateRange.endDate).startOf("day");
+    const start = moment(startDate).startOf("day");
+    const end = moment(endDate).startOf("day");
 
-    if (start.isSame(end)) {
+    if (start == end) {
       setDateRangeError(true);
       return;
     }

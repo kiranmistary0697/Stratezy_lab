@@ -12,6 +12,7 @@ import {
   TextField,
   Paper,
   Popper,
+  createFilterOptions,
 } from "@mui/material";
 
 import CallMadeIcon from "@mui/icons-material/CallMade";
@@ -147,6 +148,13 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
     }, 0);
   };
 
+  const customFilterOptions = createFilterOptions({
+    matchFrom: "any",
+    stringify: (option) => {
+      return `${option?.func?.toLowerCase()} ${option?.shortFuncName?.toLowerCase()}`;
+    },
+  });
+
   return (
     <>
       {openConfigIndex !== null && (
@@ -206,6 +214,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
               <Box className="flex items-center gap-2">
                 <Autocomplete
                   options={traderSequenceOptions}
+                  filterOptions={customFilterOptions}
                   value={
                     traderSequenceOptions.find(
                       (o) => o.func === filter?.name
@@ -276,6 +285,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                               color: "#0A0A0A",
                               borderRadius: "4px",
                               boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                              visibility: filter?.name ? "visible" : "hidden",
                             },
                           },
                         }}
@@ -368,18 +378,18 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                 <Box className="flex flex-row md:flex-row items-center justify-between md:justify-end gap-2">
                   {!isView && (
                     <Box
-                      onClick={() => handleDelete(index)}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.color = "red")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.color = "transparent")
-                      }
-                      style={{ color: "transparent", cursor: "pointer" }}
+                      onClick={handleDelete}
+                      sx={{
+                        color: "red",
+                        cursor: "pointer",
+                        opacity: 0.4,
+                        "&:hover": {
+                          color: "red",
+                          opacity: 1,
+                        },
+                      }}
                     >
-                      <DeleteOutlineOutlinedIcon
-                        sx={{ "&:hover": { color: "red" } }}
-                      />
+                      <DeleteOutlineOutlinedIcon />
                     </Box>
                   )}
                   <div

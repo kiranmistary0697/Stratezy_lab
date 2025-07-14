@@ -11,6 +11,7 @@ import {
   TextField,
   Tooltip,
   Paper,
+  createFilterOptions,
 } from "@mui/material";
 
 import CallMadeIcon from "@mui/icons-material/CallMade";
@@ -181,6 +182,13 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
     });
   };
 
+  const customFilterOptions = createFilterOptions({
+    matchFrom: "any",
+    stringify: (option) => {
+      return `${option?.func?.toLowerCase()} ${option?.shortFuncName?.toLowerCase()}`;
+    },
+  });
+
   return (
     <>
       {openConfig && (
@@ -265,10 +273,10 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
             <FormGroup>
               <Autocomplete
                 options={marketEntryOptions}
+                filterOptions={customFilterOptions}
                 value={
                   marketEntryOptions.find(
-                    (opt) =>
-                      opt?.func === values.marketEntryExit.entry?.name
+                    (opt) => opt?.func === values.marketEntryExit.entry?.name
                   ) || null
                 }
                 // value={values.marketEntryExit.entry?.name || ""}
@@ -298,8 +306,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                 renderInput={(params) => {
                   const selectedOption =
                     marketEntryOptions.find(
-                      (opt) =>
-                        opt.func === values.marketEntryExit.entry?.name
+                      (opt) => opt.func === values.marketEntryExit.entry?.name
                     ) || {}; // {} when nothing selected
 
                   return (
@@ -330,6 +337,9 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                             color: "#0A0A0A",
                             borderRadius: "4px",
                             boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                            visibility: values.marketEntryExit?.entry?.name
+                              ? "visible"
+                              : "hidden",
                           },
                         },
                       }}
@@ -431,16 +441,18 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
               <Box className="flex flex-row md:flex-row items-center justify-between md:justify-end gap-2">
                 {!isView && (
                   <Box
-                    onClick={handleDelete} // adjust this function for single object
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "red")}
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.color = "transparent")
-                    }
-                    style={{ color: "transparent", cursor: "pointer" }}
+                    onClick={handleDelete}
+                    sx={{
+                      color: "red",
+                      cursor: "pointer",
+                      opacity: 0.4,
+                      "&:hover": {
+                        color: "red",
+                        opacity: 1,
+                      },
+                    }}
                   >
-                    <DeleteOutlineOutlinedIcon
-                      sx={{ "&:hover": { color: "red" } }}
-                    />
+                    <DeleteOutlineOutlinedIcon />
                   </Box>
                 )}
                 <div
@@ -483,10 +495,10 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
             <FormGroup>
               <Autocomplete
                 options={marketExitOptions}
+                filterOptions={customFilterOptions}
                 value={
                   marketExitOptions.find(
-                    (opt) =>
-                      opt?.func === values.marketEntryExit.exit?.name
+                    (opt) => opt?.func === values.marketEntryExit.exit?.name
                   ) || null
                 }
                 // value={values.marketEntryExit.exit?.name || ""}
@@ -516,8 +528,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                 renderInput={(params) => {
                   const selectedOption =
                     marketExitOptions.find(
-                      (opt) =>
-                        opt.func === values.marketEntryExit.exit?.name
+                      (opt) => opt.func === values.marketEntryExit.exit?.name
                     ) || {}; // {} when nothing selected
 
                   return (
@@ -548,6 +559,9 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                             color: "#0A0A0A",
                             borderRadius: "4px",
                             boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                            visibility: values.marketEntryExit?.exit?.name
+                              ? "visible"
+                              : "hidden",
                           },
                         },
                       }}
@@ -649,16 +663,18 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
               <Box className="flex flex-row md:flex-row items-center justify-between md:justify-end gap-2">
                 {!isView && (
                   <Box
-                    onClick={handleDeleteExit} // adjust this function for single object
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "red")}
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.color = "transparent")
-                    }
-                    style={{ color: "transparent", cursor: "pointer" }}
+                    onClick={handleDeleteExit}
+                    sx={{
+                      color: "red",
+                      cursor: "pointer",
+                      opacity: 0.4,
+                      "&:hover": {
+                        color: "red",
+                        opacity: 1,
+                      },
+                    }}
                   >
-                    <DeleteOutlineOutlinedIcon
-                      sx={{ "&:hover": { color: "red" } }}
-                    />
+                    <DeleteOutlineOutlinedIcon />
                   </Box>
                 )}
                 <div

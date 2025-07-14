@@ -66,6 +66,7 @@ const StrategyHeader = ({
   demoStrategy,
   disableDeploy,
   version,
+  setIsDirty = () => {},
 }) => {
   const [getVersionData] = useLazyGetQuery();
 
@@ -173,6 +174,7 @@ const StrategyHeader = ({
         id={strategyName}
         // step
         onSave={() => setIsOpenSaveDraft(true)}
+        setIsDirty={setIsDirty}
       />
       {successModalOpen && (
         <SuccessModal

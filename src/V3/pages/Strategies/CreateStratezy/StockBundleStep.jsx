@@ -11,6 +11,7 @@ import {
   Autocomplete,
   TextField,
   Paper,
+  createFilterOptions,
 } from "@mui/material";
 import { usePostMutation, useLazyGetQuery } from "../../../../slices/api";
 import { setAllData } from "../../../../slices/page/reducer";
@@ -53,7 +54,10 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
   useEffect(() => {
     (async () => {
       if (stockBundle?.length) {
-        setStockBundleOptions(stockBundle);
+        const sortedStockBundle = [...stockBundle].sort((a, b) =>
+          a.func.localeCompare(b.func)
+        );
+        setStockBundleOptions(sortedStockBundle);
       } else {
         const { data } = await getStockBundle({
           endpoint: "stock-analysis-function/details",
@@ -61,10 +65,17 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
           tags: [tagTypes.GET_FILTERTYPE, tagTypes.CREATE_STRATEGY],
         });
         dispatch(setAllData({ data: data?.data, key: "stockBundle" }));
-        setStockBundleOptions(data?.data || []);
+        if (data?.data.length) {
+          const sortedStockBundle = [...data.data].sort((a, b) =>
+            a.func.localeCompare(b.func)
+          );
+          setStockBundleOptions(sortedStockBundle) || [];
+        } else {
+          setStockBundleOptions([]);
+        }
       }
     })();
-  }, [stockBundleOptions]);
+  }, []);
 
   // Restore filters from localStorage
   useEffect(() => {
@@ -123,6 +134,13 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
 
     setFieldValue("stockBundle", updated);
   };
+
+  const customFilterOptions = createFilterOptions({
+    matchFrom: "any",
+    stringify: (option) => {
+      return `${option?.func?.toLowerCase()} ${option?.shortFuncName?.toLowerCase()}`;
+    },
+  });
 
   const addFilter = () => {
     const updated = [
@@ -282,6 +300,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                       onBlur={() =>
                         setFieldTouched(`stockBundle[${index}].name`, true)
                       }
+                      filterOptions={customFilterOptions}
                       disabled={isView}
                       size="small"
                       sx={{
@@ -341,6 +360,9 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                                   color: "#0A0A0A",
                                   borderRadius: "4px",
                                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                  visibility: filter.name
+                                    ? "visible"
+                                    : "hidden",
                                 },
                               },
                             }}
@@ -471,17 +493,17 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                     {!isView && (
                       <Box
                         onClick={() => handleDelete(index)}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.color = "red")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.color = "transparent")
-                        }
-                        style={{ color: "transparent", cursor: "pointer" }}
+                        sx={{
+                          color: "red",
+                          cursor: "pointer",
+                          opacity: 0.4,
+                          "&:hover": {
+                            color: "red",
+                            opacity: 1,
+                          },
+                        }}
                       >
-                        <DeleteOutlineOutlinedIcon
-                          sx={{ "&:hover": { color: "red" } }}
-                        />
+                        <DeleteOutlineOutlinedIcon />
                       </Box>
                     )}
                     <div
