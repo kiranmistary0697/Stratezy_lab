@@ -8,6 +8,7 @@ import {
   IconButton,
   Link,
   Popover,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -103,6 +104,23 @@ const BacktestTable = () => {
     } catch (error) {
       console.error("Failed to fetch backtest data:", error);
     }
+  };
+
+  const extractErrorList = (logString) => {
+    let errors = [];
+    try {
+      // Remove the non-JSON parts and parse the JSON
+      const errorSectionMatch = logString.match(
+        /Error -\s*(\[[\s\S]*?\])\s*-----------/
+      );
+      if (errorSectionMatch && errorSectionMatch[1]) {
+        const errorArray = JSON.parse(errorSectionMatch[1].trim());
+        errors = errorArray.flatMap((errorObj) => errorObj.errorList || []);
+      }
+    } catch (e) {
+      // console.error("Failed to parse log string:", e);
+    }
+    return errors.filter((error) => error !== "");
   };
 
   const extractSummaryMetrics = (rawString = "") => {
@@ -453,7 +471,6 @@ const BacktestTable = () => {
             </IconButton>
           </Box>
         ),
-        // minWidth: 140,
         flex: 1,
         renderCell: (params) => {
           const summary = params.row.summary || "";
@@ -462,20 +479,70 @@ const BacktestTable = () => {
             : summary.includes("Backtest summary for")
             ? "Complete"
             : "Failed";
+
+          const errorListArray = extractErrorList(summary);
+
           return (
-            <Badge variant={status.toLowerCase()} isSquare>
-              <span
-                style={{
-                  fontFamily: "Inter",
-                  fontWeight: 500,
-                  fontSize: "14px",
-                  lineHeight: "22px",
-                  letterSpacing: "0%",
+            <Tooltip
+              title={
+                <span>
+                  {errorListArray.map((err, index) => (
+                    <Typography
+                      key={index}
+                      sx={{
+                        fontFamily: "Inter",
+                        // fontWeight: 500,
+                        fontSize: "12px",
+                        lineHeight: "120%",
+                        letterSpacing: "0%",
+                        color: "#0A0A0A",
+                      }}
+                    >
+                      {`${index + 1}. ${err}`}
+                    </Typography>
+                  ))}
+                </span>
+              }
+              placement="right-end"
+              componentsProps={{
+                tooltip: {
+                  sx: {
+                    visibility: errorListArray.length ? "visible" : "hidden",
+                    padding: "16px",
+                    background: "#FFFFFF",
+                    color: "#666666",
+                    boxShadow: "0px 8px 16px 0px #7B7F8229",
+                    fontFamily: "Inter",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                  },
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                {status}
-              </span>
-            </Badge>
+                <Badge variant={status.toLowerCase()} isSquare>
+                  <span
+                    style={{
+                      fontFamily: "Inter",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      lineHeight: "22px",
+                      letterSpacing: "0%",
+                    }}
+                  >
+                    {status}
+                  </span>
+                </Badge>
+              </Box>
+            </Tooltip>
           );
         },
       },
