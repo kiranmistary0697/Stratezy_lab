@@ -154,6 +154,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
       },
     ];
     setFieldValue("stockBundle", updated);
+    setFieldTouched(`stockBundle[${updated.length - 1}].name`, false);
   };
 
   const handleConfigure = (index) => {
@@ -167,17 +168,19 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
   const handleDelete = (index) => {
     const updated = [...values.stockBundle];
 
-    if (index === 0) {
-      // Just clear the first item instead of removing it
+    if (updated.length === 1) {
       updated[0] = {
         name: "",
         type: "Dynamic",
         adesc: [],
         args: [],
       };
+      setFieldTouched(`stockBundle[0].name`, false);
     } else {
-      // Remove the selected index
       updated.splice(index, 1);
+      if (index < updated.length) {
+        setFieldTouched(`stockBundle[${index}].name`, false);
+      }
     }
 
     setFieldValue("stockBundle", updated);
@@ -284,7 +287,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                       size="small"
                       disabled={isView}
                       // className="custom-select max-md:w-full"
-                      style={{ "--custom-width": "w-[80px]" }}
+                      style={{ "--custom-width": "w-[80px]", height: "80%" }}
                     >
                       <MenuItem value="AND">AND</MenuItem>
                     </Select>

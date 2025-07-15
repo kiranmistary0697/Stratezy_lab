@@ -72,7 +72,11 @@ const displayErrorMessage = (error) => {
   let errorMessage;
   switch (statusCode) {
     case 400:
-      errorMessage = parsedData?.Error || parsedData?.error || "Invalid data";
+      errorMessage =
+        parsedData?.Error ||
+        parsedData?.error ||
+        parsedData?.errorMessage ||
+        "Invalid data";
       break;
     case 401:
       errorMessage = parsedData?.Error || "Unauthenticated";

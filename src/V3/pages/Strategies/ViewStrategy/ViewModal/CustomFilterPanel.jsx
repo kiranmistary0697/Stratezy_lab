@@ -72,7 +72,7 @@ const CustomFilterPanel = ({
                       color: "#0A0A0A",
                     }}
                   >
-                    {!isStatus && <span>{item[dataKey]}</span>}
+                    {!isStatus && <span>{item[dataKey]} </span>}
                     {isVersion && item.version && (
                       <Badge variant="version">{item.version}</Badge>
                     )}

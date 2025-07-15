@@ -49,6 +49,12 @@ const BacktestTable = () => {
     { data: { data: backtestData = [] } = {}, isLoading },
   ] = useLazyGetQuery();
   const [deleteData] = useLazyGetQuery();
+  const localSelectedStatus = localStorage.getItem(
+    "selectedStatusBackTestTable"
+  );
+  const localSelectedStrategies = localStorage.getItem(
+    "localSelectedStrategies"
+  );
 
   const [rows, setRows] = useState([]);
   const [filterModel, setFilterModel] = useState({ items: [] });
@@ -69,6 +75,15 @@ const BacktestTable = () => {
     fetchAllData();
     const interval = setInterval(fetchAllData, 30000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (localSelectedStatus) {
+      setSelectedStatuses(JSON.parse(localSelectedStatus));
+    }
+    if (localSelectedStrategies) {
+      setSelectedStrategies(JSON.parse(localSelectedStrategies));
+    }
   }, []);
 
   useEffect(() => {
@@ -168,6 +183,22 @@ const BacktestTable = () => {
         )
       : "";
   };
+
+  const handleStatusFilter = (data) => {
+    setSelectedStatuses(data.value || []);
+    localStorage.setItem(
+      "selectedStatusBackTestTable",
+      JSON.stringify(data.value || [])
+    );
+  };
+  const handleStarategiesFilter = (data) => {
+    setSelectedStrategies(data.value || []);
+    localStorage.setItem(
+      "localSelectedStrategies",
+      JSON.stringify(data.value || [])
+    );
+  };
+
   const handleStrategyNavigation = (
     action,
     id,
@@ -233,7 +264,7 @@ const BacktestTable = () => {
           <CustomFilterPanel
             data={rowsWithId}
             fieldName="name"
-            applyValue={(data) => setSelectedStrategies(data.value || [])}
+            applyValue={handleStarategiesFilter}
             title="Select Strategies"
             dataKey="name"
             isVersion
@@ -249,7 +280,7 @@ const BacktestTable = () => {
               { status: "Failed" },
             ]}
             fieldName="status"
-            applyValue={(data) => setSelectedStatuses(data.value || [])}
+            applyValue={handleStatusFilter}
             title="Select Status"
             dataKey="status"
             selectedValues={selectedStatuses}

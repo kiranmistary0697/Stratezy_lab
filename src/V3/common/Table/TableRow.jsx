@@ -82,6 +82,7 @@ const TableRow = () => {
   // const { authToken } = useAuth();
 
   const navigate = useNavigate();
+  const localSelectedStatus = localStorage.getItem("selectedStatusTableRow");
 
   const handleStrategyNavigation = (
     action,
@@ -130,6 +131,14 @@ const TableRow = () => {
     localStorage.removeItem("stockExit");
     localStorage.removeItem("tradeSequence");
     localStorage.removeItem("portfolioSizing-saved");
+  };
+
+  const handleStatusFilter = (data) => {
+    setSelectedStatuses(data.value || []);
+    localStorage.setItem(
+      "selectedStatusTableRow",
+      JSON.stringify(data.value || [])
+    );
   };
 
   const handleColumnToggle = (field) => {
@@ -184,7 +193,7 @@ const TableRow = () => {
           <CustomFilterPanel
             data={[{ status: "Complete" }, { status: "Draft" }]}
             fieldName="status"
-            applyValue={(data) => setSelectedStatuses(data.value || [])}
+            applyValue={handleStatusFilter}
             title="Select Status"
             dataKey="status"
             selectedValues={selectedStatuses}
@@ -209,7 +218,7 @@ const TableRow = () => {
               Select Column
             </Typography>
             {columns
-              .filter(({ field }) => true) // Remove !["moreActions"].includes(field)
+              .filter(({ field }) => !["favorite"].includes(field)) // Remove !["moreActions"].includes(field)
               .map((col) => (
                 <FormControlLabel
                   key={col.field}
@@ -308,6 +317,12 @@ const TableRow = () => {
 
   useEffect(() => {
     fetchAllData();
+  }, []);
+
+  useEffect(() => {
+    if (localSelectedStatus) {
+      setSelectedStatuses(JSON.parse(localSelectedStatus));
+    }
   }, []);
 
   useEffect(() => {
@@ -731,8 +746,8 @@ const TableRow = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         PaperProps={{
           sx: {
-            maxHeight: 250,
-            overflowY: "scroll",
+            maxHeight: 300,
+            overflowY: "auto",
             overflowX: "hidden",
           },
         }}

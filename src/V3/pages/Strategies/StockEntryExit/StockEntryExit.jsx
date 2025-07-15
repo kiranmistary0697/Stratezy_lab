@@ -41,7 +41,7 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { values, setFieldValue } = formik;
+  const { values, setFieldValue, setFieldTouched } = formik;
 
   const [getStockEntry] = usePostMutation();
   const [getStockExit] = usePostMutation();
@@ -149,23 +149,30 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
 
   const handleDelete = (type, index) => {
     const updated = [...values.stockEntryExit[type]];
-    if (index === 0) {
-      // Just clear the first item instead of removing it
+
+    if (updated.length === 1) {
       updated[0] = {
         name: "",
         adesc: [],
         args: [],
         type: "",
       };
+      setFieldTouched(`stockEntryExit.${type}[0].name`, false);
     } else {
-      // Remove the selected index
       updated.splice(index, 1);
+      if (index < updated.length) {
+        setFieldTouched(`stockEntryExit.${type}[${index}].name`, false);
+      }
     }
+
     setFieldValue(`stockEntryExit.${type}`, updated);
-    localStorage.setItem(
-      type === "entry" ? STORAGE_KEY_ENTRY : STORAGE_KEY_EXIT,
-      JSON.stringify(updated)
-    );
+
+    setTimeout(() => {
+      localStorage.setItem(
+        type === "entry" ? STORAGE_KEY_ENTRY : STORAGE_KEY_EXIT,
+        JSON.stringify(updated)
+      );
+    }, 0);
   };
 
   const handleConfigure = (index, type) => setOpenConfig({ index, type });
@@ -350,7 +357,7 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
           <Box className="flex flex-row md:flex-row items-center justify-between md:justify-end gap-2">
             {!isView && (
               <Box
-                onClick={handleDelete}
+                onClick={() => handleDelete(type, index)}
                 sx={{
                   color: "red",
                   cursor: "pointer",

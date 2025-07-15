@@ -402,6 +402,13 @@ const FunctionTable = ({ query }) => {
             onClose={handleTypeFilterClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "left" }}
+            PaperProps={{
+              sx: {
+                maxHeight: 300,
+                overflowY: "auto",
+                overflowX: "hidden",
+              },
+            }}
           >
             <CustomFilterPanel
               data={[
@@ -528,6 +535,13 @@ const FunctionTable = ({ query }) => {
             onClose={handleSubTypeFilterClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "left" }}
+            PaperProps={{
+              sx: {
+                maxHeight: 300,
+                overflowY: "auto",
+                overflowX: "hidden",
+              },
+            }}
           >
             <CustomFilterPanel
               data={[
@@ -657,6 +671,13 @@ const FunctionTable = ({ query }) => {
             onClose={handleCreatedByFilterClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "left" }}
+            PaperProps={{
+              sx: {
+                maxHeight: 300,
+                overflowY: "auto",
+                overflowX: "hidden",
+              },
+            }}
           >
             <CustomFilterPanel
               data={[{ status: "System" }, { status: "User" }]}

@@ -50,7 +50,7 @@ const EditorFunctionModal = ({
   isNewFuncOrDuplicate,
   setIsDirty = () => {},
 }) => {
-  const [showArgs, setShowArgs] = useState(true); // toggles the side panel
+  const [showArgs, setShowArgs] = useState(false);
 
   const handleChange = (newValue, e) => {
     setIsDirty(true);

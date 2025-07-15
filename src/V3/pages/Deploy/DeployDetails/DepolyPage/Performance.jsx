@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box, useTheme } from "@mui/material";
-import CapitalChart from "../../../Backtests/Chart/CapitalChart";
 import { useLazyGetQuery } from "../../../../../slices/api";
 import { tagTypes } from "../../../../tagTypes";
 import Plot from "react-plotly.js";
@@ -122,23 +121,23 @@ const Performance = ({ data = {} }) => {
               showgrid: true,
               gridcolor: "#e0e0e0",
             },
-           yaxis: {
-                title: {
-                  text: "Primary Y-Axis",
-                  standoff: 30,
-                },
-                gridcolor: "#e0e0e0",
-                range: y1Range,
+            yaxis: {
+              title: {
+                text: "Primary Y-Axis",
+                standoff: 30,
               },
-              yaxis2: {
-                title: {
-                  text: "Secondary Y-Axis",
-                  standoff: 30,
-                },
-                overlaying: "y",
-                side: "right",
-                range: y2Range,
+              gridcolor: "#e0e0e0",
+              range: y1Range,
+            },
+            yaxis2: {
+              title: {
+                text: "Secondary Y-Axis",
+                standoff: 30,
               },
+              overlaying: "y",
+              side: "right",
+              range: y2Range,
+            },
             legend: { orientation: "h" },
             hovermode: "x unified",
             paper_bgcolor: theme.palette.background.paper,

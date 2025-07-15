@@ -1,9 +1,7 @@
-import React, { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import { Box, Typography } from "@mui/material";
 import ModalButton from "../../../common/Table/ModalButton";
-import { deployDemo } from "../../../../../deploydata";
 import { useLazyGetQuery } from "../../../../slices/api";
 import { tagTypes } from "../../../tagTypes";
 import { useNavigate } from "react-router-dom";
