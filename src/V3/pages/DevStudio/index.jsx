@@ -298,7 +298,7 @@ const CreateFunction = () => {
         showline: true,
         showgrid: false,
         zeroline: true,
-        showticklabels: false,
+        showticklabels: true,
         showspikes: true,
         spikemode: "across",
         spikesnap: "cursor",

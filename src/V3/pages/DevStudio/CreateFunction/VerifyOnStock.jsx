@@ -128,20 +128,15 @@ const VerifyOnStock = ({
 
         {/* Visualization Section */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <Typography
-            sx={{
-              fontWeight: 500,
-              fontSize: "14px",
-              color: "#0A0A0A",
-              fontFamily: "Inter",
-            }}
-          >
-            Visualisation
-          </Typography>
-
-          {/* Timeline Picker */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                width: "48%",
+              }}
+            >
               <Typography
                 sx={{
                   fontWeight: 500,
@@ -150,71 +145,40 @@ const VerifyOnStock = ({
                   fontFamily: "Inter",
                 }}
               >
-                Timeline
+                Start Date
               </Typography>
-              <Tooltip
-                title={TimelineAxis}
-                placement="right-end"
-                componentsProps={{
-                  tooltip: {
-                    sx: {
-                      padding: "16px",
-                      background: "#FFFFFF",
-                      color: "#666666",
-                      boxShadow: "0px 8px 16px 0px #7B7F8229",
-                      fontFamily: "Inter",
-                      fontWeight: 400,
-                      fontSize: "14px",
-                      lineHeight: "20px",
-                    },
-                  },
+              <CustomDatePicker
+                label="Start Date"
+                value={startDate}
+                onChange={(val) => setStartDate(val)}
+                name="startDate"
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                width: "48%",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontWeight: 500,
+                  fontSize: "14px",
+                  color: "#0A0A0A",
+                  fontFamily: "Inter",
                 }}
               >
-                <InfoOutlinedIcon
-                  sx={{
-                    color: "#666666",
-                    width: "17px",
-                    height: "17px",
-                    cursor: "pointer",
-                  }}
-                />
-              </Tooltip>
+                End Date
+              </Typography>
+              <CustomDatePicker
+                label="End Date"
+                value={endDate}
+                onChange={(val) => setEndDate(val)}
+                name="endDate"
+              />
             </Box>
-            <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
-              <Box>
-                <label className="text-sm font-semibold text-neutral-850">
-                  Start Date
-                </label>
-                <CustomDatePicker
-                  label="Start Date"
-                  value={startDate}
-                  onChange={(val) => setStartDate(val)}
-                  name="startDate"
-                />
-              </Box>
-              <Box>
-                <label className="text-sm font-semibold text-neutral-950">
-                  End Date
-                </label>
-
-                <CustomDatePicker
-                  label="End Date"
-                  value={endDate}
-                  onChange={(val) => setEndDate(val)}
-                  name="endDate"
-                />
-              </Box>
-            </Box>
-
-            {/* <TimelineDateRangePicker
-              range={dateRange}
-              onChange={(r) => {
-                setDateRange(r);
-                setDateRangeError(false); // reset error on change
-              }}
-              error={dateRangeError}
-              errorMessage="Start date and end date cannot be the same."
-            /> */}
           </Box>
 
           {/* X Axis */}

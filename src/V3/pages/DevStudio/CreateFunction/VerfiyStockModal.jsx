@@ -168,19 +168,6 @@ const VerfiyStockModal = ({
 
           {/* Visualization Section */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <Typography
-              sx={{
-                fontWeight: 500,
-                fontSize: "14px",
-                color: "#0A0A0A",
-                fontFamily: "Inter",
-              }}
-            >
-              Visualisation
-            </Typography>
-
-            {/* Timeline Picker */}
-
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box
                 sx={{
