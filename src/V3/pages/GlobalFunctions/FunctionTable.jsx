@@ -74,6 +74,10 @@ const FunctionTable = ({ query }) => {
   const [activeFilter, setActiveFilter] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const hiddenColumnsFromLocalStorage = localStorage.getItem(
+    "hiddenColumnsFunctionTable"
+  );
+
   const fetchStockDetails = async () => {
     try {
       setIsLoading(true);
@@ -115,11 +119,18 @@ const FunctionTable = ({ query }) => {
   };
 
   const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) =>
-      prev.includes(field)
-        ? prev.filter((col) => col !== field)
-        : [...prev, field]
-    );
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
+        ? prev.filter((f) => f !== field)
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsFunctionTable",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   const handleRowClick = ({ row }) => {
@@ -348,6 +359,12 @@ const FunctionTable = ({ query }) => {
 
   useEffect(() => {
     fetchStockDetails();
+  }, []);
+
+  useEffect(() => {
+    if (hiddenColumnsFromLocalStorage) {
+      setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
+    }
   }, []);
 
   const columns = [
@@ -759,7 +776,10 @@ const FunctionTable = ({ query }) => {
           size="small"
           onClick={(e) => handlePopoverOpen(e, "column")}
         >
-          <SettingsIcon fontSize="small" />
+          <SettingsIcon
+            fontSize="small"
+            color={hiddenColumns.length ? "primary" : ""}
+          />
         </IconButton>
       ),
       renderCell: ({ row }) => {

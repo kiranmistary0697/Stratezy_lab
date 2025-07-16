@@ -65,6 +65,7 @@ const TableRow = () => {
   ] = useLazyGetQuery();
 
   const [setFavorite] = usePutMutation();
+  const hiddenColumnsTableRow = localStorage.getItem("hiddenColumnsTableRow");
 
   const [getDemoData] = useLazyGetQuery();
   const [deleteData, { isLoading: isDeleting }] = useDeleteMutation();
@@ -142,11 +143,18 @@ const TableRow = () => {
   };
 
   const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) =>
-      prev.includes(field)
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
-        : [...prev, field]
-    );
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsTableRow",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   const handleEditStrategy = (id, name, version) => {
@@ -322,6 +330,12 @@ const TableRow = () => {
   useEffect(() => {
     if (localSelectedStatus) {
       setSelectedStatuses(JSON.parse(localSelectedStatus));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (hiddenColumnsTableRow) {
+      setHiddenColumns(JSON.parse(hiddenColumnsTableRow));
     }
   }, []);
 
@@ -606,7 +620,10 @@ const TableRow = () => {
             size="small"
             onClick={(e) => handlePopoverOpen(e, "column")}
           >
-            <SettingsIcon fontSize="small" />
+            <SettingsIcon
+              fontSize="small"
+              color={hiddenColumns.length ? "primary" : ""}
+            />
           </IconButton>
         ),
         renderCell: (params) => {

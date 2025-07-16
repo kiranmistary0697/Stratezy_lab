@@ -56,6 +56,9 @@ const BacktestTable = () => {
   const localSelectedStrategies = localStorage.getItem(
     "localSelectedStrategies"
   );
+  const hiddenColumnsFromLocalStorage = localStorage.getItem(
+    "hiddenColumnsBacktestTable"
+  );
 
   const [rows, setRows] = useState([]);
   const [filterModel, setFilterModel] = useState({ items: [] });
@@ -183,11 +186,18 @@ const BacktestTable = () => {
   };
 
   const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) =>
-      prev.includes(field)
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
-        : [...prev, field]
-    );
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsBacktestTable",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   const handleRowClick = ({ row }) => {
@@ -661,7 +671,10 @@ const BacktestTable = () => {
             size="small"
             onClick={(e) => handlePopoverOpen(e, "column")}
           >
-            <SettingsIcon fontSize="small" />
+            <SettingsIcon
+              fontSize="small"
+              color={hiddenColumns.length ? "primary" : ""}
+            />
           </IconButton>
         ),
         renderCell: (params) => {
@@ -697,6 +710,12 @@ const BacktestTable = () => {
   const visibleColumns = columns.filter(
     (col) => !hiddenColumns.includes(col.field)
   );
+
+  useEffect(() => {
+    if (hiddenColumnsFromLocalStorage) {
+      setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
+    }
+  }, []);
 
   return (
     <>

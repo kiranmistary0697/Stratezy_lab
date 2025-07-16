@@ -79,6 +79,9 @@ const DeployTable = ({
   const [rowToDelete, setRowToDelete] = useState(null);
 
   const classes = useStyles();
+  const hiddenColumnsFromLocalStorage = localStorage.getItem(
+    "hiddenColumnsDeploy"
+  );
 
   const handleCreateStrategy = (reqId, name) => {
     navigate(`/Deploy/deploy-detail?id=${reqId}&&name=${name}`);
@@ -120,9 +123,18 @@ const DeployTable = ({
   };
 
   const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) =>
-      prev.includes(field) ? prev.filter((f) => f !== field) : [...prev, field]
-    );
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
+        ? prev.filter((f) => f !== field)
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsDeploy",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   const handleStrategyNavigation = (
@@ -171,6 +183,12 @@ const DeployTable = ({
 
   useEffect(() => {
     fetchAllData();
+  }, []);
+
+  useEffect(() => {
+    if (hiddenColumnsFromLocalStorage) {
+      setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
+    }
   }, []);
 
   const filterRow = rows.map((deploy, index) => ({
@@ -450,7 +468,10 @@ const DeployTable = ({
               setActiveFilter("column");
             }}
           >
-            <SettingsIcon fontSize="small" />
+            <SettingsIcon
+              fontSize="small"
+              color={hiddenColumns.length ? "primary" : ""}
+            />
           </IconButton>
         ),
 

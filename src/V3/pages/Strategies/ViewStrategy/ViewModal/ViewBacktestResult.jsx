@@ -463,7 +463,10 @@ const ViewBacktestResult = ({
             size="small"
             onClick={(e) => handlePopoverOpen(e, "column")}
           >
-            <SettingsIcon fontSize="small" />
+            <SettingsIcon
+              fontSize="small"
+              color={hiddenColumns.length ? "primary" : ""}
+            />
           </IconButton>
         ),
         renderCell: (params) => {
