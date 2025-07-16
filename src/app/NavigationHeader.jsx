@@ -162,7 +162,7 @@ const NavigationHeader = () => {
           <Button
             onClick={handleSubscribe}
             sx={{
-              borderRadius: "3px",
+              borderRadius: "10px",
               padding: "10px",
               height: "30px",
               width: "88px",
@@ -173,6 +173,7 @@ const NavigationHeader = () => {
               borderImageSource:
                 "linear-gradient(90deg, #0037FF 0%, #FF1DC6 100%)",
               borderImageSlice: 1,
+              textTransform:"none"
             }}
           >
             Subscribe

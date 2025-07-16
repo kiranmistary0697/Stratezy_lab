@@ -16,6 +16,8 @@ import * as Yup from "yup";
 
 import ModalButton from "../../../common/Table/ModalButton";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setAllData } from "../../../../slices/page/reducer";
 
 const AddFunctionModal = ({
   isOpen,
@@ -29,10 +31,23 @@ const AddFunctionModal = ({
   setIsDirty = () => {},
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [verifyNewStock] = usePostMutation();
   const [saveNewStock] = usePostMutation();
 
   const [isSaving, setIsSaving] = useState(false);
+
+  const dispatchMap = [
+    { key: "filterRule", stateKey: "stockBundle" },
+    { key: "tradeRule", stateKey: "tradeRule" },
+    { key: "entry", stateKey: "stockEntryExitEntry" },
+    { key: "exit", stateKey: "stockEntryExitExit" },
+    { key: "gentry", stateKey: "marketEntryExitEntry" },
+    { key: "gexit", stateKey: "marketEntryExitExit" },
+    { key: "tradeSequence", stateKey: "traderSequence" },
+    { key: "portfolioSizing", stateKey: "portfolioSizing" },
+  ];
 
   const formik = useFormik({
     initialValues: {
@@ -118,6 +133,12 @@ const AddFunctionModal = ({
         localStorage.removeItem("editorFunctionCode");
         localStorage.removeItem("selectedValues");
         localStorage.removeItem("selectedTypes");
+
+        dispatchMap.forEach(({ key, stateKey }) => {
+          if (selectedFunction?.[key]) {
+            dispatch(setAllData({ key: stateKey, data: [] }));
+          }
+        });
 
         handleClose();
         navigate("/Globalfunctions");

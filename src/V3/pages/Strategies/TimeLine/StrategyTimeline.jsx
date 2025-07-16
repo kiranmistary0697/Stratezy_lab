@@ -67,28 +67,55 @@ const StrategyTimeline = ({ strategy }) => {
           const iconColor = isComplete ? "#0A994A" : "#E0E1E4";
 
           return (
-            <TimelineItem className="flex" key={index}>
-              <TimelineSeparator>
+            <TimelineItem
+              key={index}
+              sx={{
+                display: "flex",
+                // alignItems: "center", // Ensure vertical centering
+                // minHeight: "50px", // Prevent excessive height
+              }}
+            >
+              <TimelineSeparator
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // alignItems: "center", // Center the separator elements
+                  marginRight: "16px", // Consistent spacing between separator and content
+                }}
+              >
                 <TimelineConnector
                   sx={{
                     bgcolor: isComplete ? "#0A994A" : "#E0E1E4",
                     visibility: index === 0 ? "hidden" : "visible",
+                    width: "2px", // Ensure consistent connector width
+                    // flex: "0 0 auto", // Prevent stretching
                   }}
                 />
                 <CheckCircleIcon
-                  className="!size-[12px]"
-                  sx={{ color: iconColor }}
+                  sx={{
+                    color: iconColor,
+                    fontSize: "12px", // Use sx for size instead of className
+                    margin: "4px 0", // Add small vertical margin for better spacing
+                  }}
                 />
                 <TimelineConnector
                   sx={{
                     bgcolor: isComplete ? "#0A994A" : "#E0E1E4",
                     visibility:
                       index === timelineSteps.length - 1 ? "hidden" : "visible",
+                    width: "2px", // Ensure consistent connector width
+                    // flex: "0 0 auto", // Prevent stretching
                   }}
                 />
               </TimelineSeparator>
 
-              <TimelineContent>
+              <TimelineContent
+                sx={{
+                  display: "flex",
+                  alignItems: "center", // Align content vertically with the icon
+                  // padding: "0", // Remove default padding
+                }}
+              >
                 <div className="grid grid-cols-2 gap-4 text-xs items-center">
                   <Badge
                     isStrategyTooltip
@@ -112,7 +139,6 @@ const StrategyTimeline = ({ strategy }) => {
                             if (r?.funcName) {
                               funcNames.push(r.funcName);
                             }
-
                             if (r?.funcArgs) {
                               funcArgs.push(r.funcArgs);
                             }
@@ -194,7 +220,6 @@ const StrategyTimeline = ({ strategy }) => {
                           </Tooltip>
                         </Box>
                       );
-                      // return `${funcNames[0]} ...`;
                     })()}
                   </div>
                 </div>

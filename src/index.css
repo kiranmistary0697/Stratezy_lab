@@ -47,17 +47,8 @@
   text-transform: none !important;
 }
 
-.css-qc8ft2-MuiTooltip-tooltip {
-  max-width: none !important;
-}
 .css-uxg07t-MuiTimeline-root {
   padding: 0px !important;
-}
-.css-1ms7hib-MuiTimelineItem-root {
-  min-height: 0px !important;
-}
-.css-w6t25c-MuiTypography-root-MuiTimelineContent-root {
-  padding: 10px 16px !important;
 }
 .css-6bjaxx-MuiTypography-root-MuiTimelineContent-root {
   font-family: "Inter" !important;
@@ -69,10 +60,6 @@
   text-transform: none !important;
 }
 
-.css-1xl2wv5-MuiButtonBase-root-MuiButton-root {
-  text-transform: none !important;
-  border-radius: 10px !important;
-}
 
 .css-10rxp8z-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
   box-shadow: none !important;

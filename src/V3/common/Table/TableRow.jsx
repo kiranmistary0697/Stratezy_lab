@@ -445,7 +445,6 @@ const TableRow = () => {
       {
         field: "description",
         headerName: "Summary",
-        // minWidth: 180,
         flex: 1,
         renderCell: (params) => (
           <div className="text-[#666666]">
@@ -462,18 +461,24 @@ const TableRow = () => {
               }}
               componentsProps={{
                 tooltip: {
-                  // className: "!w-[348px] ",
-                  className: "!w-[500px] ",
                   sx: {
-                    backgroundColor: "white", // Change to your desired color
-                    color: "white", // Change text color if needed
-                    fontSize: "14px", // Adjust font size
+                    maxWidth: "500px", // Ensure maxWidth matches width
+                    height: "auto", // Allow height to adjust to content
+                    padding: "5px 5px",
+                    backgroundColor: "white",
+                    color: "#000000",
+                    fontSize: "14px",
+                    overflow: "auto", // Enable scrolling if content exceeds maxHeight
+                    borderRadius: "4px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                   },
                 },
               }}
               title={<StrategyTimeline strategy={params.row} />}
             >
-              <span>{params?.row?.strategy.description}</span>
+              <span>
+                {params?.row?.strategy.description || "No description"}
+              </span>
             </Tooltip>
           </div>
         ),

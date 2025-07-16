@@ -13,8 +13,6 @@ const GlobalFunctionActionMenu = ({
   isDeployStrategy,
 }) => {
   const [anchorEl, setAnchorEl] = useState(false);
-  const [openDuplicateModal, setOpenDuplicateModal] = useState(false);
-  const [isId, setIsId] = useState();
   const open = Boolean(anchorEl);
 
   const handleClose = () => {
