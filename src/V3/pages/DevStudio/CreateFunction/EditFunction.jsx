@@ -190,7 +190,9 @@ const EditFunction = () => {
   }, [stockData]);
 
   const handleVerifyStock = async ({ xAxis, yAxis }) => {
-    setIsSaving(true);
+    if (stockData?.userDefined) {
+      setIsDirty(true);
+    }
     try {
       const argsDataValue = argsData
         .map((data) =>
@@ -571,11 +573,15 @@ const EditFunction = () => {
                 buttonText={"Continue to save"}
                 isVerify
                 handleChange={() => {
-                  setIsDirty(true);
+                  if (stockData?.userDefined) {
+                    setIsDirty(true);
+                  }
                   setOpenAddFunctionModal(true);
                 }}
                 handleVerify={() => {
-                  setIsDirty(true);
+                  if (stockData?.userDefined) {
+                    setIsDirty(true);
+                  }
                   setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
                 }}
                 isSaving={isSaving}
@@ -602,28 +608,38 @@ const EditFunction = () => {
                     stockList={stockList}
                     startDate={startDate}
                     setStartDate={(e) => {
+                      if (stockData?.userDefined) {
+                        setIsDirty(true);
+                      }
                       setStartDate(e);
-                      setIsDirty(true);
                     }}
                     endDate={endDate}
                     setEndDate={(e) => {
+                      if (stockData?.userDefined) {
+                        setIsDirty(true);
+                      }
                       setEndDate(e);
-                      setIsDirty(true);
                     }}
                     selectedStock={selectedStock}
                     setSelectedStock={(e) => {
+                      if (stockData?.userDefined) {
+                        setIsDirty(true);
+                      }
                       setSelectedStock(e);
-                      setIsDirty(true);
                     }}
                     xAxisInput={xAxisInput}
                     setXAxisInput={(e) => {
+                      if (stockData?.userDefined) {
+                        setIsDirty(true);
+                      }
                       setXAxisInput(e);
-                      setIsDirty(true);
                     }}
                     yAxisInput={yAxisInput}
                     setYAxisInput={(e) => {
+                      if (stockData?.userDefined) {
+                        setIsDirty(true);
+                      }
                       setYAxisInput(e);
-                      setIsDirty(true);
                     }}
                     handleVerifyStock={handleVerifyStock}
                     isSaving={isSaving}
