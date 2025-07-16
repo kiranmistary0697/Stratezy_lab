@@ -93,6 +93,7 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
         setFieldValue("tradeRules.buyRule.ruleName", value?.shortFuncName);
         setFieldValue("tradeRules.buyRule.adesc", data?.adesc || []);
         setFieldValue("tradeRules.buyRule.args", data?.args || []);
+        // setFieldValue("tradeRules.buyRule.shortFuncValue", data?.args || []);
       } catch (err) {
         console.error("Error fetching filter config", err);
       }

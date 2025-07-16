@@ -113,7 +113,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
 
   const handleChangeStockBundle = async (index, key, value) => {
     const updated = [...values.stockBundle];
-    updated[index][key] = value.func;
+    updated[index][key] = value.shortFuncName;
     setIsDirty(true);
     // If a new filter name is selected, fetch args/adesc
     if (key === "name") {
@@ -123,7 +123,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
           tags: [tagTypes.GET_SELECTDATA],
         }).unwrap();
 
-        updated[index].type = value.static ? "Static" : "Dynamic";
+        updated[index].type = value.stockList ? "Static" : "Dynamic";
         updated[index].adesc = data?.adesc || [];
         updated[index].args = data?.args || [];
         setViewStockList(data);
@@ -148,6 +148,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
       {
         fieldName: "AND",
         name: "",
+        shortFuncValue: "",
         type: "Dynamic",
         adesc: [],
         args: [],
@@ -172,6 +173,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
       updated[0] = {
         name: "",
         type: "Dynamic",
+        shortFuncValue: "",
         adesc: [],
         args: [],
       };
@@ -296,7 +298,11 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                   <FormGroup className="w-full flex-1">
                     <Autocomplete
                       options={stockBundleOptions}
-                      value={filter?.name || ""}
+                      value={
+                        stockBundleOptions.find(
+                          (o) => o.shortFuncName === filter?.name
+                        ) || null
+                      }
                       onChange={(e, newValue) =>
                         handleChangeStockBundle(index, "name", newValue || "")
                       }
@@ -322,14 +328,16 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                         typeof option === "string" ? option : option?.func || ""
                       }
                       isOptionEqualToValue={(option, value) =>
-                        option?.func ===
-                        (typeof value === "string" ? value : value?.func)
+                        option?.shortFuncName ===
+                        (typeof value === "string"
+                          ? value
+                          : value?.shortFuncName)
                       }
                       renderInput={(params) => {
                         const selectedOption =
                           typeof filter?.name === "string"
                             ? stockBundleOptions.find(
-                                (opt) => opt.func === filter.name
+                                (opt) => opt.shortFuncName === filter.name
                               )
                             : filter?.name;
 
@@ -449,7 +457,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                                   variant="caption"
                                   className="px-2 py-0.5 text-xs text-indigo-700 bg-indigo-50 rounded-2xl border border-indigo-200 ml-2"
                                 >
-                                  {option?.static ? "Static" : "Dynamic"}
+                                  {option?.stockList ? "Static" : "Dynamic"}
                                 </Typography>
                               </Box>
                             </Tooltip>

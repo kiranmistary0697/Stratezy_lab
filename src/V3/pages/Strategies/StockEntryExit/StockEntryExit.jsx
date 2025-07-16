@@ -110,7 +110,7 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
   const handleFilterChange = async (type, index, key, value) => {
     const updated = [...values.stockEntryExit[type]];
     // updated[index][key] = value?.shortFuncName;
-    updated[index][key] = value?.func;
+    updated[index][key] = value?.shortFuncName;
     setIsDirty(true);
 
     if (key === "name") {
@@ -140,6 +140,7 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
       {
         fieldName: "AND",
         name: "",
+        shortFuncValue: "",
         adesc: [],
         args: [],
       },
@@ -155,6 +156,7 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
         name: "",
         adesc: [],
         args: [],
+        shortFuncValue: "",
         type: "",
       };
       setFieldTouched(`stockEntryExit.${type}[0].name`, false);
@@ -204,10 +206,10 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
           <Autocomplete
             options={options}
             filterOptions={customFilterOptions}
-            // value={
-            //   options.find((o) => o.shortFuncName === filter?.name) || null
-            // }
-            value={filter?.name || ""}
+            value={
+              options.find((o) => o.shortFuncName === filter?.name) || null
+            }
+            // value={filter?.name || ""}
             onChange={(e, newValue) => {
               handleFilterChange(type, index, "name", newValue);
             }}
@@ -233,11 +235,12 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
               typeof option === "string" ? option : option?.func || ""
             }
             isOptionEqualToValue={(option, value) =>
-              option?.func === (typeof value === "string" ? value : value?.func)
+              option?.shortFuncName ===
+              (typeof value === "string" ? value : value?.shortFuncName)
             }
             renderInput={(params) => {
               const selectedOption =
-                options.find((opt) => opt.func === filter?.name) || {}; // {} when nothing selected
+                options.find((opt) => opt.shortFuncName === filter?.name) || {}; // {} when nothing selected
 
               return (
                 <Tooltip

@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import Badge from "./Badge";
 import { DropdownIcon } from "./Icons";
-import RunBucktest from "../Modal/RunBucktest";
+import RunBacktest from "../Modal/RunBacktest";
 import HeaderButton from "../../../common/Table/HeaderButton";
 import CreateDeploy from "../../Deploy/DeployModal/CreateDeploy";
 import SuccessModal from "../../../common/SuccessModal";
@@ -186,7 +186,7 @@ const StrategyHeader = ({
         />
       )}
       {isOpenBacktest && (
-        <RunBucktest
+        <RunBacktest
           strategyName={strategyName}
           isOpen={isOpenBacktest}
           setSuccessModalOpen={setSuccessModalOpen}

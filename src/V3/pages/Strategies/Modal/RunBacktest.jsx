@@ -1,24 +1,27 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 import {
   Box,
   CircularProgress,
   FormGroup,
-  FormHelperText,
   TextField,
 } from "@mui/material";
-import ModalButton from "../../../common/Table/ModalButton";
-import CustomDatePicker from "../../../common/CustomDatePicker";
+
 import moment from "moment";
-import { useLazyGetQuery, usePostMutation } from "../../../../slices/api";
+import * as Yup from "yup";
+
 import { tagTypes } from "../../../tagTypes";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import dayjs from "dayjs";
+import { useLazyGetQuery, usePostMutation } from "../../../../slices/api";
 
-const RunBucktest = ({
+import DialogContent from "@mui/material/DialogContent";
+import Dialog from "@mui/material/Dialog";
+
+import ModalButton from "../../../common/Table/ModalButton";
+import CustomDatePicker from "../../../common/CustomDatePicker";
+
+
+const RunBacktest = ({
   title,
   isOpen,
   handleClose = () => {},
@@ -230,6 +233,7 @@ const RunBucktest = ({
                       type="submit"
                       loading={loading}
                       variant={"primary"}
+                      disabled={loading}
                     >
                       {loading && (
                         <CircularProgress
@@ -251,4 +255,4 @@ const RunBucktest = ({
   );
 };
 
-export default RunBucktest;
+export default RunBacktest;

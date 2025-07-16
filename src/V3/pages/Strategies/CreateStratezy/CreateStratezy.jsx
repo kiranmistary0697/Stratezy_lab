@@ -93,6 +93,7 @@ const CreateStrategy = () => {
         {
           name: "",
           type: "",
+          shortFuncValue: "",
           adesc: [],
           args: [],
         },
@@ -101,6 +102,7 @@ const CreateStrategy = () => {
       tradeRules: {
         buyRule: {
           ruleName: "",
+          shortFuncValue: "",
           adesc: [],
           args: [],
         },
@@ -120,12 +122,13 @@ const CreateStrategy = () => {
       },
 
       stockEntryExit: {
-        entry: [{ name: "", adesc: [], args: [] }],
+        entry: [{ name: "", adesc: [], args: [], shortFuncValue: "" }],
         exit: [
           {
             name: "",
             adesc: [],
             args: [],
+            shortFuncValue: "",
           },
         ],
       },

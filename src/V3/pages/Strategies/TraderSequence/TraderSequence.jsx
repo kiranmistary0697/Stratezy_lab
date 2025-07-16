@@ -89,7 +89,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
 
   const handleChange = async (index, key, value) => {
     const updated = [...values.tradeSequence];
-    updated[index][key] = value?.func;
+    updated[index][key] = value?.shortFuncName; // Store shortFuncName instead of func
     setIsDirty(true);
 
     // If a new filter name is selected, fetch args/adesc
@@ -217,10 +217,9 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                   filterOptions={customFilterOptions}
                   value={
                     traderSequenceOptions.find(
-                      (o) => o.func === filter?.name
+                      (o) => o.shortFuncName === filter?.name
                     ) || null
                   }
-                  // value={filter?.name || null}
                   onChange={(e, newValue) =>
                     handleChange(index, "name", newValue)
                   }
@@ -240,26 +239,23 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                   getOptionLabel={(option) => {
                     if (typeof option === "string") return option;
                     if (option && typeof option === "object") {
-                      return option.func || "";
+                      return option.func || ""; // Display func name
                     }
                     return "";
                   }}
                   isOptionEqualToValue={(option, value) =>
-                    option?.func ===
-                    (typeof value === "string" ? value : value?.func)
-                  }
-                  // className="custom-select max-md:w-full"
+                    option?.shortFuncName ===
+                    (typeof value === "string" ? value : value?.shortFuncName)
+                  } // Match based on shortFuncName
                   PopperComponent={CustomPopper}
                   ListboxProps={{ style: { maxHeight: 300 } }}
                   renderInput={(params) => {
                     const selectedOption =
                       traderSequenceOptions.find(
-                        (opt) => opt.func === filter?.name
-                      ) || {}; // {} when nothing selected
-
+                        (opt) => opt.shortFuncName === filter?.name
+                      ) || {};
                     return (
                       <Tooltip
-                        // title={selectedOption.desc || ""}
                         title={
                           <Box>
                             <Typography
@@ -306,7 +302,6 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                   renderOption={(props, option) => (
                     <li {...props} key={option?.func}>
                       <Tooltip
-                        // title={option?.desc}
                         title={
                           <Box>
                             <Typography
@@ -341,7 +336,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                             variant="body2"
                             className="text-neutral-950"
                           >
-                            {option?.func}
+                            {option?.func} {/* Display func name in options */}
                           </Typography>
                         </Box>
                       </Tooltip>
@@ -358,7 +353,7 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
                             e.stopPropagation();
                             navigate("/Devstudio/create-function");
                           }}
-                          className=" button px-2 py-1 text-xs text-[#3D69D3] border border-indigo-200 rounded-2xl"
+                          className="button px-2 py-1 text-xs text-[#3D69D3] border border-indigo-200 rounded-2xl"
                           style={{
                             background: "none",
                             justifyContent: "flex-start",

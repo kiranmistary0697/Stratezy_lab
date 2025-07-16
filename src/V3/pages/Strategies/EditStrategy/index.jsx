@@ -259,6 +259,7 @@ const EditStrategy = () => {
         {
           name: "",
           type: "",
+          shortFuncValue: "",
           adesc: [],
           args: [],
         },
@@ -329,6 +330,7 @@ const EditStrategy = () => {
               name: funcName,
               adesc: argDesc || [],
               args: funcArgs || [],
+              shortFuncValue: "",
             }))
           : [
               {
@@ -336,6 +338,7 @@ const EditStrategy = () => {
                 type: "",
                 adesc: [],
                 args: [],
+                shortFuncValue: "",
               },
             ],
       tradeRules: {

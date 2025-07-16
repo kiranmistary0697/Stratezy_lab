@@ -5,7 +5,7 @@ import { CSVLink } from "react-csv";
 import HeaderButton from "../../common/Table/HeaderButton";
 import Badge from "../../common/Badge";
 
-import RunBucktest from "../Strategies/Modal/RunBucktest";
+import RunBacktest from "../Strategies/Modal/RunBacktest";
 import CreateDeploy from "../Deploy/DeployModal/CreateDeploy";
 import moment from "moment";
 
@@ -58,7 +58,7 @@ const BacktestDetailHeader = ({
   return (
     <>
       {isOpenBacktest && (
-        <RunBucktest
+        <RunBacktest
           isOpen={isOpenBacktest}
           handleClose={() => setIsOpenBacktest(false)}
           title="Run Backtest"

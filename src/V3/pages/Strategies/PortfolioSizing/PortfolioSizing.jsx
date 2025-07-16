@@ -126,7 +126,7 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
         }).unwrap();
 
         // Update all related fields from the API response
-        setFieldValue("portfolioSizing.selectedPortfolio", value?.func);
+        setFieldValue("portfolioSizing.selectedPortfolio", value?.shortFuncName);
         setFieldValue("portfolioSizing.adesc", data?.adesc || []);
         setFieldValue("portfolioSizing.args", data?.args || []);
       } catch (err) {
@@ -218,7 +218,7 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                 value={
                   portfolioSizingOptions.find(
                     (opt) =>
-                      opt?.func === values.portfolioSizing?.selectedPortfolio
+                      opt?.shortFuncName === values.portfolioSizing?.selectedPortfolio
                   ) || null
                 }
                 // value={values.portfolioSizing?.selectedPortfolio || ""}
@@ -242,14 +242,14 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                 disableClearable
                 selectOnFocus
                 isOptionEqualToValue={(option, value) =>
-                  option?.func === (value?.func || value)
+                  option?.shortFuncName === (value?.shortFuncName || value)
                 }
                 getOptionLabel={(option) => option?.func || ""}
                 renderInput={(params) => {
                   const selectedOption =
                     portfolioSizingOptions.find(
                       (opt) =>
-                        opt.func === values.portfolioSizing?.selectedPortfolio
+                        opt.shortFuncName === values.portfolioSizing?.selectedPortfolio
                     ) || {}; // {} when nothing selected
 
                   return (

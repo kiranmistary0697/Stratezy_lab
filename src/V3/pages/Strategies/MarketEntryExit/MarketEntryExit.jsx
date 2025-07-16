@@ -128,7 +128,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
         }).unwrap();
 
         // Update all related fields from the API response
-        setFieldValue("marketEntryExit.entry.name", value?.func);
+        setFieldValue("marketEntryExit.entry.name", value?.shortFuncName);
         setFieldValue("marketEntryExit.entry.adesc", data?.adesc || []);
         setFieldValue("marketEntryExit.entry.args", data?.args || []);
       } catch (err) {
@@ -149,7 +149,7 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
         }).unwrap();
 
         // Update all related fields from the API response
-        setFieldValue("marketEntryExit.exit.name", value?.func);
+        setFieldValue("marketEntryExit.exit.name", value?.shortFuncName);
         setFieldValue("marketEntryExit.exit.adesc", data?.adesc || []);
         setFieldValue("marketEntryExit.exit.args", data?.args || []);
       } catch (err) {
@@ -276,7 +276,8 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                 filterOptions={customFilterOptions}
                 value={
                   marketEntryOptions.find(
-                    (opt) => opt?.func === values.marketEntryExit.entry?.name
+                    (opt) =>
+                      opt?.shortFuncName === values.marketEntryExit.entry?.name
                   ) || null
                 }
                 // value={values.marketEntryExit.entry?.name || ""}
@@ -300,13 +301,14 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                   outline: "none",
                 }}
                 isOptionEqualToValue={(option, value) =>
-                  option?.func === (value?.func || value)
+                  option?.func === (value?.shortFuncName || value)
                 }
                 getOptionLabel={(option) => option?.func || ""}
                 renderInput={(params) => {
                   const selectedOption =
                     marketEntryOptions.find(
-                      (opt) => opt.func === values.marketEntryExit.entry?.name
+                      (opt) =>
+                        opt.shortFuncName === values.marketEntryExit.entry?.name
                     ) || {}; // {} when nothing selected
 
                   return (
@@ -498,7 +500,8 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                 filterOptions={customFilterOptions}
                 value={
                   marketExitOptions.find(
-                    (opt) => opt?.func === values.marketEntryExit.exit?.name
+                    (opt) =>
+                      opt?.shortFuncName === values.marketEntryExit.exit?.name
                   ) || null
                 }
                 // value={values.marketEntryExit.exit?.name || ""}
@@ -522,13 +525,14 @@ const MarketEntryExit = ({ isView, formik, id, setIsDirty }) => {
                   outline: "none",
                 }}
                 isOptionEqualToValue={(option, value) =>
-                  option?.func === (value?.func || value)
+                  option?.shortFuncName === (value?.shortFuncName || value)
                 }
                 getOptionLabel={(option) => option?.func || ""}
                 renderInput={(params) => {
                   const selectedOption =
                     marketExitOptions.find(
-                      (opt) => opt.func === values.marketEntryExit.exit?.name
+                      (opt) =>
+                        opt.shortFuncName === values.marketEntryExit.exit?.name
                     ) || {}; // {} when nothing selected
 
                   return (
