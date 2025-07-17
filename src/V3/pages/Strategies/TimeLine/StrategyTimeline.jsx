@@ -71,31 +71,27 @@ const StrategyTimeline = ({ strategy }) => {
               key={index}
               sx={{
                 display: "flex",
-                // alignItems: "center", // Ensure vertical centering
-                // minHeight: "50px", // Prevent excessive height
               }}
             >
               <TimelineSeparator
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  // alignItems: "center", // Center the separator elements
-                  marginRight: "16px", // Consistent spacing between separator and content
+                  marginRight: "16px",
                 }}
               >
                 <TimelineConnector
                   sx={{
                     bgcolor: isComplete ? "#0A994A" : "#E0E1E4",
                     visibility: index === 0 ? "hidden" : "visible",
-                    width: "2px", // Ensure consistent connector width
-                    // flex: "0 0 auto", // Prevent stretching
+                    width: "2px",
                   }}
                 />
                 <CheckCircleIcon
                   sx={{
                     color: iconColor,
-                    fontSize: "12px", // Use sx for size instead of className
-                    margin: "4px 0", // Add small vertical margin for better spacing
+                    fontSize: "12px",
+                    margin: "4px 0",
                   }}
                 />
                 <TimelineConnector
@@ -103,8 +99,7 @@ const StrategyTimeline = ({ strategy }) => {
                     bgcolor: isComplete ? "#0A994A" : "#E0E1E4",
                     visibility:
                       index === timelineSteps.length - 1 ? "hidden" : "visible",
-                    width: "2px", // Ensure consistent connector width
-                    // flex: "0 0 auto", // Prevent stretching
+                    width: "2px",
                   }}
                 />
               </TimelineSeparator>
@@ -112,115 +107,115 @@ const StrategyTimeline = ({ strategy }) => {
               <TimelineContent
                 sx={{
                   display: "flex",
-                  alignItems: "center", // Align content vertically with the icon
-                  // padding: "0", // Remove default padding
+                  alignItems: "center",
                 }}
               >
-                <div className="grid grid-cols-2 gap-4 text-xs items-center">
-                  <Badge
-                    isStrategyTooltip
-                    variant={isComplete ? "complete" : "disable"}
-                  >
-                    {step.title}
-                  </Badge>
+                <div
+                  className="grid grid-cols-2 text-xs items-center w-full"
+                  style={{ gap: "2px" }}
+                >
+                  {/* Badge Column - Left aligned with constant width */}
+                  <div className="flex justify-start">
+                    <div
+                      className="w-[120px] min-w-[120px] max-w-[120px] h-6 flex justify-center items-center text-[10px] font-medium rounded-full border text-center overflow-hidden"
+                      style={{
+                        width: "120px",
+                        minWidth: "120px",
+                        maxWidth: "120px",
+                        backgroundColor: isComplete ? "#e8f5e8" : "#f3f4f6",
+                        borderColor: isComplete ? "#0A994A" : "#d1d5db",
+                        color: isComplete ? "#0A994A" : "#6b7280",
+                      }}
+                      title={step.title} // Show full text on hover
+                    >
+                      <span className="truncate px-2">{step.title}</span>
+                    </div>
+                  </div>
 
-                  <div className="text-gray-500 font-normal text-sm leading-5">
-                    {(() => {
-                      const funcNames = [];
-                      const funcArgs = [];
-                      step.dataKeys?.forEach((key) => {
-                        const ruleData =
-                          strategy?.strategy?.[key] || strategy?.[key];
+                  {/* Function Names Column - Left aligned with fixed width */}
+                  <div className="w-[200px] min-w-[200px] max-w-[200px] text-gray-500 font-normal text-sm leading-5 flex justify-start items-center">
+                    <div
+                      className="w-full text-left truncate"
+                      title={(() => {
+                        const funcNames = [];
+                        const funcArgs = [];
+                        step.dataKeys?.forEach((key) => {
+                          const ruleData =
+                            strategy?.strategy?.[key] || strategy?.[key];
 
-                        if (!ruleData) return;
+                          if (!ruleData) return;
 
-                        if (Array.isArray(ruleData)) {
-                          ruleData.forEach((r) => {
-                            if (r?.funcName) {
-                              funcNames.push(r.funcName);
-                            }
-                            if (r?.funcArgs) {
-                              funcArgs.push(r.funcArgs);
-                            }
-                          });
-                        } else if (
-                          typeof ruleData === "object" &&
-                          ruleData?.funcName
-                        ) {
-                          funcNames.push(ruleData.funcName);
-                          funcArgs.push(ruleData.funcArgs);
-                        }
-                      });
+                          if (Array.isArray(ruleData)) {
+                            ruleData.forEach((r) => {
+                              if (r?.funcName) {
+                                funcNames.push(r.funcName);
+                              }
+                              if (r?.funcArgs) {
+                                funcArgs.push(r.funcArgs);
+                              }
+                            });
+                          } else if (
+                            typeof ruleData === "object" &&
+                            ruleData?.funcName
+                          ) {
+                            funcNames.push(ruleData.funcName);
+                            funcArgs.push(ruleData.funcArgs);
+                          }
+                        });
 
-                      if (funcNames.length === 0) return "No rule";
-                      if (funcNames.length === 1)
-                        return `${funcNames[0]}${
-                          funcArgs[0].length ? ` [${funcArgs[0]}]` : ""
-                        }`;
-                      return (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <Typography
-                            sx={{
-                              fontFamily: "Inter",
-                              fontWeight: 400,
-                              fontSize: "14px",
-                              lineHeight: "20px",
-                              letterSpacing: "0%",
-                            }}
-                          >
-                            {`${funcNames[0]}${
-                              funcArgs[0].length ? ` [${funcArgs[0]}]` : ""
-                            }`}
-                          </Typography>
-                          <Tooltip
-                            title={funcNames
-                              .slice(1)
-                              .map(
-                                (name, index) =>
-                                  `${name} [${funcArgs
-                                    .slice(1)
-                                    [index].join(", ")}]`
-                              )
-                              .join("\n")}
-                            placement="bottom"
-                            componentsProps={{
-                              tooltip: {
-                                sx: {
-                                  fontFamily: "inherit",
-                                  fontWeight: 400,
-                                  fontSize: "14px",
-                                  padding: "20px",
-                                  gap: 10,
-                                  borderRadius: "2px",
-                                  background: "#FFFFFF",
-                                  color: "#666666",
-                                  boxShadow: "0px 8px 16px 0px #7B7F8229",
-                                  whiteSpace: "pre-line",
-                                },
-                              },
-                            }}
-                          >
-                            <Typography
-                              sx={{
-                                color: "#1976d2",
-                                fontFamily: "Inter",
-                                fontWeight: 400,
-                                fontSize: "14px",
-                                lineHeight: "20px",
-                                letterSpacing: "0%",
-                              }}
-                            >
-                              +{funcNames.length - 1}
-                            </Typography>
-                          </Tooltip>
-                        </Box>
-                      );
-                    })()}
+                        if (funcNames.length === 0) return "No rule";
+                        if (funcNames.length === 1)
+                          return `${funcNames[0]}${
+                            funcArgs[0].length ? ` [${funcArgs[0]}]` : ""
+                          }`;
+                        return funcNames
+                          .map(
+                            (name, index) =>
+                              `${name} [${funcArgs[index].join(", ")}]`
+                          )
+                          .join(", ");
+                      })()}
+                    >
+                      {(() => {
+                        const funcNames = [];
+                        const funcArgs = [];
+                        step.dataKeys?.forEach((key) => {
+                          const ruleData =
+                            strategy?.strategy?.[key] || strategy?.[key];
+
+                          if (!ruleData) return;
+
+                          if (Array.isArray(ruleData)) {
+                            ruleData.forEach((r) => {
+                              if (r?.funcName) {
+                                funcNames.push(r.funcName);
+                              }
+                              if (r?.funcArgs) {
+                                funcArgs.push(r.funcArgs);
+                              }
+                            });
+                          } else if (
+                            typeof ruleData === "object" &&
+                            ruleData?.funcName
+                          ) {
+                            funcNames.push(ruleData.funcName);
+                            funcArgs.push(ruleData.funcArgs);
+                          }
+                        });
+
+                        if (funcNames.length === 0) return "No rule";
+                        if (funcNames.length === 1)
+                          return `${funcNames[0]}${
+                            funcArgs[0].length ? ` [${funcArgs[0]}]` : ""
+                          }`;
+                        return funcNames
+                          .map(
+                            (name, index) =>
+                              `${name} [${funcArgs[index].join(", ")}]`
+                          )
+                          .join(", ");
+                      })()}
+                    </div>
                   </div>
                 </div>
               </TimelineContent>
