@@ -511,11 +511,15 @@ const FunctionTable = ({ query }) => {
               height: "100%",
             }}
           >
-            {badges.map((label, idx) => (
-              <Badge key={idx} variant="version">
-                <span>{label}</span>
-              </Badge>
-            ))}
+            {badges.length > 0 ? (
+              badges.map((label, idx) => (
+                <Badge key={idx} variant="version">
+                  <span>{label}</span>
+                </Badge>
+              ))
+            ) : (
+              <div>-</div>
+            )}
           </Box>
         );
       },
@@ -596,7 +600,7 @@ const FunctionTable = ({ query }) => {
 
         if (row.filter && row.stockList) {
           badges.push("Static");
-        } else {
+        } else if (row.filter && !row.stockList) {
           badges.push("Dynamic");
         }
         if (row.buysell) {
@@ -621,7 +625,7 @@ const FunctionTable = ({ query }) => {
                 </Badge>
               ))
             ) : (
-              <span>NA</span>
+              <span>-</span>
             )}
           </Box>
         );
