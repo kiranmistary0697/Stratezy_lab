@@ -9,9 +9,8 @@ import {
   Divider,
   Grid,
   IconButton,
-  Tooltip,
-  Typography,
   useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import VerifyOnStock from "./VerifyOnStock";
 import EditHeader from "./EditHeader";
@@ -40,6 +39,7 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 
 const EditFunction = () => {
   const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down(1024)); // Breakpoint at 1024px
 
   const [getStockDetails] = useLazyGetQuery();
   const [getKeywords] = useLazyGetQuery();
@@ -96,7 +96,7 @@ const EditFunction = () => {
 
     return adesc.map((name, index) => ({
       name,
-      value: Number(args[index]), // convert string "25" → number 25
+      value: Number(args[index]),
     }));
   };
 
@@ -107,17 +107,16 @@ const EditFunction = () => {
         tags: [tagTypes.GET_SELECTDATA],
       }).unwrap();
       setArgsData(combineAdescArgs(data));
-
       setStockData(data);
     } catch (error) {}
   };
+
   const handleKeywords = async () => {
     try {
       const { data } = await getKeywords({
         endpoint: `stock-analysis-function/keywords`,
         tags: [tagTypes.GET_KEYWORDS],
       }).unwrap();
-
       setKeywordData(data);
     } catch (error) {}
   };
@@ -151,7 +150,6 @@ const EditFunction = () => {
       return;
     }
     setEditUserData(true);
-
     navigate(
       `/Devstudio/edit-function?name=${stockData.shortFuncName}&duplicate=true`
     );
@@ -167,7 +165,6 @@ const EditFunction = () => {
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        // setIsLoading(true);
         const { data } = await getStrategyData({
           endpoint: "command/backtest/equitylist?exchange=nse",
           tags: [tagTypes.GET_STOCK],
@@ -216,7 +213,6 @@ const EditFunction = () => {
           varList1: xAxis,
           varList2: yAxis,
         },
-
         tags: [tagTypes.VERIFY_STOCK],
       };
 
@@ -404,7 +400,6 @@ const EditFunction = () => {
       template: theme.palette.mode === "dark" ? "plotly_dark" : "plotly_white",
       hovermode: "x unified",
       autosize: true,
-      //height: fullScreen ? window.innerHeight - theme.spacing(12) : 600,
       margin: {
         l: theme.spacing(0),
         r: theme.spacing(0),
@@ -417,6 +412,7 @@ const EditFunction = () => {
   };
 
   const { traces = [], layout = {} } = generatePlot() || {};
+
   useEffect(() => {
     if (stockData?.rule) {
       setCode(stockData.rule);
@@ -485,7 +481,7 @@ const EditFunction = () => {
         />
       )}
 
-      <div className="sm:h-[calc(100vh-100px)] bg-[#f0f0f0]  overflow-auto p-8">
+      <div className="sm:h-[calc(100vh-100px)] bg-[#f0f0f0] overflow-auto p-8">
         <div className="bg-white h-auto">
           <EditHeader
             stockData={stockData}
@@ -525,15 +521,15 @@ const EditFunction = () => {
           <Grid
             container
             spacing={2}
-            className="w-full  h-[calc(100%-76px)] overflow-auto px-4 border border-zinc-200 "
+            className="w-full overflow-auto px-4 border border-zinc-200"
+            sx={{ height: isSmallScreen ? "auto" : "calc(100%-76px)" }}
           >
             <Grid
               // className="md:border-r md:border-r-zinc-200"
               item
               size={{
                 xs: 12,
-                md: 6,
-                lg: 4,
+                lg: isSmallScreen ? 12 : 4,
               }}
             >
               <KeywordSearch keywordData={keywordData} fullHeight={false} />
@@ -542,8 +538,7 @@ const EditFunction = () => {
               item
               size={{
                 xs: 12,
-                md: 6,
-                lg: 8,
+                lg: isSmallScreen ? 12 : 8,
               }}
             >
               {stockData && (
@@ -582,7 +577,7 @@ const EditFunction = () => {
                   if (stockData?.userDefined) {
                     setIsDirty(true);
                   }
-                  setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
+                  setTriggerVerify(true);
                 }}
                 isSaving={isSaving}
                 isShowSave
@@ -593,15 +588,14 @@ const EditFunction = () => {
               <Grid
                 container
                 spacing={2}
-                className="w-full  h-[calc(100%-76px)] overflow-auto px-4 border border-zinc-200"
+                className="w-full overflow-auto px-4 border border-zinc-200"
+                sx={{ height: isSmallScreen ? "auto" : "calc(100%-76px)" }}
               >
                 <Grid
-                  className="md:border-r md:border-r-zinc-200"
                   item
                   size={{
                     xs: 12,
-                    md: 6,
-                    lg: 4,
+                    lg: isSmallScreen ? 12 : 4,
                   }}
                 >
                   <VerifyOnStock
@@ -651,14 +645,13 @@ const EditFunction = () => {
                   item
                   size={{
                     xs: 12,
-                    md: 6,
-                    lg: 8,
+                    lg: isSmallScreen ? 12 : 8,
                   }}
                 >
                   <Box
                     sx={{
                       width: "100%",
-                      height: 600,
+                      height: isSmallScreen ? "60vh" : 600,
                       position: "relative",
                     }}
                   >

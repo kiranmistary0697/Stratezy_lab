@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Box, Divider, Grid, IconButton, useTheme } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Grid,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import CreateFunctionHeader from "./CreateFunction/CreateFunctionHeader";
 import FunctionSelect from "./CreateFunction/FunctionSelect";
 import KeywordSearch from "./CreateFunction/KeywordSearch";
@@ -34,6 +41,7 @@ import CommonModal from "./CreateFunction/CommonModal";
 const CreateFunction = () => {
   useLabTitle("Dev Studio");
   const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down(1024)); // Breakpoint at 1024px
 
   const [getKeywords] = useLazyGetQuery();
   const [getStrategyData] = useLazyGetQuery();
@@ -61,7 +69,6 @@ const CreateFunction = () => {
   const [code, setCode] = useState("");
   const [triggerVerify, setTriggerVerify] = useState(false);
 
-  //yyyy-mm-dd
   const [argsData, setArgsData] = useState([{ name: "", value: "" }]);
   const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
   const [isFullGraphOpen, setIsFullGraphOpen] = useState(false);
@@ -92,8 +99,6 @@ const CreateFunction = () => {
   };
 
   const selectedSymbol = selectedStock?.symbol;
-
-  //stock-analysis-function/abcggg
 
   useEffect(() => {
     (async () => {
@@ -328,7 +333,6 @@ const CreateFunction = () => {
       template: theme.palette.mode === "dark" ? "plotly_dark" : "plotly_white",
       hovermode: "x unified",
       autosize: true,
-      //height: fullScreen ? window.innerHeight - theme.spacing(12) : 600,
       margin: {
         l: theme.spacing(0),
         r: theme.spacing(0),
@@ -410,7 +414,7 @@ const CreateFunction = () => {
         />
       )}
 
-      <div className="sm:h-[calc(100vh-100px)] bg-[#f0f0f0]  overflow-auto p-6">
+      <div className="sm:h-[calc(100vh-100px)] bg-[#f0f0f0] overflow-auto p-6">
         <div className="bg-white h-auto">
           <CreateFunctionHeader
             title={FUNCTION_TITLE}
@@ -422,7 +426,6 @@ const CreateFunction = () => {
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
           <FunctionSelect
             setSelectedFunction={(e) => {
-              // setIsDirty(true);
               setSelectedFunction(e);
             }}
             setIsDirty={setIsDirty}
@@ -444,15 +447,14 @@ const CreateFunction = () => {
           <Grid
             container
             spacing={2}
-            className="w-full  h-[calc(100%-76px)] overflow-auto px-4 border border-zinc-200 "
+            className="w-full overflow-auto px-4 border border-zinc-200"
+            sx={{ height: isSmallScreen ? "auto" : "calc(100%-76px)" }}
           >
             <Grid
-              // className="md:border-r md:border-r-zinc-200"
               item
               size={{
                 xs: 12,
-                md: 6,
-                lg: 4,
+                lg: isSmallScreen ? 12 : 4,
               }}
             >
               <KeywordSearch keywordData={keywordData} fullHeight={false} />
@@ -461,8 +463,7 @@ const CreateFunction = () => {
               item
               size={{
                 xs: 12,
-                md: 6,
-                lg: 8,
+                lg: isSmallScreen ? 12 : 8,
               }}
             >
               <EditorFunction
@@ -491,7 +492,7 @@ const CreateFunction = () => {
                   setOpenAddFunctionModal(true);
                 }}
                 handleVerify={() => {
-                  setTriggerVerify(true); // ✅ Triggers VerifyOnStock effect
+                  setTriggerVerify(true);
                 }}
                 isShowSave
                 isSaving={isSaving}
@@ -499,15 +500,14 @@ const CreateFunction = () => {
               <Grid
                 container
                 spacing={2}
-                className="w-full  h-[calc(100%-76px)] overflow-auto px-4 border border-zinc-200"
+                className="w-full overflow-auto px-4 border border-zinc-200"
+                sx={{ height: isSmallScreen ? "auto" : "calc(100%-76px)" }}
               >
                 <Grid
-                  className="md:border-r md:border-r-zinc-200"
                   item
                   size={{
                     xs: 12,
-                    md: 6,
-                    lg: 4,
+                    lg: isSmallScreen ? 12 : 4,
                   }}
                 >
                   <VerifyOnStock
@@ -517,7 +517,7 @@ const CreateFunction = () => {
                       setStartDate(e);
                       setIsDirty(true);
                     }}
-                    endDate={startDate}
+                    endDate={endDate}
                     setEndDate={(e) => {
                       setEndDate(e);
                       setIsDirty(true);
@@ -547,14 +547,13 @@ const CreateFunction = () => {
                   item
                   size={{
                     xs: 12,
-                    md: 6,
-                    lg: 8,
+                    lg: isSmallScreen ? 12 : 8,
                   }}
                 >
                   <Box
                     sx={{
                       width: "100%",
-                      height: 600,
+                      height: isSmallScreen ? "60vh" : 600,
                       position: "relative",
                     }}
                   >

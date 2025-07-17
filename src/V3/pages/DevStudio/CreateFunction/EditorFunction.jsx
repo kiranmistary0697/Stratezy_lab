@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import AceEditor from "react-ace";
-
-import { Box, TextField, Typography } from "@mui/material";
-
+import {
+  Box,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 // import 'ace-builds/src-noconflict/mode-javascript';
 // import 'ace-builds/src-noconflict/theme-github';
 // import 'ace-builds/src-noconflict/theme-twilight';
@@ -10,23 +14,19 @@ import { Box, TextField, Typography } from "@mui/material";
 // import 'ace-builds/src-noconflict/mode-java'; // For Java
 import "ace-builds/src-noconflict/mode-c_cpp"; // For C/C++
 import "ace-builds/src-noconflict/theme-monokai"; // Ensure the theme is imported as well
-
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 
 const StyledLabel = ({ children }) => (
-  <>
-    <Typography
-      sx={{
-        fontFamily: "Inter",
-        fontSize: "14px",
-        fontWeight: 500,
-      }}
-    >
-      {children}
-    </Typography>
-  </>
+  <Typography
+    sx={{
+      fontFamily: "Inter",
+      fontSize: "14px",
+      fontWeight: 500,
+    }}
+  >
+    {children}
+  </Typography>
 );
 
 const EditorFunction = ({
@@ -42,6 +42,8 @@ const EditorFunction = ({
   setIsFunctionDialogOpen,
   isNewFuncOrDuplicate,
 }) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down(1024)); // Breakpoint at 1024px
   const [showArgs, setShowArgs] = useState(false); // toggles the side panel
 
   const handleChange = (newValue, e) => {
@@ -60,17 +62,26 @@ const EditorFunction = ({
   }, []);
 
   return (
-    <Box className="m-2" sx={{ display: "flex", position: "relative" }}>
-      {/* Monaco Editor */}
+    <Box
+      className="m-2"
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", lg: isSmallScreen ? "column" : "row" },
+        position: "relative",
+      }}
+    >
+      {/* Code Editor */}
       <Box
         sx={{
-          width: showArgs ? "60%" : "100%",
-          transition: "width 0.3s",
+          width: {
+            xs: "100%",
+            lg: isSmallScreen ? "100%" : showArgs ? "60%" : "100%",
+          },
+          transition: isSmallScreen ? "none" : "width 0.3s",
         }}
       >
         <AceEditor
           mode="c_cpp"
-          // theme="chaos"
           theme="monokai"
           name="code-editor"
           value={code}
@@ -89,198 +100,134 @@ const EditorFunction = ({
       </Box>
 
       {/* Arguments Panel */}
-      {showArgs && (
-        <Box
+      <Box
+        sx={{
+          width: { xs: "100%", lg: isSmallScreen ? "100%" : "40%" },
+          padding: 2,
+          borderLeft: {
+            xs: "none",
+            lg: isSmallScreen ? "none" : "1px solid #ddd",
+          },
+          borderTop: {
+            xs: "1px solid #ddd",
+            lg: isSmallScreen ? "1px solid #ddd" : "none",
+          },
+          display: {
+            xs: "block",
+            lg: isSmallScreen ? "block" : showArgs ? "block" : "none",
+          }, // Always show on screens <= 1024px
+        }}
+      >
+        <Typography
           sx={{
-            width: "40%",
-            padding: 2,
-            // backgroundColor: "#f5f5f5",
-            borderLeft: "1px solid #ddd",
+            fontSize: "16px",
+            color: "#0A0A0A",
+            fontFamily: "Inter",
+            fontWeight: 600,
           }}
         >
-          <Typography
-            sx={{
-              fontSize: "16px",
-              color: "#0A0A0A",
-              fontFamily: "Inter",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Arguments
-          </Typography>
+          Arguments
+        </Typography>
 
-          <Box className="flex gap-4 mt-4" sx={{ alignItems: "center" }}>
-            <Box sx={{ minWidth: "150px" }}>
-              {argsData.map((item, index) => {
-                const labelIndex = `ARG${index + 1} Name`;
-                return (
-                  <Box
-                    key={index}
-                    className="flex gap-4 mt-4"
-                    sx={{ alignItems: "center", width: "max-content" }}
-                  >
-                    <Box
-                      sx={{ minWidth: "150px", display: "flex", gap: "1rem" }}
-                    >
-                      <Box>
-                        <Box className="flex gap-2.5 items-center">
-                          <StyledLabel>{labelIndex}</StyledLabel>
-                          {/* <Tooltip
-                            title={labelIndex}
-                            placement="right-end"
-                            componentsProps={{
-                              tooltip: {
-                                sx: {
-                                  padding: "16px",
-                                  background: "#FFFFFF",
-                                  color: "#666666",
-                                  boxShadow: "0px 8px 16px 0px #7B7F8229",
-                                  fontFamily: "Inter",
-                                  fontWeight: 400,
-                                  fontSize: "14px",
-                                  lineHeight: "20px",
-                                },
-                              },
-                            }}
-                          >
-                            <InfoOutlinedIcon
-                              sx={{
-                                color: "#666666",
-                                width: "17px",
-                                height: "17px",
-                                cursor: "pointer",
-                              }}
-                            />
-                          </Tooltip> */}
-                        </Box>
-
-                        <TextField
-                          value={item.name}
-                          fullWidth
-                          margin="normal"
-                          disabled={editUserData}
-                          onChange={(e) =>
-                            handleArgsDataChange(index, "name", e.target.value)
-                          }
-                        />
-                      </Box>
-
-                      <Box>
-                        <Box className="flex gap-2.5 items-center justify-between">
-                          <Box className="flex gap-2.5 items-center">
-                            <StyledLabel>Default Value</StyledLabel>
-                            {/* <Tooltip
-                              title={"Default Value"}
-                              placement="right-end"
-                              componentsProps={{
-                                tooltip: {
-                                  sx: {
-                                    padding: "16px",
-                                    background: "#FFFFFF",
-                                    color: "#666666",
-                                    boxShadow: "0px 8px 16px 0px #7B7F8229",
-                                    fontFamily: "Inter",
-                                    fontWeight: 400,
-                                    fontSize: "14px",
-                                    lineHeight: "20px",
-                                  },
-                                },
-                              }}
-                            >
-                              <InfoOutlinedIcon
-                                sx={{
-                                  color: "#666666",
-                                  width: "17px",
-                                  height: "17px",
-                                  cursor: "pointer",
-                                }}
-                              />
-                            </Tooltip> */}
-                          </Box>
-
-                          {index > 0 &&
-                            (stockData?.userDefined ||
-                              isNewFuncOrDuplicate) && (
-                              <Box
-                                sx={{
-                                  color: "transparent",
-                                  cursor: "pointer",
-                                  marginBottom: "0px",
-                                  display: "flex",
-                                  flexDirection: "row-reverse",
-                                }}
-                              >
-                                <DeleteOutlineOutlinedIcon
-                                  sx={{
-                                    color: "red",
-                                    cursor: "pointer",
-                                    height: "0.85em",
-                                  }}
-                                  onClick={() => {
-                                    if (!editUserData) {
-                                      handleDeleteArgsData(index);
-                                    }
-                                  }}
-                                />
-                              </Box>
-                            )}
-                        </Box>
-                        <TextField
-                          value={item.value}
-                          fullWidth
-                          margin="normal"
-                          disabled={editUserData}
-                          onChange={(e) =>
-                            handleArgsDataChange(index, "value", e.target.value)
-                          }
-                        />
-                      </Box>
-                    </Box>
-                  </Box>
-                );
-              })}
-            </Box>
-          </Box>
-          {(stockData?.userDefined || isNewFuncOrDuplicate) && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "8px",
-              }}
-            >
-              <Typography
-                onClick={() => {
-                  if (!editUserData) {
-                    handleAddArgsData();
-                  }
-                }}
+        <Box sx={{ minWidth: "150px", mt: 2 }}>
+          {argsData.map((item, index) => {
+            const labelIndex = `ARG${index + 1} Name`;
+            return (
+              <Box
+                key={index}
                 sx={{
-                  fontSize: "14px",
-                  color: "#3D69D3",
-                  fontFamily: "Inter",
-                  fontWeight: 500,
-                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: 2,
+                  mt: 2,
                 }}
               >
-                + Add More
-              </Typography>
-            </Box>
-          )}
+                <Box sx={{ flex: 1 }}>
+                  <StyledLabel>{labelIndex}</StyledLabel>
+                  <TextField
+                    value={item.name}
+                    fullWidth
+                    margin="normal"
+                    disabled={editUserData}
+                    onChange={(e) =>
+                      handleArgsDataChange(index, "name", e.target.value)
+                    }
+                  />
+                </Box>
 
-          {/* Row 2 */}
+                <Box sx={{ flex: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <StyledLabel>Default Value</StyledLabel>
+                    {index > 0 &&
+                      (stockData?.userDefined || isNewFuncOrDuplicate) && (
+                        <DeleteOutlineOutlinedIcon
+                          sx={{
+                            color: "red",
+                            cursor: "pointer",
+                            height: "0.85em",
+                          }}
+                          onClick={() => {
+                            if (!editUserData) {
+                              handleDeleteArgsData(index);
+                            }
+                          }}
+                        />
+                      )}
+                  </Box>
+                  <TextField
+                    value={item.value}
+                    fullWidth
+                    margin="normal"
+                    disabled={editUserData}
+                    onChange={(e) =>
+                      handleArgsDataChange(index, "value", e.target.value)
+                    }
+                  />
+                </Box>
+              </Box>
+            );
+          })}
         </Box>
-      )}
 
-      {/* View Button */}
+        {(stockData?.userDefined || isNewFuncOrDuplicate) && (
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Typography
+              onClick={() => {
+                if (!editUserData) {
+                  handleAddArgsData();
+                }
+              }}
+              sx={{
+                fontSize: "14px",
+                color: "#3D69D3",
+                fontFamily: "Inter",
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
+              + Add More
+            </Typography>
+          </Box>
+        )}
+      </Box>
+
+      {/* View Button (Hidden on screens <= 1024px) */}
       <Box
-        className={
-          showArgs
-            ? "text-[#3D69D3] absolute top-3 right-10 z-10 cursor-pointer "
-            : "text-white absolute top-3 right-10 z-10 cursor-pointer "
-        }
-        sx={{ height: "28px", width: "129px" }}
+        sx={{
+          display: { xs: "none", lg: isSmallScreen ? "none" : "block" }, // Hide on screens <= 1024px
+          position: "absolute",
+          top: 3,
+          right: 10,
+          zIndex: 10,
+          height: "28px",
+          width: "129px",
+        }}
       >
         {showArgs ? (
           <Typography
@@ -289,6 +236,8 @@ const EditorFunction = ({
               fontFamily: "Inter",
               fontSize: "14px",
               fontWeight: 500,
+              color: "#3D69D3",
+              cursor: "pointer",
             }}
           >
             Hide Arguments
@@ -308,19 +257,17 @@ const EditorFunction = ({
                 fontFamily: "Inter",
                 fontSize: "12px",
                 fontWeight: 400,
+                color: "white",
+                cursor: "pointer",
               }}
             >
               View Arguments
             </Typography>
-            <span>
-              <OpenInFullIcon
-                fontSize="small"
-                sx={{
-                  cursor: "pointer",
-                }}
-                onClick={() => setIsFunctionDialogOpen(true)}
-              />
-            </span>
+            <OpenInFullIcon
+              fontSize="small"
+              sx={{ cursor: "pointer", color: "white" }}
+              onClick={() => setIsFunctionDialogOpen(true)}
+            />
           </Box>
         )}
       </Box>
