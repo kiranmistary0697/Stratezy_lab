@@ -226,7 +226,9 @@ const TableRow = () => {
               Select Column
             </Typography>
             {columns
-              .filter(({ field }) => !["favorite"].includes(field)) // Remove !["moreActions"].includes(field)
+              .filter(
+                ({ field }) => !["favorite", "moreActions"].includes(field)
+              )
               .map((col) => (
                 <FormControlLabel
                   key={col.field}
@@ -249,7 +251,7 @@ const TableRow = () => {
                         color: "#0A0A0A",
                       }}
                     >
-                      {col.field === "moreActions" ? "Actions" : col.headerName}
+                      {col.headerName}
                     </Typography>
                   }
                 />
@@ -317,6 +319,7 @@ const TableRow = () => {
         tags: [tagTypes.GET_STRATEGY],
       }).unwrap();
     } catch (error) {
+      console.error("Failed to delete:", error);
     } finally {
       fetchAllData();
       setIsDeleteCase(false);
