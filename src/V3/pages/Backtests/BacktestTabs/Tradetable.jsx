@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Box,
@@ -28,7 +28,7 @@ const tableTextSx = {
   height: "100%",
 };
 
-const Tradetable = forwardRef((props, ref) => {
+const Tradetable = (props) => {
   const { rows = [] } = props; // ✅ get rows from props safely
 
   const [hiddenColumns, setHiddenColumns] = useState([
@@ -367,15 +367,6 @@ const Tradetable = forwardRef((props, ref) => {
   const visibleColumns = columns.filter(
     (col) => !hiddenColumns.includes(col.field)
   );
-  useImperativeHandle(ref, () => ({
-    getCSVData: () => ({
-      columns,
-      datas: combinedArrayWithId,
-      filename: "trade_data",
-      separator: ",",
-      wrapColumnChar: '"',
-    }),
-  }));
 
   return (
     <>
@@ -436,6 +427,6 @@ const Tradetable = forwardRef((props, ref) => {
       </Box>
     </>
   );
-});
+};
 
 export default Tradetable;

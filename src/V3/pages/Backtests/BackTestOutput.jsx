@@ -94,13 +94,6 @@ const BackTestOutput = () => {
 
   const summaryData = extractSummaryMetrics(backTestIdData?.summary);
 
-  // Function to update CSV data when switching tabs
-  useEffect(() => {
-    if (tabIndex === 2 && tradeTableRef.current) {
-      setCsvData(tradeTableRef.current.getCSVData());
-    }
-  }, [tabIndex]);
-
   return (
     <div className="p-8 h-[calc(100vh-100px)] overflow-auto">
       <div className="bg-white flex flex-col border border-[#E0E1E4] h-full">
@@ -108,7 +101,7 @@ const BackTestOutput = () => {
         <div>
           <BacktestDetailHeader
             tab={tabIndex}
-            csvData={csvData}
+            csvData={tradeTableData}
             data={backTestIdData}
             requestData={requestData}
             handleRequestId={handleRequestId}
@@ -154,7 +147,7 @@ const BackTestOutput = () => {
           )}
           {tabIndex === 2 && (
             <div className="p-7">
-              <Tradetable ref={tradeTableRef} rows={tradeTableData} />
+              <Tradetable rows={tradeTableData} />
             </div>
           )}
         </div>

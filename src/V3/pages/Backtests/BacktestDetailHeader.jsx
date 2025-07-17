@@ -17,12 +17,12 @@ const initialBrokerageList = [
 
 const BacktestDetailHeader = ({
   tab = {},
-  csvData,
+  csvData = [],
   data,
   requestData,
   handleRequestId = () => {},
 }) => {
-  const combinedArrayWithId = csvData?.datas?.flat().map((item, index) => ({
+  const combinedArrayWithId = csvData.flat().map((item, index) => ({
     id: index,
     ...item,
   }));
@@ -40,12 +40,6 @@ const BacktestDetailHeader = ({
       csvLink.current.link.click();
     }
   };
-
-  const status = data?.summary?.includes("still running")
-    ? "In Progress"
-    : data?.summary?.includes("Backtest summary for")
-    ? "Complete"
-    : "Failed";
 
   useEffect(() => {
     const fetchInterval = setInterval(() => {
@@ -157,7 +151,11 @@ const BacktestDetailHeader = ({
               </HeaderButton>
               {tab === 2 && csvData && (
                 <>
-                  <HeaderButton variant="contained" onClick={triggerDownload}>
+                  <HeaderButton
+                    variant="contained"
+                    onClick={triggerDownload}
+                    disabled={!combinedArrayWithId.length}
+                  >
                     Download CSV
                   </HeaderButton>
                   <CSVLink
