@@ -46,9 +46,8 @@ const TraderSequence = ({ isView, formik, id, setIsDirty }) => {
   const [getTradeRule] = usePostMutation();
   const [getStrategyData] = useLazyGetQuery();
 
-  const { traderSequence } = useSelector((state) => ({
-    traderSequence: state.Stock.traderSequence,
-  }));
+  const traderSequence = useSelector((state) => state.Stock.traderSequence);
+  
   const { values, touched, errors, setFieldValue, setFieldTouched } = formik;
 
   const [traderSequenceOptions, setTraderSequenceOptions] = useState([]);

@@ -47,9 +47,7 @@ const StockEntryExit = ({ formik, isView, id, setIsDirty }) => {
   const [getStockExit] = usePostMutation();
   const [getStrategyData] = useLazyGetQuery();
 
-  const { stockEntryExit } = useSelector((state) => ({
-    stockEntryExit: state.Stock,
-  }));
+  const stockEntryExit = useSelector((state) => state.Stock);
 
   const [stockEntryOptions, setStockEntryOptions] = useState([]);
   const [stockExitOptions, setStockExitOptions] = useState([]);

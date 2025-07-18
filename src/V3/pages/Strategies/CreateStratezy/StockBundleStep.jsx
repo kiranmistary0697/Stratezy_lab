@@ -34,9 +34,7 @@ const LOCAL_STORAGE_KEY = "stockFilters";
 
 const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
   const dispatch = useDispatch();
-  const { stockBundle } = useSelector((state) => ({
-    stockBundle: state.Stock.stockBundle,
-  }));
+  const stockBundle = useSelector((state) => state.Stock.stockBundle);
 
   const { values, touched, errors, setFieldValue, setFieldTouched } = formik;
 

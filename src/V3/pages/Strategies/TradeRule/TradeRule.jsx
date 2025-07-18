@@ -37,9 +37,7 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
   const [getTradeRule] = usePostMutation();
   const [getStrategyData] = useLazyGetQuery();
 
-  const { tradeRule } = useSelector((state) => ({
-    tradeRule: state.Stock.tradeRule,
-  }));
+  const tradeRule = useSelector((state) => state.Stock.tradeRule);
 
   const { values, touched, errors, setFieldValue, setFieldTouched } = formik;
 

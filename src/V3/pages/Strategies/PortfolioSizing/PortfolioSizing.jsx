@@ -46,9 +46,7 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
   const [getTradeRule] = usePostMutation();
   const [getStrategyData] = useLazyGetQuery();
 
-  const { portfolioSizing } = useSelector((state) => ({
-    portfolioSizing: state.Stock.portfolioSizing,
-  }));
+  const portfolioSizing = useSelector((state) => state.Stock.portfolioSizing);
   //portfolioSizing-saved
   const {
     values,
@@ -126,7 +124,10 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
         }).unwrap();
 
         // Update all related fields from the API response
-        setFieldValue("portfolioSizing.selectedPortfolio", value?.shortFuncName);
+        setFieldValue(
+          "portfolioSizing.selectedPortfolio",
+          value?.shortFuncName
+        );
         setFieldValue("portfolioSizing.adesc", data?.adesc || []);
         setFieldValue("portfolioSizing.args", data?.args || []);
       } catch (err) {
@@ -218,7 +219,8 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                 value={
                   portfolioSizingOptions.find(
                     (opt) =>
-                      opt?.shortFuncName === values.portfolioSizing?.selectedPortfolio
+                      opt?.shortFuncName ===
+                      values.portfolioSizing?.selectedPortfolio
                   ) || null
                 }
                 // value={values.portfolioSizing?.selectedPortfolio || ""}
@@ -249,7 +251,8 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
                   const selectedOption =
                     portfolioSizingOptions.find(
                       (opt) =>
-                        opt.shortFuncName === values.portfolioSizing?.selectedPortfolio
+                        opt.shortFuncName ===
+                        values.portfolioSizing?.selectedPortfolio
                     ) || {}; // {} when nothing selected
 
                   return (
