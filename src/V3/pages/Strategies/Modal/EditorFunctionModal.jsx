@@ -5,9 +5,12 @@ import {
   Box,
   Dialog,
   DialogTitle,
+  Grid,
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -50,16 +53,25 @@ const EditorFunctionModal = ({
   isNewFuncOrDuplicate,
   setIsDirty = () => {},
 }) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down(1180)); // Breakpoint at 1024px
   const [showArgs, setShowArgs] = useState(false);
 
   const handleChange = (newValue, e) => {
     setIsDirty(true);
     setCode(newValue);
   };
+
   return (
     <Dialog fullScreen open={isOpen}>
       <DialogTitle
-        sx={{ m: 0, p: 2, paddingX: "20px" }}
+        sx={{
+          m: 0,
+          p: 2,
+          paddingX: "20px",
+          display: "flex",
+          flexDirection: "row",
+        }}
         className="flex flex-col md:flex-row items-center justify-between w-full p-6 gap-4 md:gap-10"
       >
         <Box className={`flex items-center gap-2.5 ${" w-full"}`}>
@@ -108,236 +120,268 @@ const EditorFunctionModal = ({
           Close
         </HeaderButton>
       </DialogTitle>
-      <Box>
-        <Box
-          sx={{
-            display: "flex",
-            position: "relative",
-            height: "92.5vh",
-            paddingX: "20px",
+      <Grid
+        container
+        spacing={2}
+        className="w-full overflow-auto px-4 border border-zinc-200"
+      >
+        <Grid
+          item
+          size={{
+            xs: 12,
+            lg: isSmallScreen ? 12 : 4,
           }}
         >
-          <Box sx={{ width: 800 }}>
-            <KeywordSearch keywordData={keywordData} fullHeight={true} />
-          </Box>
+          <KeywordSearch
+            keywordData={keywordData}
+            fullHeight={isSmallScreen ? false : true}
+          />
+        </Grid>
 
-          <Box className="flex w-full">
+        <Grid
+          item
+          size={{
+            xs: 12,
+            lg: isSmallScreen ? 12 : 8,
+          }}
+        >
+          <Box
+            className="m-2"
+            sx={{
+              display: "flex",
+              flexDirection: {
+                xs: "column",
+                lg: isSmallScreen ? "column" : "row",
+              },
+              position: "relative",
+            }}
+          >
             {/* Monaco Editor */}
-            <AceEditor
-              mode="c_cpp"
-              theme="monokai"
-              name="code-editor"
-              value={code}
-              onChange={handleChange}
-              width={showArgs ? "60%" : "100%"}
-              height="99%"
-              fontSize={16}
-              setOptions={{
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true,
-                showLineNumbers: true,
-                tabSize: 2,
+            <Box
+              sx={{
+                marginTop: "8px",
+                width: {
+                  xs: "100%",
+                  lg: isSmallScreen ? "100%" : showArgs ? "60%" : "100%",
+                },
+                height: { xs: "75vh", lg: isSmallScreen ? "60vh" : "100%" },
+                transition: isSmallScreen ? "none" : "width 0.3s",
               }}
-              readOnly={editUserData}
-            />
+            >
+              <AceEditor
+                mode="c_cpp"
+                theme="monokai"
+                name="code-editor"
+                value={code}
+                onChange={handleChange}
+                width="100%"
+                height={isSmallScreen ? "600px" : 820}
+                fontSize={16}
+                setOptions={{
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                  showLineNumbers: true,
+                  tabSize: 2,
+                }}
+                readOnly={editUserData}
+              />
+            </Box>
 
             {/* Arguments Panel */}
-            {showArgs && (
-              <Box
+            <Box
+              sx={{
+                width: { xs: "100%", lg: isSmallScreen ? "100%" : "40%" },
+                padding: 2,
+                borderLeft: {
+                  xs: "none",
+                  lg: isSmallScreen ? "none" : "1px solid #ddd",
+                },
+                borderTop: {
+                  xs: "1px solid #ddd",
+                  lg: isSmallScreen ? "1px solid #ddd" : "none",
+                },
+                display: {
+                  xs: "block",
+                  lg: isSmallScreen ? "block" : showArgs ? "block" : "none",
+                },
+              }}
+            >
+              <Typography
                 sx={{
-                  // width: "40%",
-                  padding: 2,
-                  // backgroundColor: "#f5f5f5",
-                  borderLeft: "1px solid #ddd",
+                  fontSize: "16px",
+                  color: "#0A0A0A",
+                  fontFamily: "Inter",
+                  fontWeight: 600,
+                  cursor: "default",
                 }}
               >
-                <Typography
-                  sx={{
-                    fontSize: "16px",
-                    color: "#0A0A0A",
-                    fontFamily: "Inter",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Arguments
-                </Typography>
+                Arguments
+              </Typography>
 
-                <Box className="flex gap-4 mt-4" sx={{ alignItems: "center" }}>
-                  <Box sx={{ minWidth: "150px" }}>
-                    {argsData.map((item, index) => {
-                      const labelIndex = `ARG${index + 1} Name`;
-                      return (
-                        <Box
-                          key={index}
-                          className="flex gap-4 mt-4"
-                          sx={{ alignItems: "center", width: "max-content" }}
-                        >
-                          <Box
-                            sx={{
-                              minWidth: "150px",
-                              display: "flex",
-                              gap: "1rem",
-                            }}
-                          >
-                            <Box>
-                              <Box className="flex gap-2.5 items-center">
-                                <StyledLabel>{labelIndex}</StyledLabel>
-                              </Box>
-
-                              <TextField
-                                value={item.name}
-                                fullWidth
-                                margin="normal"
-                                disabled={editUserData}
-                                onChange={(e) =>
-                                  handleArgsDataChange(
-                                    index,
-                                    "name",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </Box>
-
-                            <Box>
-                              <Box className="flex gap-2.5 items-center justify-between">
-                                <Box className="flex gap-2.5 items-center">
-                                  <StyledLabel>Default Value</StyledLabel>
-                                </Box>
-
-                                {index > 0 &&
-                                  (stockData?.userDefined ||
-                                    isNewFuncOrDuplicate) && (
-                                    <Box
-                                      sx={{
-                                        color: "transparent",
-                                        cursor: "pointer",
-                                        marginBottom: "0px",
-                                        display: "flex",
-                                        flexDirection: "row-reverse",
-                                      }}
-                                    >
-                                      <DeleteOutlineOutlinedIcon
-                                        sx={{
-                                          color: "red",
-                                          cursor: "pointer",
-                                          height: "0.85em",
-                                        }}
-                                        onClick={() => {
-                                          if (!editUserData) {
-                                            handleDeleteArgsData(index);
-                                          }
-                                        }}
-                                      />
-                                    </Box>
-                                  )}
-                              </Box>
-                              <TextField
-                                value={item.value}
-                                fullWidth
-                                margin="normal"
-                                disabled={editUserData}
-                                onChange={(e) =>
-                                  handleArgsDataChange(
-                                    index,
-                                    "value",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </Box>
-                          </Box>
-                        </Box>
-                      );
-                    })}
-                  </Box>
-                </Box>
-                {(stockData?.userDefined || isNewFuncOrDuplicate) && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      marginTop: "8px",
-                    }}
-                  >
-                    <Typography
-                      onClick={() => {
-                        if (!editUserData) {
-                          handleAddArgsData();
-                        }
-                      }}
+              <Box sx={{ minWidth: "150px", mt: 2 }}>
+                {argsData.map((item, index) => {
+                  const labelIndex = `ARG${index + 1} Name`;
+                  return (
+                    <Box
+                      key={index}
                       sx={{
-                        fontSize: "14px",
-                        color: "#3D69D3",
-                        fontFamily: "Inter",
-                        fontWeight: 500,
-                        cursor: "pointer",
+                        display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
+                        gap: 2,
+                        mt: 2,
                       }}
                     >
-                      + Add More
-                    </Typography>
-                  </Box>
-                )}
+                      <Box sx={{ flex: 1 }}>
+                        <StyledLabel>{labelIndex}</StyledLabel>
+                        <TextField
+                          value={item.name}
+                          fullWidth
+                          margin="normal"
+                          disabled={editUserData}
+                          onChange={(e) =>
+                            handleArgsDataChange(index, "name", e.target.value)
+                          }
+                        />
+                      </Box>
 
-                {/* Row 2 */}
+                      <Box sx={{ flex: 1 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <StyledLabel>Default Value</StyledLabel>
+                          {index > 0 &&
+                            (stockData?.userDefined ||
+                              isNewFuncOrDuplicate) && (
+                              <DeleteOutlineOutlinedIcon
+                                sx={{
+                                  color: "red",
+                                  cursor: "pointer",
+                                  height: "0.85em",
+                                }}
+                                onClick={() => {
+                                  if (!editUserData) {
+                                    handleDeleteArgsData(index);
+                                  }
+                                }}
+                              />
+                            )}
+                        </Box>
+                        <TextField
+                          value={item.value}
+                          fullWidth
+                          margin="normal"
+                          disabled={editUserData}
+                          onChange={(e) =>
+                            handleArgsDataChange(index, "value", e.target.value)
+                          }
+                        />
+                      </Box>
+                    </Box>
+                  );
+                })}
               </Box>
-            )}
 
-            {/* View Button */}
-            <Box
-              className={
-                showArgs
-                  ? "text-[#3D69D3] absolute top-3 right-10 z-10 cursor-pointer "
-                  : "text-white absolute top-3 right-10 z-10 cursor-pointer "
-              }
-              sx={{ height: "28px", width: "129px" }}
-            >
-              {showArgs ? (
-                <Typography
-                  onClick={() => setShowArgs(!showArgs)}
-                  sx={{
-                    fontFamily: "Inter",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Hide Arguments
-                </Typography>
-              ) : (
+              {(stockData?.userDefined || isNewFuncOrDuplicate) && (
                 <Box
                   sx={{
                     display: "flex",
-                    gap: "8px",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    justifyContent: "flex-end",
+                    marginTop: "8px",
                   }}
                 >
+                  <Typography
+                    onClick={() => {
+                      if (!editUserData) {
+                        handleAddArgsData();
+                      }
+                    }}
+                    sx={{
+                      fontSize: "14px",
+                      color: "#3D69D3",
+                      fontFamily: "Inter",
+                      fontWeight: 500,
+                      cursor: "pointer",
+                    }}
+                  >
+                    + Add More
+                  </Typography>
+                </Box>
+              )}
+
+              {/* Row 2 */}
+            </Box>
+
+            {/* View Button */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 3,
+                right: 10,
+                zIndex: 10,
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+                height: "28px",
+                width: "129px",
+              }}
+            >
+              <Box
+                sx={{
+                  display: {
+                    xs: "none",
+                    lg: isSmallScreen ? "none" : "block",
+                  },
+                }}
+              >
+                {showArgs ? (
+                  <Typography
+                    onClick={() => setShowArgs(!showArgs)}
+                    sx={{
+                      fontFamily: "Inter",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      color: "#3D69D3",
+                      cursor: "pointer",
+                      textWrap: "nowrap",
+                    }}
+                  >
+                    Hide Arguments
+                  </Typography>
+                ) : (
                   <Typography
                     onClick={() => setShowArgs(!showArgs)}
                     sx={{
                       fontFamily: "Inter",
                       fontSize: "12px",
                       fontWeight: 400,
+                      color: "white",
+                      cursor: "pointer",
                     }}
                   >
                     View Arguments
                   </Typography>
-                  <span>
-                    <CloseFullscreenIcon
-                      fontSize="small"
-                      sx={{
-                        cursor: "pointer",
-                      }}
-                      onClick={handleClose}
-                    />
-                  </span>
-                </Box>
-              )}
+                )}
+              </Box>
+              <span>
+                <CloseFullscreenIcon
+                  fontSize="small"
+                  sx={{
+                    cursor: "pointer",
+                    color: "white",
+                    marginLeft: isSmallScreen ? "80px" : "",
+                    // visibility: isSmallScreen ? "hidden" : "visible",
+                  }}
+                  onClick={handleClose}
+                />
+              </span>
             </Box>
           </Box>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </Dialog>
   );
 };

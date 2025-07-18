@@ -77,6 +77,7 @@ const EditorFunction = ({
             xs: "100%",
             lg: isSmallScreen ? "100%" : showArgs ? "60%" : "100%",
           },
+          height: { xs: "75vh", lg: isSmallScreen ? "60vh" : "100%" },
           transition: isSmallScreen ? "none" : "width 0.3s",
         }}
       >
@@ -217,40 +218,37 @@ const EditorFunction = ({
         )}
       </Box>
 
-      {/* View Button (Hidden on screens <= 1024px) */}
+      {/* Button Container */}
       <Box
         sx={{
-          display: { xs: "none", lg: isSmallScreen ? "none" : "block" }, // Hide on screens <= 1024px
           position: "absolute",
           top: 3,
           right: 10,
           zIndex: 10,
           height: "28px",
-          width: "129px",
+          display: "flex",
+          gap: "8px",
+          alignItems: "center",
         }}
       >
-        {showArgs ? (
-          <Typography
-            onClick={() => setShowArgs(!showArgs)}
-            sx={{
-              fontFamily: "Inter",
-              fontSize: "14px",
-              fontWeight: 500,
-              color: "#3D69D3",
-              cursor: "pointer",
-            }}
-          >
-            Hide Arguments
-          </Typography>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              gap: "8px",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+        {/* Show/Hide Arguments (Hidden on small screens) */}
+        <Box
+          sx={{ display: { xs: "none", lg: isSmallScreen ? "none" : "block" } }}
+        >
+          {showArgs ? (
+            <Typography
+              onClick={() => setShowArgs(!showArgs)}
+              sx={{
+                fontFamily: "Inter",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "#3D69D3",
+                cursor: "pointer",
+              }}
+            >
+              Hide Arguments
+            </Typography>
+          ) : (
             <Typography
               onClick={() => setShowArgs(!showArgs)}
               sx={{
@@ -263,13 +261,14 @@ const EditorFunction = ({
             >
               View Arguments
             </Typography>
-            <OpenInFullIcon
-              fontSize="small"
-              sx={{ cursor: "pointer", color: "white" }}
-              onClick={() => setIsFunctionDialogOpen(true)}
-            />
-          </Box>
-        )}
+          )}
+        </Box>
+        {/* Fullscreen Icon (Always visible) */}
+        <OpenInFullIcon
+          fontSize="small"
+          sx={{ cursor: "pointer", color: "white" }}
+          onClick={() => setIsFunctionDialogOpen(true)}
+        />
       </Box>
     </Box>
   );

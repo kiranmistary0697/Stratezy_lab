@@ -312,7 +312,7 @@ const ViewBacktestResult = ({
           <Link
             component="button"
             underline="none"
-            Color="#3D69D3"
+            color="#3D69D3"
             onClick={(e) => {
               e.stopPropagation();
               handleStrategyRowClick(params);
