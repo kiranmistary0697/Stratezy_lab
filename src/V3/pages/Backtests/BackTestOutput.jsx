@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import NavigationTabs from "../Strategies/ViewStrategy/NavigationTabs";
@@ -13,9 +13,7 @@ import { useLazyGetQuery } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
 
 const BackTestOutput = () => {
-  const { backTestData } = useSelector((state) => ({
-    backTestData: state.Stock.backTestData,
-  }));
+  const backTestData = useSelector((state) => state.Stock.backTestData);
 
   const [getTradeTable] = useLazyGetQuery();
   const [getRequestId] = useLazyGetQuery();
@@ -24,10 +22,7 @@ const BackTestOutput = () => {
   const queryParams = new URLSearchParams(search);
   const id = queryParams.get("id");
 
-  const tradeTableRef = useRef(null); // Ref for TradeTable
-
   const [tabIndex, setTabIndex] = useState(0);
-  const [csvData, setCsvData] = useState(null);
   const [tradeTableData, setTradeTableData] = useState([]);
   const [requestData, setRequestData] = useState({});
 
