@@ -526,7 +526,6 @@ const EditFunction = () => {
           >
             <Grid
               // className="md:border-r md:border-r-zinc-200"
-              item
               size={{
                 xs: 12,
                 lg: isSmallScreen ? 12 : 4,
@@ -535,7 +534,6 @@ const EditFunction = () => {
               <KeywordSearch keywordData={keywordData} fullHeight={false} />
             </Grid>
             <Grid
-              item
               size={{
                 xs: 12,
                 lg: isSmallScreen ? 12 : 8,

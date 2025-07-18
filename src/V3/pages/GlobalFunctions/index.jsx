@@ -25,15 +25,7 @@ const gobalFunction = () => {
         alignItems="center"
       >
         {/* Title and tooltip */}
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          md={8}
-          display="flex"
-          alignItems="center"
-          gap={1}
-        >
+        <Grid display="flex" alignItems="center" gap={1}>
           <div className="font-semibold text-xl">Functions</div>
           <Tooltip
             title={FUNCTION_TOOLTIP_TITLE}
@@ -63,7 +55,7 @@ const gobalFunction = () => {
         </Grid>
 
         {/* Search and Button */}
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid>
           <div className="flex  gap-3 w-full">
             <TextField
               size="small"

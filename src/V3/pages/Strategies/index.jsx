@@ -42,8 +42,6 @@ const Strategies = () => {
         }}
       >
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             justifyContent: "space-between",

@@ -240,7 +240,6 @@ const CreateStrategy = () => {
           >
             <Grid
               className="p-5 md:border-r md:border-r-zinc-200"
-              item
               size={{
                 xs: 12,
                 md: 6,
@@ -255,7 +254,6 @@ const CreateStrategy = () => {
               />
             </Grid>
             <Grid
-              item
               size={{
                 xs: 12,
                 md: 6,
