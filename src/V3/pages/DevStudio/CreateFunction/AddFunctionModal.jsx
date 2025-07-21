@@ -98,6 +98,7 @@ const AddFunctionModal = ({
         num_arg: receivedArgs.length || 0,
         equation: `/config/library/${values.functionName}`,
         desc: values.descriptionName,
+        identifier: values.identifier,
         args: receivedArgs || [],
         adesc: receivedAdesc || [],
         filter: selectedFunction?.filterRule || false,
@@ -109,13 +110,12 @@ const AddFunctionModal = ({
         gexit: selectedFunction?.gexit || false,
         sort: selectedFunction?.tradeSequence || false,
         ulying: selectedFunction?.utility || false,
+        stockList: selectedFunction?.stockList || false,
+        // accountRule: selectedFunction?.accountRule || false,
         candle_stick: false,
         future_rule: false,
         cacheable: false,
         static: false,
-        stockList: selectedFunction?.stockList || false,
-        identifier: values.identifier,
-        accountRule:selectedFunction?.accountRule || false,
       };
 
       try {

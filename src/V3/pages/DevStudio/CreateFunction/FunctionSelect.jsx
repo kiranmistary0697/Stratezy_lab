@@ -134,7 +134,7 @@ const FunctionSelect = ({
     // if (
     //   selectedValues.stockEntryExit.includes("Account") ||
     //   selectedValues.globalEntryExit.includes("Account") ||
-    //   selectedValues.tradeSequence.includes("Account")
+    //   selectedValues.tradeSequence?.length
     // ) {
     //   updatedFunction.accountRule = true;
     // } else {

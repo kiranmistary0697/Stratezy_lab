@@ -8,6 +8,7 @@ import {
   useTheme,
   CircularProgress,
   Tooltip,
+  useMediaQuery,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
@@ -52,6 +53,8 @@ const Visualisation = ({ id }) => {
   const [symbolName, setSymbolName] = useState(""); // default symbol
   const [preparedData, setPreparedData] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSelectChange = (selected) => {
     setSelectedOption(selected);
@@ -276,28 +279,32 @@ const Visualisation = ({ id }) => {
               xaxis: {
                 title: {
                   text: "Date",
-                  standoff: 10, // gives space between title and axis
+                  standoff: 10,
                 },
                 showgrid: true,
                 gridcolor: "#e0e0e0",
-                automargin: true, // allow dynamic margin
-              },
-              yaxis: {
-                title: { text: "Primary Y-Axis", standoff: 30 },
-                gridcolor: "#e0e0e0",
-                range: y1Range,
                 automargin: true,
               },
-              yaxis2: {
-                title: { text: "Secondary Y-Axis", standoff: 30 },
-                overlaying: "y",
-                side: "right",
-                range: y2Range,
-                automargin: true,
-              },
+              ...(isMobile
+                ? {} // No y-axes on mobile
+                : {
+                    yaxis: {
+                      title: { text: "Primary Y-Axis", standoff: 30 },
+                      gridcolor: "#e0e0e0",
+                      range: y1Range,
+                      automargin: true,
+                    },
+                    yaxis2: {
+                      title: { text: "Secondary Y-Axis", standoff: 30 },
+                      overlaying: "y",
+                      side: "right",
+                      range: y2Range,
+                      automargin: true,
+                    },
+                  }),
               legend: {
                 orientation: "h",
-                y: -0.3, // position legend below x-axis
+                y: -0.3,
                 x: 0.5,
                 xanchor: "center",
               },
@@ -305,7 +312,7 @@ const Visualisation = ({ id }) => {
               paper_bgcolor: theme.palette.background.paper,
               plot_bgcolor: theme.palette.background.paper,
               autosize: true,
-              margin: { l: 80, r: 80, t: 20, b: 80 }, // 👈 increased bottom margin
+              margin: { l: 80, r: 80, t: 20, b: 80 },
             }}
             config={{
               responsive: true,
@@ -314,7 +321,10 @@ const Visualisation = ({ id }) => {
               modeBarButtonsToAdd: ["toggleSpikelines", "resetScale2d"],
             }}
             useResizeHandler
-            style={{ width: "100%", height: "60vh" }}
+            style={{
+              width: isMobile ? "100vw" : "100%",
+              height: "60vh",
+            }}
           />
         ) : (
           <div className="text-sm text-gray-600">

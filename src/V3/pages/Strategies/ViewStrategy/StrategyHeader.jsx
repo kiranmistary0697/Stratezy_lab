@@ -1,15 +1,5 @@
-"use client";
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Popover,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Popover, Tooltip } from "@mui/material";
 import Badge from "./Badge";
 import { DropdownIcon } from "./Icons";
 import RunBacktest from "../Modal/RunBacktest";
@@ -67,6 +57,7 @@ const StrategyHeader = ({
   disableDeploy,
   version,
   setIsDirty = () => {},
+  handleViewData = () => {},
 }) => {
   const [getVersionData] = useLazyGetQuery();
 
@@ -189,12 +180,16 @@ const StrategyHeader = ({
         <RunBacktest
           strategyName={strategyName}
           isOpen={isOpenBacktest}
-          setSuccessModalOpen={setSuccessModalOpen}
-          handleClose={() => setIsOpenBacktest(false)}
+          setSuccessModalOpen={() => setSuccessModalOpen(true)}
+          handleClose={() => {
+            setIsOpenBacktest(false), setSuccessModalOpen(false);
+          }}
           title="Run Backtest"
+          isNavigate={runBacktest === "true"}
           status={status}
           defaultVersion={defaultVersion}
           demoStrategy={demoStrategy}
+          handleViewData={handleViewData}
         />
       )}
 

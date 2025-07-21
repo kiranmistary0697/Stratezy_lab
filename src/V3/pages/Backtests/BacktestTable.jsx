@@ -158,19 +158,21 @@ const BacktestTable = () => {
 
   const filteredRows = useMemo(
     () =>
-      rowsWithId.filter((row) => {
-        const summary = row.summary || "";
-        const status = summary.includes("still running")
-          ? "In Progress"
-          : summary.includes("Backtest summary for")
-          ? "Complete"
-          : "Failed";
-        return (
-          (selectedStrategies.length === 0 ||
-            selectedStrategies.includes(row.name)) &&
-          (selectedStatuses.length === 0 || selectedStatuses.includes(status))
-        );
-      }),
+      rowsWithId
+        .filter((row) => {
+          const summary = row.summary || "";
+          const status = summary.includes("still running")
+            ? "In Progress"
+            : summary.includes("Backtest summary for")
+            ? "Complete"
+            : "Failed";
+          return (
+            (selectedStrategies.length === 0 ||
+              selectedStrategies.includes(row.name)) &&
+            (selectedStatuses.length === 0 || selectedStatuses.includes(status))
+          );
+        })
+        ?.reverse(),
     [rowsWithId, selectedStrategies, selectedStatuses]
   );
 

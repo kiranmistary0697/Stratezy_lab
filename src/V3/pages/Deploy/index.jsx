@@ -27,7 +27,12 @@ const Deploy = () => {
         endpoint: "deploy/strategy/findall",
         tags: [tagTypes.GET_DEPLOY],
       }).unwrap();
-      setRows(data);
+      const abc = [...data];
+      const sortedData = abc?.sort((a, b) => {
+        return new Date(b.deployedDate || 0) - new Date(a.deployedDate || 0);
+      });
+
+      setRows(sortedData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {

@@ -290,7 +290,7 @@ const DeployTable = ({
           moment(row.deployedDate, "YYYY/MM/DD").format("Do MMM YYYY"),
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
-            {moment(params.row.deployedDate, "YYYY/MM/DD").format(
+            {moment(params.row.deployedDate, "YYYY-MM-DD").format(
               "Do MMM YYYY"
             ) || "-"}
           </Typography>
@@ -491,7 +491,7 @@ const DeployTable = ({
         ),
       },
     ],
-    [hiddenColumns]
+    [rows, hiddenColumns]
   );
 
   const visibleColumns = columns.filter(

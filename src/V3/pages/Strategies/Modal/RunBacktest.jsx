@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  CircularProgress,
-  FormGroup,
-  TextField,
-} from "@mui/material";
+import { Box, CircularProgress, FormGroup, TextField } from "@mui/material";
 
 import moment from "moment";
 import * as Yup from "yup";
@@ -20,7 +15,6 @@ import Dialog from "@mui/material/Dialog";
 import ModalButton from "../../../common/Table/ModalButton";
 import CustomDatePicker from "../../../common/CustomDatePicker";
 
-
 const RunBacktest = ({
   title,
   isOpen,
@@ -29,6 +23,8 @@ const RunBacktest = ({
   setSuccessModalOpen = () => {},
   defaultVersion,
   demoStrategy,
+  isNavigate = false,
+  handleViewData = () => {},
 }) => {
   const navigate = useNavigate();
   const [createBackTest] = usePostMutation();
@@ -117,10 +113,15 @@ const RunBacktest = ({
         tags: [tagTypes.BACKTEST],
       }).unwrap();
 
-      setSuccessModalOpen(true);
+      setSuccessModalOpen();
       handleClose();
+      {
+        !isNavigate && handleViewData(defaultVersion);
+      }
 
-      setTimeout(() => navigate("/Backtest"), 1000);
+      {
+        isNavigate && setTimeout(() => navigate("/Backtest"), 1000);
+      }
     } catch (error) {
       console.log("Backtest error:", error);
     } finally {

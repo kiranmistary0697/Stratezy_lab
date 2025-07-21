@@ -323,6 +323,7 @@ const EditStrategy = () => {
       summary: filterData?.summary || "",
       isDemo: filterData?.demo || false,
       version: filterData?.version || "v1",
+      id: filterData?.id || "",
 
       stockBundle:
         strategy?.filterRule?.length > 0
@@ -476,6 +477,7 @@ const EditStrategy = () => {
               disableDeploy={!rows.length}
               version={version}
               setIsDirty={setIsDirty}
+              handleViewData={handleViewData}
             />
           ) : (
             <>

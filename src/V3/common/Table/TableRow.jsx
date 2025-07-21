@@ -276,17 +276,29 @@ const TableRow = () => {
         tags: [tagTypes.GET_DEMO],
       }).unwrap();
 
-      // Clone and sort only allDataResponse by name
-      const sortedAllData = [...allDataResponse.data].sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Normalize to start of day
 
-      // Combine: demo data on top, then sorted strategy data
-      const combinedData = [...demoDataResponse.data, ...sortedAllData];
+      const isToday = (timestampStr) => {
+        const date = new Date(timestampStr);
+        date.setHours(0, 0, 0, 0);
+        return date.getTime() === today.getTime();
+      };
 
-      const sortedRows = [...combinedData].sort((a, b) => {
-        if (a.favorite === b.favorite) return 0;
-        return a.favorite ? -1 : 1; // favorite = true goes up
+      // Combine both
+      const combinedData = [...demoDataResponse.data, ...allDataResponse.data];
+
+      const sortedRows = combinedData.sort((a, b) => {
+        const aIsToday = isToday(a.timestamp);
+        const bIsToday = isToday(b.timestamp);
+
+        if (aIsToday && !bIsToday) return -1;
+        if (!aIsToday && bIsToday) return 1;
+
+        if (a.favorite && !b.favorite) return -1;
+        if (!a.favorite && b.favorite) return 1;
+
+        return new Date(b.timestamp) - new Date(a.timestamp);
       });
 
       setRows(sortedRows);
@@ -467,7 +479,6 @@ const TableRow = () => {
                   sx: {
                     maxWidth: "500px", // Ensure maxWidth matches width
                     height: "auto", // Allow height to adjust to content
-                    padding: "5px 5px",
                     backgroundColor: "white",
                     color: "#000000",
                     fontSize: "14px",
