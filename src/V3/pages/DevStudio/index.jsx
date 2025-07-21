@@ -394,6 +394,7 @@ const CreateFunction = () => {
           title={"Create Function"}
           argsData={argsData}
           setIsDirty={setIsDirty}
+          isNewFunc
         />
       )}
 

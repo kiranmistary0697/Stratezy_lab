@@ -459,6 +459,7 @@ const EditFunction = () => {
           isDuplicate={isDuplicate}
           argsData={argsData}
           setIsDirty={setIsDirty}
+          isNewFunc={false}
         />
       )}
 

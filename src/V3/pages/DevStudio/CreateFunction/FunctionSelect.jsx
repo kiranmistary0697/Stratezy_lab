@@ -43,6 +43,7 @@ const FunctionSelect = ({
     tradeRule: [],
     stockEntryExit: [],
     globalEntryExit: [],
+    tradeSequence: [],
   });
 
   // Helper function to get default values from stockData
@@ -129,6 +130,16 @@ const FunctionSelect = ({
       portfolioSizing: selectedTypes.portfolioSizing,
       utility: selectedTypes.utility,
     };
+
+    // if (
+    //   selectedValues.stockEntryExit.includes("Account") ||
+    //   selectedValues.globalEntryExit.includes("Account") ||
+    //   selectedValues.tradeSequence.includes("Account")
+    // ) {
+    //   updatedFunction.accountRule = true;
+    // } else {
+    //   updatedFunction.accountRule = false;
+    // }
 
     if (
       selectedTypes.stockEntryExit &&
@@ -241,8 +252,9 @@ const FunctionSelect = ({
   const allOptions = {
     filterRule: ["Static", "Dynamic"],
     tradeRule: ["Buy", "Sell"],
-    stockEntryExit: ["Entry", "Exit"],
-    globalEntryExit: ["Entry", "Exit"],
+    stockEntryExit: ["Entry", "Exit", "Account"],
+    globalEntryExit: ["Entry", "Exit", "Account"],
+    tradeSequence: ["Account"],
   };
 
   const typeLabels = {
@@ -260,6 +272,7 @@ const FunctionSelect = ({
     "tradeRule",
     "stockEntryExit",
     "globalEntryExit",
+    "tradeSequence",
   ];
 
   return (

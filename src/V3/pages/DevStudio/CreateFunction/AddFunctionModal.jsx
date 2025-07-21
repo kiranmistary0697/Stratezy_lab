@@ -29,6 +29,7 @@ const AddFunctionModal = ({
   isDuplicate = false,
   argsData,
   setIsDirty = () => {},
+  isNewFunc = false,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -49,12 +50,20 @@ const AddFunctionModal = ({
     { key: "portfolioSizing", stateKey: "portfolioSizing" },
   ];
 
+  //replace Space with Underscore
+  const replaceSpaceWithUnderscore = (str) => {
+    return str.replace(/ /g, "_");
+  };
+
   const formik = useFormik({
     initialValues: {
       functionName: isDuplicate
         ? `${stockData?.func} duplicate`
         : stockData?.func || "",
       descriptionName: stockData?.desc || "",
+      identifier: replaceSpaceWithUnderscore(
+        isDuplicate ? `${stockData?.func} duplicate` : stockData?.func || ""
+      ),
     },
     validationSchema: Yup.object({
       functionName: Yup.string()
@@ -65,6 +74,10 @@ const AddFunctionModal = ({
           "Only letters, numbers, underscores, and spaces are permitted"
         ),
       descriptionName: Yup.string().required("Description is required"),
+      identifier: Yup.string().matches(
+        /^[a-zA-Z0-9_]+$/,
+        "Only letters, numbers, and underscores are permitted"
+      ),
     }),
     //stock-analysis-function/verify
     onSubmit: async (values) => {
@@ -101,6 +114,8 @@ const AddFunctionModal = ({
         cacheable: false,
         static: false,
         stockList: selectedFunction?.stockList || false,
+        identifier: values.identifier,
+        accountRule:selectedFunction?.accountRule || false,
       };
 
       try {
@@ -116,7 +131,10 @@ const AddFunctionModal = ({
         }
         // Save only if verification succeeded
         const saveStockResponse = await saveNewStock({
-          endpoint: "stock-analysis-function/save",
+          endpoint:
+            isDuplicate || isNewFunc
+              ? "stock-analysis-function/create"
+              : "stock-analysis-function/save",
           payload,
           tags: [tagTypes.GET_FILTERTYPE],
         }).unwrap();
@@ -222,6 +240,29 @@ const AddFunctionModal = ({
               helperText={
                 formik.touched.descriptionName && formik.errors.descriptionName
               }
+            />
+
+            <Typography
+              sx={{
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "120%",
+                color: "#0A0A0A",
+              }}
+            >
+              Identifier
+            </Typography>
+            <TextField
+              fullWidth
+              name="identifier"
+              value={formik.values.identifier}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.identifier && Boolean(formik.errors.identifier)
+              }
+              helperText={formik.touched.identifier && formik.errors.identifier}
             />
           </Box>
 
