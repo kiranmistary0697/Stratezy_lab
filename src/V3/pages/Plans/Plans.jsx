@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import PlansHeader from "./PlansHeader";
 import PlansCard from "./PlansCard";
-import { usePostMutation } from "../../../slices/api";
+import { usePostMutation, useLazyGetQuery } from "../../../slices/api";
 import { SUBSCRIPTION_ID } from "../../../constants/Enum";
 
 const freePlanList = [
@@ -22,7 +22,33 @@ const Plans = () => {
     Free: "Current Plan",
     Pro: "Subscribe",
   });
+  const [planDetails, setPlanDetails] = useState({
+    availableCredit: 0,
+    maxCredit: 0,
+    numDeployments: 0,
+    expiryDate: "",
+    state: "",
+    subscriptionPricingId: "",
+  });
   const [newSubscription] = usePostMutation();
+  const [getCredits] = useLazyGetQuery();
+
+  const fetchDeploymentCredit = async () => {
+    try {
+      const { data } = await getCredits({
+        endpoint: "stock-analysis-function/credit",
+        // tags: [tagTypes.GET_DEPLOY],
+      }).unwrap();
+
+      setPlanDetails(data);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDeploymentCredit();
+  }, []);
 
   const handleChangePlan = async (plan) => {
     if (plan === "Pro") {
@@ -36,7 +62,7 @@ const Plans = () => {
     try {
       const { data } = await newSubscription({
         endpoint: "/stockclient/create-session",
-        payload: { priceId: SUBSCRIPTION_ID },
+        payload: { priceId: planDetails.subscriptionPricingId },
       }).unwrap();
 
       if (data && data.url) {

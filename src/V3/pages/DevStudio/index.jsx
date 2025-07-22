@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   Box,
@@ -8,6 +8,8 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import CreateFunctionHeader from "./CreateFunction/CreateFunctionHeader";
 import FunctionSelect from "./CreateFunction/FunctionSelect";
 import KeywordSearch from "./CreateFunction/KeywordSearch";
@@ -73,10 +75,51 @@ const CreateFunction = () => {
   const [isFunctionDialogOpen, setIsFunctionDialogOpen] = useState(false);
   const [isFullGraphOpen, setIsFullGraphOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [currentTab, setCurrentTab] = useState(0);
+  const [functionData, setFunctionData] = useState([]);
 
   const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
     when: isDirty,
   });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await verifyStock({
+          endpoint: "stock-analysis-function/details",
+          payload: {
+            filter: true,
+            trade: true,
+            entry: true,
+            exit: true,
+            gentry: true,
+            gexit: true,
+            psizing: true,
+            order: true,
+            staticFunc: false,
+            underlying: false,
+            cacheable: false,
+          },
+          tags: [tagTypes.GET_FILTERTYPE],
+        });
+
+        const sanitisedData = data?.data
+          .map((d) => ({
+            name: d.shortFuncName,
+            caption: d.func,
+            description: d.desc, // this one is used for tooltip
+            usage: d.desc,
+            func: d.func,
+            shortFuncName: d.shortFuncName,
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        setFunctionData(sanitisedData);
+      } catch (error) {
+        console.error("Failed to fetch stock details:", error);
+      }
+    })();
+  }, []);
 
   const handleAddArgsData = () => {
     const modifiedArgsData = [...argsData, { name: "", value: "" }];
@@ -184,6 +227,14 @@ const CreateFunction = () => {
       setIsSaving(false);
     }
   };
+
+  const handleSetSelectedFunction = useCallback(
+    (newVal) => {
+      // setIsDirty(true);
+      setSelectedFunction(newVal);
+    },
+    [setSelectedFunction]
+  );
 
   const prepareData = (dataMap) => {
     const seriesData = [];
@@ -412,6 +463,7 @@ const CreateFunction = () => {
           keywordData={keywordData}
           isNewFuncOrDuplicate={true}
           setIsDirty={setIsDirty}
+          functionData={functionData}
         />
       )}
 
@@ -426,9 +478,7 @@ const CreateFunction = () => {
 
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
           <FunctionSelect
-            setSelectedFunction={(e) => {
-              setSelectedFunction(e);
-            }}
+            setSelectedFunction={handleSetSelectedFunction}
             setIsDirty={setIsDirty}
           />
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
@@ -457,7 +507,25 @@ const CreateFunction = () => {
                 lg: isSmallScreen ? 12 : 4,
               }}
             >
-              <KeywordSearch keywordData={keywordData} fullHeight={false} />
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={currentTab}
+                  onChange={(_, newVal) => {
+                    setCurrentTab(newVal);
+                  }}
+                >
+                  <Tab label="Primitives" />
+                  <Tab label="Function" />
+                </Tabs>
+                <Box>
+                  <KeywordSearch
+                    keywordData={currentTab == 0 ? keywordData : functionData}
+                    fullHeight={false}
+                    isFunction={currentTab == 0 ? false : true}
+                  />
+                </Box>
+              </Box>
+              {/* <KeywordSearch keywordData={keywordData} fullHeight={false} /> */}
             </Grid>
             <Grid
               size={{

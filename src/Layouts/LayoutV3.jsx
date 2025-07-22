@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 
 import useTitleUpdater from "../V2/hooks/useTitleUpdater";
@@ -12,8 +11,7 @@ const LayoutV3 = () => {
   return (
     <div className="min-h-[100vh] w-[100vw] flex flex-col font-inter">
       <NavigationHeader />
-
-      <main >
+      <main>
         <Outlet />
       </main>
     </div>

@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { usePostMutation } from "../slices/api";
+import { useLazyGetQuery, usePostMutation } from "../slices/api";
 import { useAuth } from "../V2/contexts/AuthContext";
 
 import { SUBSCRIPTION_ID } from "../constants/Enum";
@@ -28,18 +28,47 @@ import Logo from "../V2/assets/Logo.svg";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import { tagTypes } from "../V3/tagTypes";
+import moment from "moment";
 
 const NavigationHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [planDetails, setPlanDetails] = useState({
+    availableCredit: 0,
+    maxCredit: 0,
+    numDeployments: 0,
+    expiryDate: "",
+    state: "",
+    subscriptionPricingId: "",
+  });
   const [anchorEl, setAnchorEl] = useState(null);
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [newSubscription] = usePostMutation();
+  const [getCredits] = useLazyGetQuery();
 
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
   const isTabletOrMobile = useMediaQuery(theme.breakpoints.down("lg"));
+
+  const fetchDeploymentCredit = async () => {
+    try {
+      const { data } = await getCredits({
+        endpoint: "stock-analysis-function/credit",
+        // tags: [tagTypes.GET_DEPLOY],
+      }).unwrap();
+
+      console.log("rreesss", data);
+      setPlanDetails(data);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDeploymentCredit();
+  }, []);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -57,7 +86,7 @@ const NavigationHeader = () => {
     try {
       const { data } = await newSubscription({
         endpoint: "/stockclient/create-session",
-        payload: { priceId: SUBSCRIPTION_ID },
+        payload: { priceId: planDetails.subscriptionPricingId },
       }).unwrap();
 
       if (data && data.url) {
@@ -73,8 +102,19 @@ const NavigationHeader = () => {
       title={
         <div className="flex flex-col gap-2 text-sm">
           <div className="font-[600] text-xs text-[#535862]">Current Plan</div>
-          <div className="text-sm text-gray-600">41/50 credits</div>
-          <div className="text-sm text-gray-600">1/1 Deployment</div>
+          <div className="text-sm text-gray-600">
+            {planDetails.availableCredit}/{planDetails.maxCredit} Credits
+          </div>
+          <div className="text-sm text-gray-600">
+            {planDetails.numDeployments}/2 Deployment
+          </div>
+          {planDetails.expiryDate ? (
+            <div className="text-sm text-gray-600">
+              {moment(planDetails.expiryDate).format("DD/MM/YYYY")} Expiry
+            </div>
+          ) : (
+            <div className="text-sm text-gray-600">Not Subscribed</div>
+          )}
           <div className="text-sm text-blue-700 cursor-pointer">
             Subscribe to Pro Plan
           </div>
@@ -97,7 +137,9 @@ const NavigationHeader = () => {
     >
       <Box className="flex gap-2 items-center cursor-pointer">
         <img src={Coinimg} alt="Coin" className="h-5 w-5" />
-        <Typography sx={{ fontSize: "14px", color: "#0A0A0A" }}>41</Typography>
+        <Typography sx={{ fontSize: "14px", color: "#0A0A0A" }}>
+          {planDetails.availableCredit}
+        </Typography>
       </Box>
     </Tooltip>
   );

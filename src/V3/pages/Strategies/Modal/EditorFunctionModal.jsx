@@ -6,6 +6,8 @@ import {
   Dialog,
   DialogTitle,
   Grid,
+  Tab,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -52,10 +54,12 @@ const EditorFunctionModal = ({
   stockData,
   isNewFuncOrDuplicate,
   setIsDirty = () => {},
+  functionData = [],
 }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(1180)); // Breakpoint at 1024px
   const [showArgs, setShowArgs] = useState(false);
+  const [currentTab, setCurrentTab] = useState(0);
 
   const handleChange = (newValue, e) => {
     setIsDirty(true);
@@ -132,10 +136,28 @@ const EditorFunctionModal = ({
             lg: isSmallScreen ? 12 : 4,
           }}
         >
-          <KeywordSearch
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={currentTab}
+              onChange={(_, newVal) => {
+                setCurrentTab(newVal);
+              }}
+            >
+              <Tab label="Primitives" />
+              <Tab label="Function" />
+            </Tabs>
+            <Box>
+              <KeywordSearch
+                keywordData={currentTab == 0 ? keywordData : functionData}
+                isFunction={currentTab == 0 ? false : true}
+                fullHeight={isSmallScreen ? false : true}
+              />
+            </Box>
+          </Box>
+          {/* <KeywordSearch
             keywordData={keywordData}
             fullHeight={isSmallScreen ? false : true}
-          />
+          /> */}
         </Grid>
 
         <Grid

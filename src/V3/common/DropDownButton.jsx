@@ -87,11 +87,11 @@ const ActionMenu = ({
         onClose={() => setAnchorEl(false)}
         PaperProps={{
           sx: {
-            fontFamily:"Inter",
+            fontFamily: "Inter",
             borderRadius: "2px",
             border: "1px solid #E0E0E0",
             padding: "0px 5px",
-            boxShadow:"0px 0px 0px 0px",
+            boxShadow: "0px 0px 0px 0px",
             width: "auto",
             boxSizing: "border-box",
           },
@@ -102,7 +102,7 @@ const ActionMenu = ({
             sx={{
               color: "#666666",
               fontSize: "14px",
-              padding: "8px 12px",
+              padding: isEditButton || isDeleteButton ? "8px 12px" : "5px 12px",
               // marginBottom: "1px",
               fontFamily: "Inter",
             }}

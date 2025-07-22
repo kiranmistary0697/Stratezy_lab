@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useLazyGetQuery, usePostMutation } from "../../../../slices/api";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,6 +11,8 @@ import {
   IconButton,
   useTheme,
   useMediaQuery,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import VerifyOnStock from "./VerifyOnStock";
 import EditHeader from "./EditHeader";
@@ -75,10 +77,51 @@ const EditFunction = () => {
   const [deleteFunctionName, setDeleteFunctionName] = useState({});
   const [isFullGraphOpen, setIsFullGraphOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [currentTab, setCurrentTab] = useState(0);
+  const [functionData, setFunctionData] = useState([]);
 
   const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
     when: isDirty,
   });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await verifyStock({
+          endpoint: "stock-analysis-function/details",
+          payload: {
+            filter: true,
+            trade: true,
+            entry: true,
+            exit: true,
+            gentry: true,
+            gexit: true,
+            psizing: true,
+            order: true,
+            staticFunc: false,
+            underlying: false,
+            cacheable: false,
+          },
+          tags: [tagTypes.GET_FILTERTYPE],
+        });
+
+        const sanitisedData = data?.data
+          .map((d) => ({
+            name: d.shortFuncName,
+            caption: d.func,
+            description: d.desc, // this one is used for tooltip
+            usage: d.desc,
+            func: d.func,
+            shortFuncName: d.shortFuncName,
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        setFunctionData(sanitisedData);
+      } catch (error) {
+        console.error("Failed to fetch stock details:", error);
+      }
+    })();
+  }, []);
 
   const [deleteData] = useLazyGetQuery();
   const navigate = useNavigate();
@@ -110,6 +153,14 @@ const EditFunction = () => {
       setStockData(data);
     } catch (error) {}
   };
+
+  const handleSetSelectedFunction = useCallback(
+    (newVal) => {
+      // setIsDirty(true);
+      setSelectedFunction(newVal);
+    },
+    [setSelectedFunction]
+  );
 
   const handleKeywords = async () => {
     try {
@@ -479,6 +530,7 @@ const EditFunction = () => {
           stockData={stockData}
           isNewFuncOrDuplicate={isDuplicate}
           setIsDirty={setIsDirty}
+          functionData={functionData}
         />
       )}
 
@@ -499,10 +551,7 @@ const EditFunction = () => {
             stockData={stockData}
             editUserData={editUserData}
             id={id}
-            setSelectedFunction={(e) => {
-              // setIsDirty(true);
-              setSelectedFunction(e);
-            }}
+            setSelectedFunction={handleSetSelectedFunction}
             setIsDirty={setIsDirty}
           />
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
@@ -532,7 +581,25 @@ const EditFunction = () => {
                 lg: isSmallScreen ? 12 : 4,
               }}
             >
-              <KeywordSearch keywordData={keywordData} fullHeight={false} />
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={currentTab}
+                  onChange={(_, newVal) => {
+                    setCurrentTab(newVal);
+                  }}
+                >
+                  <Tab label="Primitives" />
+                  <Tab label="Function" />
+                </Tabs>
+                <Box>
+                  <KeywordSearch
+                    keywordData={currentTab == 0 ? keywordData : functionData}
+                    fullHeight={false}
+                    isFunction={currentTab == 0 ? false : true}
+                  />
+                </Box>
+              </Box>
+              {/* <KeywordSearch keywordData={keywordData} fullHeight={false} /> */}
             </Grid>
             <Grid
               size={{

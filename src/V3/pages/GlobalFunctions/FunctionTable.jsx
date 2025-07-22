@@ -301,6 +301,10 @@ const FunctionTable = ({ query }) => {
       rowSubTypes.push("Dynamic");
     }
 
+    if (row.accountRule) {
+      rowSubTypes.push("Account");
+    }
+
     if (row.filter) rowTypes.push("Stock Filter");
     if (row.buysell) {
       rowTypes.push("Trade Rule");

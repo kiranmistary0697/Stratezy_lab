@@ -111,7 +111,7 @@ const AddFunctionModal = ({
         sort: selectedFunction?.tradeSequence || false,
         ulying: selectedFunction?.utility || false,
         stockList: selectedFunction?.stockList || false,
-        // accountRule: selectedFunction?.accountRule || false,
+        accountRule: selectedFunction?.accountRule || false,
         candle_stick: false,
         future_rule: false,
         cacheable: false,

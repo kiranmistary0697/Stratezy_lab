@@ -10,11 +10,20 @@ import {
   Chip,
   Tooltip,
 } from "@mui/material";
+import FunctionsIcon from "@mui/icons-material/Functions";
+
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ViewColumnIcon from "../../../../assets/view-column.png";
 import ViewFunctionModal from "./ViewFunctionModal";
 
-const KeywordItem = ({ name, description, isDefault, caption, usage }) => {
+const KeywordItem = ({
+  name,
+  description,
+  isDefault,
+  caption,
+  usage,
+  isFunction = false,
+}) => {
   const [isView, setIsView] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -33,6 +42,7 @@ const KeywordItem = ({ name, description, isDefault, caption, usage }) => {
           handleClose={() => setIsView(false)}
           code={usage}
           buttonText="Close"
+          isFunction={isFunction}
         />
       )}
       <ListItem
@@ -57,7 +67,7 @@ const KeywordItem = ({ name, description, isDefault, caption, usage }) => {
                   padding: "8px 12px",
                   marginBottom: "5px",
                   fontFamily: "Inter",
-                  height: "20px"
+                  height: "20px",
                 }}
                 onClick={() => {
                   setIsView(true);
@@ -73,7 +83,17 @@ const KeywordItem = ({ name, description, isDefault, caption, usage }) => {
         <Box className="flex flex-col w-full">
           <Tooltip
             title={
-              <div className="flex flex-col gap-2 text-sm ">
+              <Box
+                className="flex flex-col gap-2 text-sm"
+                sx={{
+                  maxHeight: 300,
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  whiteSpace: "normal",
+                  wordBreak: "break-word",
+                  pr: 1,
+                }}
+              >
                 <div>{description}</div>
                 <div
                   onClick={() => {
@@ -84,7 +104,7 @@ const KeywordItem = ({ name, description, isDefault, caption, usage }) => {
                 >
                   View Details
                 </div>
-              </div>
+              </Box>
             }
             placement="right-start"
             componentsProps={{
@@ -92,6 +112,7 @@ const KeywordItem = ({ name, description, isDefault, caption, usage }) => {
                 sx: {
                   padding: "12px 16px",
                   width: "202px",
+                  maxHeight: "320px",
                   background: "#FFFFFF",
                   color: "#666666",
                   boxShadow: "0px 8px 16px 0px #7B7F8229",
@@ -105,12 +126,21 @@ const KeywordItem = ({ name, description, isDefault, caption, usage }) => {
               },
             }}
           >
-            <Box className="flex gap-2 items-center space-x-4">
-              <img
-                src={ViewColumnIcon}
-                alt="Info"
-                className="object-contain shrink-0 aspect-square w-[17px]"
-              />
+            <Box
+              className={`flex ${
+                isFunction ? "" : "gap-2"
+              } items-center space-x-4`}
+            >
+              {isFunction ? (
+                <FunctionsIcon fontSize="medium" />
+              ) : (
+                <img
+                  src={ViewColumnIcon}
+                  alt="Info"
+                  className="object-contain shrink-0 aspect-square w-[17px]"
+                />
+              )}
+
               <Box className="flex flex-col">
                 <Box className="flex gap-2 items-center">
                   <Typography

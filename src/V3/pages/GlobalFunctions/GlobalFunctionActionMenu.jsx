@@ -43,9 +43,11 @@ const GlobalFunctionActionMenu = ({
         onClose={() => setAnchorEl(false)}
         PaperProps={{
           sx: {
+            fontFamily: "Inter",
             borderRadius: "2px",
             border: "1px solid #E0E0E0",
-            padding: "5px",
+            padding: "0px 5px",
+            boxShadow: "0px 0px 0px 0px",
             width: "auto",
             boxSizing: "border-box",
           },
@@ -56,8 +58,8 @@ const GlobalFunctionActionMenu = ({
             sx={{
               color: "#666666",
               fontSize: "14px",
-              padding: "8px 12px",
-              marginBottom: "5px",
+              padding: isEditButton || isDeleteButton ? "8px 12px" : "5px 12px",
+              // marginBottom: "1px",
               fontFamily: "Inter",
             }}
             onClick={handleDuplicate}

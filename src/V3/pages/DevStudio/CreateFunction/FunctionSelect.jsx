@@ -44,47 +44,72 @@ const FunctionSelect = ({
     stockEntryExit: [],
     globalEntryExit: [],
     tradeSequence: [],
+    portfolioSizing: [],
+    utility: [],
   });
 
-  // Helper function to get default values from stockData
-  const getDefaultValues = () => ({
-    filterRule: stockData
-      ? stockData?.filter && stockData?.stockList
+  // getDefaultValues now takes stockData as param
+  const getDefaultValues = (data) => ({
+    filterRule: data
+      ? data.filter && data.stockList
         ? ["Static"]
-        : stockData?.filter
+        : data.filter
         ? ["Dynamic"]
         : []
       : [],
-    tradeRule: stockData?.buysell ? ["Buy", "Sell"] : [],
+    tradeRule: data?.buysell ? ["Buy", "Sell"] : [],
     stockEntryExit: [
-      ...(stockData?.entry ? ["Entry"] : []),
-      ...(stockData?.exit ? ["Exit"] : []),
+      ...(data?.entry ? ["Entry"] : []),
+      ...(data?.exit ? ["Exit"] : []),
+      ...(data?.accountRule ? ["Account"] : []),
     ],
     globalEntryExit: [
-      ...(stockData?.gentry ? ["Entry"] : []),
-      ...(stockData?.gexit ? ["Exit"] : []),
+      ...(data?.gentry ? ["Entry"] : []),
+      ...(data?.gexit ? ["Exit"] : []),
+      ...(data?.accountRule ? ["Account"] : []),
     ],
-    portfolioSizing: stockData?.psizing ? ["Portfolio Sizing"] : [],
-    tradeSequence: stockData?.sort ? ["Trade Sequence"] : [],
-    utility: stockData?.ulying ? ["Utility"] : [],
+    portfolioSizing: data?.psizing ? ["Portfolio Sizing"] : [],
+    tradeSequence: data?.sort ? ["Trade Sequence"] : [],
+    utility: data?.ulying ? ["Utility"] : [],
   });
+
+  // Helper: shallow compare two objects (simple JSON string comparison)
+  const shallowEqual = (obj1, obj2) =>
+    JSON.stringify(obj1) === JSON.stringify(obj2);
 
   // Initialize selectedTypes and selectedValues based on stockData when id or stockData changes
   useEffect(() => {
     if (id && stockData) {
-      const defaultValues = getDefaultValues();
-      setSelectedValues(defaultValues);
+      const defaultSelectedValues = getDefaultValues(stockData);
 
-      const updatedTypes = { ...selectedTypes };
-      Object.keys(defaultValues).forEach((key) => {
-        updatedTypes[key] = defaultValues[key]?.length > 0;
+      const defaultSelectedTypes = {};
+      Object.keys(defaultSelectedValues).forEach((key) => {
+        if (key === "tradeSequence" || key === "portfolioSizing") {
+          defaultSelectedTypes[key] = true;
+        } else {
+          defaultSelectedTypes[key] = defaultSelectedValues[key]?.length > 0;
+        }
       });
-      setSelectedTypes(updatedTypes);
 
-      // Optionally, clear localStorage to avoid conflicts
+      // Override tradeSequence & portfolioSizing dropdown to be empty arrays
+      const newSelectedValues = {
+        ...defaultSelectedValues,
+        tradeSequence: [],
+        portfolioSizing: [],
+      };
+
+      // Update state only if changed - prevents infinite loops
+      if (!shallowEqual(selectedValues, newSelectedValues)) {
+        setSelectedValues(newSelectedValues);
+      }
+      if (!shallowEqual(selectedTypes, defaultSelectedTypes)) {
+        setSelectedTypes(defaultSelectedTypes);
+      }
+
       localStorage.removeItem("selectedTypes");
       localStorage.removeItem("selectedValues");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stockData, id]);
 
   // Load saved state from localStorage only if no id (new function, not editing)
@@ -109,7 +134,7 @@ const FunctionSelect = ({
         }
       }
     }
-  }, []);
+  }, [id]);
 
   // Persist selectedTypes to localStorage
   useEffect(() => {
@@ -131,15 +156,15 @@ const FunctionSelect = ({
       utility: selectedTypes.utility,
     };
 
-    // if (
-    //   selectedValues.stockEntryExit.includes("Account") ||
-    //   selectedValues.globalEntryExit.includes("Account") ||
-    //   selectedValues.tradeSequence?.length
-    // ) {
-    //   updatedFunction.accountRule = true;
-    // } else {
-    //   updatedFunction.accountRule = false;
-    // }
+    updatedFunction.accountRule =
+      (selectedValues.stockEntryExit &&
+        selectedValues.stockEntryExit.includes("Account")) ||
+      (selectedValues.globalEntryExit &&
+        selectedValues.globalEntryExit.includes("Account")) ||
+      (selectedValues.tradeSequence &&
+        selectedValues.tradeSequence.includes("Account")) ||
+      (selectedValues.portfolioSizing &&
+        selectedValues.portfolioSizing.includes("Account"));
 
     if (
       selectedTypes.stockEntryExit &&
@@ -191,8 +216,9 @@ const FunctionSelect = ({
         updatedFunction.stockList = true;
       }
     }
+
     //payload modification
-    if (Object.values(selectedTypes).every((val) => val == false)) {
+    if (Object.values(selectedTypes).every((val) => val === false)) {
       updatedFunction.utility = true;
     }
 
@@ -215,7 +241,7 @@ const FunctionSelect = ({
     }
 
     setSelectedFunction(updatedFunction);
-  }, [selectedValues, selectedTypes, stockData]);
+  }, [selectedValues, selectedTypes, setSelectedFunction, stockData]);
 
   const toggleType = (type) => {
     const canEdit = !id || editUserData;
@@ -238,7 +264,7 @@ const FunctionSelect = ({
       ) {
         return {
           ...prev,
-          [key]: key === "filterRule" ? [] : [],
+          [key]: [],
         };
       }
       return {
@@ -255,6 +281,7 @@ const FunctionSelect = ({
     stockEntryExit: ["Entry", "Exit", "Account"],
     globalEntryExit: ["Entry", "Exit", "Account"],
     tradeSequence: ["Account"],
+    portfolioSizing: ["Account"],
   };
 
   const typeLabels = {
@@ -273,6 +300,7 @@ const FunctionSelect = ({
     "stockEntryExit",
     "globalEntryExit",
     "tradeSequence",
+    "portfolioSizing",
   ];
 
   return (
@@ -314,21 +342,10 @@ const FunctionSelect = ({
 
         <FormGroup
           sx={{
-            display: {
-              xs: "grid",
-              sm: "grid",
-              md: "flex",
-            },
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-            },
-            flexDirection: {
-              md: "row",
-            },
-            flexWrap: {
-              md: "wrap",
-            },
+            display: { xs: "grid", sm: "grid", md: "flex" },
+            gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
+            flexDirection: { md: "row" },
+            flexWrap: { md: "wrap" },
             gap: { xs: 1, sm: 2, md: 4 },
             width: { md: "100%" },
           }}
@@ -354,10 +371,7 @@ const FunctionSelect = ({
                     {typeLabels[key]}
                   </div>
                 }
-                sx={{
-                  marginRight: 0,
-                  marginBottom: 0,
-                }}
+                sx={{ marginRight: 0, marginBottom: 0 }}
               />
             );
           })}

@@ -15,6 +15,7 @@ const ViewFunctionModal = ({
   handleClose,
   code,
   buttonText,
+  isFunction = false,
 }) => {
   const theme = useTheme();
   return (
@@ -35,20 +36,24 @@ const ViewFunctionModal = ({
               {title}
             </Typography>
 
-            <SyntaxHighlighter
-              language="javascript"
-              customStyle={{
-                backgroundColor: theme.palette.background.default,
-                padding: theme.spacing(2),
-                borderRadius: theme.shape.borderRadius,
-                fontSize: "14px",
-                fontFamily: "Inter",
-                fontWeight: 400,
-                lineHeight: "20px",
-              }}
-            >
-              {code}
-            </SyntaxHighlighter>
+            {isFunction ? (
+              <Box>{code}</Box>
+            ) : (
+              <SyntaxHighlighter
+                language="javascript"
+                customStyle={{
+                  backgroundColor: theme.palette.background.default,
+                  padding: theme.spacing(2),
+                  borderRadius: theme.shape.borderRadius,
+                  fontSize: "14px",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  lineHeight: "20px",
+                }}
+              >
+                {code}
+              </SyntaxHighlighter>
+            )}
 
             <ModalButton variant="primaryOutlined" onClick={handleClose}>
               {buttonText}
