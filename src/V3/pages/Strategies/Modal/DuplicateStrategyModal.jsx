@@ -359,7 +359,7 @@ const CustomizedDialogs = ({
       isDemo: false,
       version: versionName || "v1",
       description: descriptionName,
-      ...(id && !isDuplicate && { id: id }),
+      ...(id && !isDuplicate && { id: values.id }),
       strategy,
     };
 
