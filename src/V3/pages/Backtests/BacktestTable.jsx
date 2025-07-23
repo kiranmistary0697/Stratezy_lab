@@ -19,7 +19,6 @@ import {
 } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
-import { useDispatch } from "react-redux";
 
 import CustomFilterPanel from "../Strategies/ViewStrategy/ViewModal/CustomFilterPanel";
 import DeleteModal from "../../common/DeleteModal";
@@ -29,7 +28,6 @@ import ActionMenu from "../../common/DropDownButton";
 
 import { useLazyGetQuery } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
-import { setBacktestData } from "../../../slices/page/reducer";
 import useDateTime from "../../hooks/useDateTime";
 
 const useStyles = makeStyles({
@@ -40,15 +38,10 @@ const useStyles = makeStyles({
   },
 });
 
-const BacktestTable = () => {
+const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const [
-    getBackTestData,
-    { data: { data: backtestData = [] } = {}, isLoading },
-  ] = useLazyGetQuery();
   const [deleteData] = useLazyGetQuery();
   const localSelectedStatus = localStorage.getItem(
     "selectedStatusBackTestTable"
@@ -60,7 +53,6 @@ const BacktestTable = () => {
     "hiddenColumnsBacktestTable"
   );
 
-  const [rows, setRows] = useState([]);
   const [filterModel, setFilterModel] = useState({ items: [] });
 
   const [selectedStrategies, setSelectedStrategies] = useState([]);
@@ -76,12 +68,6 @@ const BacktestTable = () => {
   const [deployName, setDeployName] = useState({});
 
   useEffect(() => {
-    fetchAllData();
-    const interval = setInterval(fetchAllData, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
     if (localSelectedStatus) {
       setSelectedStatuses(JSON.parse(localSelectedStatus));
     }
@@ -89,25 +75,6 @@ const BacktestTable = () => {
       setSelectedStrategies(JSON.parse(localSelectedStrategies));
     }
   }, []);
-
-  useEffect(() => {
-    if (backtestData?.length) {
-      setRows(backtestData);
-    }
-  }, [backtestData]);
-
-  const fetchAllData = async () => {
-    try {
-      const response = await getBackTestData({
-        endpoint: "command/backtest/findall",
-        tags: [tagTypes.BACKTEST],
-      }).unwrap();
-      setRows(response.data);
-      dispatch(setBacktestData(response));
-    } catch (error) {
-      console.error("Failed to fetch backtest data:", error);
-    }
-  };
 
   const extractErrorList = (logString) => {
     let errors = [];
@@ -617,9 +584,7 @@ const BacktestTable = () => {
         flex: 1,
         valueGetter: (_, row) =>
           row?.expectancy ? parseFloat(row.expectancy) : 0,
-        renderCell: (params) => (
-          <span>{params.row.backtestSummary?.["Expectancy"] || "0"}</span>
-        ),
+        renderCell: (params) => <span>{params.row.expectancy || "0"}</span>,
       },
       {
         field: "sharpeRatio",
@@ -628,9 +593,7 @@ const BacktestTable = () => {
         flex: 1,
         valueGetter: (_, row) =>
           row?.sharpeRatio ? parseFloat(row.sharpeRatio) : 0,
-        renderCell: (params) => (
-          <span>{params.row.backtestSummary?.["Sharpe ratio"] || "0"}</span>
-        ),
+        renderCell: (params) => <span>{params.row?.sharpeRatio || "0"}</span>,
       },
       {
         field: "avgAnnualProfit",

@@ -12,6 +12,7 @@ import {
   createFilterOptions,
   Divider,
   FormGroup,
+
   Paper,
   TextField,
   Tooltip,
@@ -22,6 +23,7 @@ import InputField from "./InputField";
 
 import StockConfigModal from "../CreateStratezy/StockConfigModal";
 import TradeHEader from "../TradeRule/TradeHEader";
+import HeaderButton from "../../../common/Table/HeaderButton";
 import {
   PSIZINING__DESCRIPTION,
   PSIZINING_BUTTON_TITLE,
@@ -37,6 +39,8 @@ import {
 
 import CallMadeIcon from "@mui/icons-material/CallMade";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { useFormik } from "formik";
+import PortfolioVerificationModal from "./PortfolioVerificationModal";
 
 const LOCAL_STORAGE_KEY = "portfolioSizing-saved";
 const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
@@ -63,6 +67,63 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
   const [risk, setRisk] = useState("0.007");
   const [maxInvest, setMaxInvest] = useState("0.02");
   const [minInvest, setInvest] = useState("0.002");
+  const [advancePortfolioSizeConfig, setAdvancePortfolioSizeConfig] = useState(
+    {}
+  );
+  const [isVerificationOpen, setIsVerificationOpen] = useState(false);
+
+  // console.log("values", values);
+
+  const mergeAdvanceIntoPortfolioSizing = (advanceConfigData) => {
+    const config = advanceConfigData.advancePortfolioSizeConfig || {};
+
+    const convertedConfig = Object.fromEntries(
+      Object.entries(config).map(([key, value]) => {
+        if (typeof value === "string") {
+          const num = parseFloat(value);
+          return [key, isNaN(num) ? 0 : num];
+        }
+        return [key, value];
+      })
+    );
+
+    const updatedPortfolioSizing = {
+      ...values.portfolioSizing,
+      advancePortfolioSizeConfig: {
+        ...convertedConfig,
+      },
+    };
+
+    setFieldValue("portfolioSizing", updatedPortfolioSizing);
+    setIsDirty(true);
+  };
+
+  const getInitialValues = (advancePortfolioSizeConfig = {}) => {
+    return {
+      configTextParm: advancePortfolioSizeConfig?.configTextParm
+        ? Object.fromEntries(
+            Object.keys(advancePortfolioSizeConfig.configTextParm).map(
+              (key) => [key, ""]
+            )
+          )
+        : {},
+      configBoolParm: advancePortfolioSizeConfig?.configBoolParm
+        ? Object.fromEntries(
+            Object.keys(advancePortfolioSizeConfig.configBoolParm).map(
+              (key) => [key, true]
+            )
+          )
+        : {},
+    };
+  };
+
+  const formikForVerification = useFormik({
+    initialValues: getInitialValues(advancePortfolioSizeConfig),
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      mergeAdvanceIntoPortfolioSizing(values);
+    },
+  });
 
   useEffect(() => {
     (async () => {
@@ -113,6 +174,23 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
 
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filters));
   }, [values.portfolioSizing]);
+
+  useEffect(() => {
+    try {
+      (async () => {
+        const { data } = await getStrategyData({
+          endpoint: `command/backtest/configparm `,
+        }).unwrap();
+        setAdvancePortfolioSizeConfig(data);
+      })();
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const handleVerifyModal = () => {
+    setIsVerificationOpen(true);
+  };
 
   const handleChangeStockBundle = async (key, value) => {
     setIsDirty(true);
@@ -190,6 +268,12 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
           }}
         />
       )}
+      <PortfolioVerificationModal
+        isOpen={isVerificationOpen}
+        onClose={() => setIsVerificationOpen(false)}
+        formik={formikForVerification}
+        fields={advancePortfolioSizeConfig}
+      />
       <Box className="flex flex-col max-md:max-w-full p-5   ">
         <Box className=" w-full max-md:max-w-full space-y-6">
           <TradeHEader
@@ -415,11 +499,16 @@ const PortfolioSizing = ({ isView, formik, id, setIsDirty }) => {
             <Divider orientation="horizontal" sx={{ width: "100%" }} />
           </Box>
 
-          <Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <TradeHEader
               title={PSIZINING_SUBHEADER_TITLE}
               description={PSIZINING_SUBHEADER_DESC}
             />
+            <Box>
+              <HeaderButton variant="contained" onClick={handleVerifyModal}>
+                Advance Config
+              </HeaderButton>
+            </Box>
           </Box>
 
           <Box className="max-md:max-w-full">

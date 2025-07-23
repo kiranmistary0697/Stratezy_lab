@@ -101,7 +101,7 @@ const AddFunctionModal = ({
         num_arg: receivedArgs.length || 0,
         equation: `/config/library/${values.functionName}`,
         desc: values.descriptionName,
-        identifier: values.identifier,
+        shortFuncName: values.identifier,
         args: receivedArgs || [],
         adesc: receivedAdesc || [],
         filter: selectedFunction?.filterRule || false,

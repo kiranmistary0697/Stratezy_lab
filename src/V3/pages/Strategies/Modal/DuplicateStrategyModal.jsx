@@ -149,6 +149,7 @@ const CustomizedDialogs = ({
       portfolioRisk: parseFloat(portfolioSizing?.portfolioRisk || 0),
       maxInvestmentPerTrade: parseFloat(portfolioSizing?.maxInvestment || 0),
       minInvestmentPerTrade: parseFloat(portfolioSizing?.minInvestment || 0),
+      ...portfolioSizing?.advancePortfolioSizeConfig,
       zeroDate: "",
       nDate: "",
       ...(stockBundle.filter(({ name }) => name)?.length > 0 && {

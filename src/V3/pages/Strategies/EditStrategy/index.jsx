@@ -317,7 +317,18 @@ const EditStrategy = () => {
   useEffect(() => {
     const strategy = filterData?.strategy;
 
+    const advanceConfig = Object.entries(strategy || {}).reduce(
+      (acc, [key, value]) => {
+        if (typeof value === "boolean" || typeof value === "number") {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {}
+    );
+
     formik.setValues({
+      advanceConfig,
       name: filterData?.name || "",
       description: strategy?.description || "",
       summary: filterData?.summary || "",
