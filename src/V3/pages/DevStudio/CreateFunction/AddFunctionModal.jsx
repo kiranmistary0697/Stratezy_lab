@@ -6,6 +6,7 @@ import {
   TextField,
   CircularProgress,
   Box,
+  Tooltip,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { usePostMutation } from "../../../../slices/api";
@@ -18,6 +19,8 @@ import ModalButton from "../../../common/Table/ModalButton";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setAllData } from "../../../../slices/page/reducer";
+import { IDENTIFIER_TOOLTIP } from "../../../../constants/CommonText";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const AddFunctionModal = ({
   isOpen,
@@ -241,18 +244,51 @@ const AddFunctionModal = ({
                 formik.touched.descriptionName && formik.errors.descriptionName
               }
             />
-
-            <Typography
+            <Box
               sx={{
-                fontFamily: "Inter",
-                fontWeight: 600,
-                fontSize: "12px",
-                lineHeight: "120%",
-                color: "#0A0A0A",
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              Identifier
-            </Typography>
+              <Typography
+                sx={{
+                  fontFamily: "Inter",
+                  fontWeight: 600,
+                  fontSize: "12px",
+                  lineHeight: "120%",
+                  color: "#0A0A0A",
+                }}
+              >
+                Identifier
+              </Typography>
+              <Tooltip
+                title={IDENTIFIER_TOOLTIP}
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      padding: "16px",
+                      background: "#FFFFFF",
+                      color: "#666666",
+                      boxShadow: "0px 8px 16px 0px #7B7F8229",
+                      fontFamily: "Inter",
+                      fontWeight: 400,
+                      fontSize: "14px",
+                      lineHeight: "20px",
+                    },
+                  },
+                }}
+                placement="right-end"
+              >
+                <InfoOutlinedIcon
+                  sx={{
+                    color: "#666666",
+                    width: "1Tooltip7px",
+                    height: "17px",
+                    cursor: "pointer",
+                  }}
+                />
+              </Tooltip>
+            </Box>
             <TextField
               fullWidth
               name="identifier"
