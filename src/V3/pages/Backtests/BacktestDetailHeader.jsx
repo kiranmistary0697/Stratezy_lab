@@ -43,7 +43,9 @@ const BacktestDetailHeader = ({
 
   useEffect(() => {
     const fetchInterval = setInterval(() => {
-      handleRequestId();
+      if (requestData?.status === "PENDING") {
+        handleRequestId();
+      }
     }, 30000);
 
     return () => clearInterval(fetchInterval);

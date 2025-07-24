@@ -26,21 +26,17 @@ const BackTestOutput = () => {
   const [tradeTableData, setTradeTableData] = useState([]);
   const [requestData, setRequestData] = useState({});
 
-  useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        const { data } = await getTradeTable({
-          endpoint: `command/backtest/tradetable?id=${id}`,
-          tags: [tagTypes.GET_TRADETABLE],
-        }).unwrap();
-        setTradeTableData(data);
-      } catch (error) {
-        console.error("Failed to fetch backtest data:", error);
-      }
-    };
-
-    fetchAllData();
-  }, []);
+  const fetchAllData = async () => {
+    try {
+      const { data } = await getTradeTable({
+        endpoint: `command/backtest/tradetable?id=${id}`,
+        tags: [tagTypes.GET_TRADETABLE],
+      }).unwrap();
+      setTradeTableData(data);
+    } catch (error) {
+      console.error("Failed to fetch backtest data:", error);
+    }
+  };
 
   const handleRequestId = async () => {
     try {
@@ -58,6 +54,13 @@ const BackTestOutput = () => {
       handleRequestId();
     }
   }, [id]);
+  console.log(tabIndex, "tabIndex");
+
+  useEffect(() => {
+    if (id && tabIndex === 2) {
+      fetchAllData();
+    }
+  }, [id, tabIndex]);
 
   const handleTabChange = (event, newIndex) => {
     setTabIndex(newIndex);
@@ -87,7 +90,7 @@ const BackTestOutput = () => {
     return summary;
   };
 
-  const summaryData = extractSummaryMetrics(backTestIdData?.summary);
+  const summaryData = extractSummaryMetrics(requestData?.summary);
 
   return (
     <div className="p-8 h-[calc(100vh-100px)] overflow-auto">
