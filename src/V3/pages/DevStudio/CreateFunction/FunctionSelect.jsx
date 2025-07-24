@@ -68,8 +68,8 @@ const FunctionSelect = ({
       ...(data?.gexit ? ["Exit"] : []),
       ...(data?.accountRule ? ["Account"] : []),
     ],
-    portfolioSizing: data?.psizing ? ["Portfolio Sizing"] : [],
     tradeSequence: data?.sort ? ["Trade Sequence"] : [],
+    portfolioSizing: data?.psizing ? ["Portfolio Sizing"] : [],
     utility: data?.utility ? ["Utility"] : [],
   });
 
@@ -351,6 +351,8 @@ const FunctionSelect = ({
           }}
         >
           {Object.entries(selectedTypes).map(([key, value]) => {
+            console.log(key, "key");
+
             const shouldHide =
               key === "utility" && stockData?.filter && stockData?.stockList;
             if (shouldHide) return null;
