@@ -513,9 +513,50 @@ const CreateFunction = () => {
                   onChange={(_, newVal) => {
                     setCurrentTab(newVal);
                   }}
+                  sx={{
+                    paddingLeft: 1,
+                  }}
                 >
-                  <Tab label="Primitives" />
-                  <Tab label="Function" />
+                  <Tab
+                    label="Primitives"
+                    sx={{
+                      outline: "none",
+                      boxShadow: "none",
+                      textTransform: "none",
+                      fontFamily: "Inter",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      letterSpacing: "0px",
+                      color: "#0A0A0A",
+                      "&.Mui-selected": {
+                        color: "#3D69D3",
+                      },
+                      "&:hover, &:active, &:focus": {
+                        outline: "none",
+                        boxShadow: "none",
+                      },
+                    }}
+                  />
+                  <Tab
+                    label="Functions"
+                    sx={{
+                      outline: "none",
+                      boxShadow: "none",
+                      textTransform: "none",
+                      fontFamily: "Inter",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      letterSpacing: "0px",
+                      color: "#0A0A0A",
+                      "&.Mui-selected": {
+                        color: "#3D69D3",
+                      },
+                      "&:hover, &:active, &:focus": {
+                        outline: "none",
+                        boxShadow: "none",
+                      },
+                    }}
+                  />
                 </Tabs>
                 <Box>
                   <KeywordSearch

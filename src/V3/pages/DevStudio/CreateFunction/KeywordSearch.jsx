@@ -33,10 +33,10 @@ const KeywordSearch = ({
   });
 
   return (
-    <Box className="flex flex-col py-5 border-t border-b border-l border-zinc-200 m-2">
+    <Box className="flex flex-col py-5 border-t border-b border-l border-zinc-200 mb-2">
       <Box className="flex gap-2.5 justify-center items-center">
         <div className="text-[16px] font-semibold leading-tight text-neutral-950">
-          {isFunction ? "Function" : "Primitives"}
+          {isFunction ? "Functions" : "Primitives"}
         </div>
         <Tooltip
           title={isFunction ? FUNCTION_TOOLTIP : PRIMITIVES_TOOLTIP}

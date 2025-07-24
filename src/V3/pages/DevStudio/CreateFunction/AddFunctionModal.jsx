@@ -99,7 +99,7 @@ const AddFunctionModal = ({
         rule: code,
         exchange: "nse",
         num_arg: receivedArgs.length || 0,
-        equation: `/config/library/${values.functionName}`,
+        equation: `/config/library/${values.identifier}`,
         desc: values.descriptionName,
         shortFuncName: values.identifier,
         args: receivedArgs || [],
@@ -112,7 +112,7 @@ const AddFunctionModal = ({
         gentry: selectedFunction?.gentry || false,
         gexit: selectedFunction?.gexit || false,
         sort: selectedFunction?.tradeSequence || false,
-        ulying: selectedFunction?.utility || false,
+        utility: selectedFunction?.utility || false,
         stockList: selectedFunction?.stockList || false,
         accountRule: selectedFunction?.accountRule || false,
         candle_stick: false,
@@ -185,7 +185,7 @@ const AddFunctionModal = ({
             color: "#0A0A0A",
           }}
         >
-          {title}
+          {isDuplicate || isNewFunc ? title : "Save Function"}
         </Typography>
 
         {/* form */}
@@ -321,7 +321,7 @@ const AddFunctionModal = ({
               {isSaving && (
                 <CircularProgress color="inherit" size={18} thickness={4} />
               )}
-              Create Function
+              {isDuplicate || isNewFunc ? title : "Save"}
             </ModalButton>
           </div>
         </form>

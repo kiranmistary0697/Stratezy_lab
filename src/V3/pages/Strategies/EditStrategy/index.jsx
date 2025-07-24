@@ -59,6 +59,57 @@ const EditStrategy = () => {
   const [isDeployCreate, setIsDeployCreate] = useState(false);
   const [deployName, setDeployName] = useState({});
   const [isDirty, setIsDirty] = useState(false);
+  const [advancePortfolioSizeConfig, setAdvancePortfolioSizeConfig] = useState({
+    booleanParams: [],
+    textParams: [],
+    desc: {},
+  });
+
+  const transformConfig = (input) => {
+    const booleanParams = Object.keys(input.configBoolParm || {});
+    const textParams = Object.keys(input.configTextParm || {});
+
+    const desc = {
+      ...input.configTextParm,
+      ...input.configBoolParm,
+    };
+
+    return {
+      booleanParams,
+      textParams,
+      desc,
+    };
+  };
+
+  const advanceBooleanDefaults =
+    advancePortfolioSizeConfig.booleanParams.reduce((acc, key) => {
+      acc[key] = false;
+      return acc;
+    }, {});
+
+  const advanceTextDefaults = advancePortfolioSizeConfig.textParams.reduce(
+    (acc, key) => {
+      acc[key] = "";
+      return acc;
+    },
+    {}
+  );
+
+  useEffect(() => {
+    try {
+      (async () => {
+        const { data } = await getStrategyData({
+          endpoint: `command/backtest/configparm `,
+        }).unwrap();
+        const transformedData = transformConfig(data);
+        // console.log("data", transformedData);
+
+        setAdvancePortfolioSizeConfig(transformedData);
+      })();
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
     when: isDirty,
@@ -305,6 +356,10 @@ const EditStrategy = () => {
         portfolioRisk: "",
         maxInvestment: "",
         minInvestment: "",
+        advanceConfig: {
+          booleanParams: advanceBooleanDefaults,
+          textParams: advanceTextDefaults,
+        },
       },
     },
     enableReinitialize: true,
@@ -316,19 +371,103 @@ const EditStrategy = () => {
 
   useEffect(() => {
     const strategy = filterData?.strategy;
+    console.log("strategy", strategy);
 
-    const advanceConfig = Object.entries(strategy || {}).reduce(
-      (acc, [key, value]) => {
-        if (typeof value === "boolean" || typeof value === "number") {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {}
+    if (!strategy) {
+      // If strategy is missing, reset or set defaults as needed
+      formik.setValues((prevValues) => ({
+        ...prevValues,
+        portfolioSizing: {
+          selectedPortfolio: "",
+          args: [],
+          adesc: [],
+          portfolioRisk: 0,
+          maxInvestment: 0,
+          minInvestment: 0,
+          advanceConfig: {
+            booleanParams: {},
+            textParams: {},
+          },
+        },
+        name: "",
+        description: "",
+        summary: "",
+        isDemo: false,
+        version: "v1",
+        id: "",
+        stockBundle: [],
+        tradeRules: {
+          buyRule: { ruleName: "" },
+          sellRule: { ruleName: "" },
+        },
+        marketEntryExit: { entry: {}, exit: {} },
+        stockEntryExit: { entry: [], exit: [] },
+        tradeSequence: [],
+      }));
+      return; // Exit early since no data
+    }
+
+    // Dynamically classify keys by value type
+    const booleanKeys = [];
+    const textKeys = [];
+
+    Object.entries(strategy).forEach(([key, value]) => {
+      if (typeof value === "boolean") {
+        booleanKeys.push(key);
+      } else if (typeof value === "number" || typeof value === "string") {
+        textKeys.push(key);
+      }
+    });
+
+    // Exclude keys that are not part of advanced config
+    const excludeKeys = [
+      "name",
+      "version",
+      "description",
+      "summary",
+      "demo",
+      "id",
+      "filterRule",
+      "tradeRule",
+      "orderRule",
+      "psizingRule",
+      "globalEntryRule",
+      "globalExitRule",
+      "entryRule",
+      "exitRule",
+      "portfolioRisk",
+      "maxInvestmentPerTrade",
+      "minInvestmentPerTrade",
+      "args",
+      "adesc",
+      "selectedPortfolio",
+    ];
+
+    const filteredBooleanKeys = booleanKeys.filter(
+      (k) => !excludeKeys.includes(k)
     );
+    const filteredTextKeys = textKeys.filter((k) => !excludeKeys.includes(k));
 
+    // Prepare advanceConfig nested objects with defaults and values from strategy
+    const advanceConfig = {
+      booleanParams: {},
+      textParams: {},
+    };
+
+    filteredBooleanKeys.forEach((key) => {
+      // Use Boolean conversion; default false if undefined/missing
+      advanceConfig.booleanParams[key] = Boolean(strategy[key]);
+    });
+
+    filteredTextKeys.forEach((key) => {
+      // Use existing value or default to empty string for text inputs
+      const val = strategy[key];
+      advanceConfig.textParams[key] =
+        val !== null && val !== undefined ? val : "";
+    });
+
+    // Set all Formik values, respecting your previous structure and including advanceConfig
     formik.setValues({
-      advanceConfig,
       name: filterData?.name || "",
       description: strategy?.description || "",
       summary: filterData?.summary || "",
@@ -353,6 +492,7 @@ const EditStrategy = () => {
                 shortFuncValue: "",
               },
             ],
+
       tradeRules: {
         buyRule: {
           ruleName: strategy?.tradeRule?.funcName || "",
@@ -433,6 +573,7 @@ const EditStrategy = () => {
         portfolioRisk: strategy?.portfolioRisk || 0,
         maxInvestment: strategy?.maxInvestmentPerTrade || 0,
         minInvestment: strategy?.minInvestmentPerTrade || 0,
+        advanceConfig,
       },
     });
   }, [filterData]);
@@ -550,12 +691,14 @@ const EditStrategy = () => {
                     id={id}
                     isView={demoStrategy === "true"}
                     setIsDirty={setIsDirty}
+                    advancePortfolioSizeConfig={advancePortfolioSizeConfig}
                   />
                 ) : (
                   <CurrentStepComponent
                     formik={formik}
                     id={id}
                     setIsDirty={setIsDirty}
+                    advancePortfolioSizeConfig={advancePortfolioSizeConfig}
                   />
                 )}
               </Grid>

@@ -329,7 +329,7 @@ const FunctionTable = ({ query }) => {
     if (row.psizing) rowTypes.push("Portfolio Sizing");
 
     if (row.sort) rowTypes.push("Trade Sequence");
-    if (row.ulying) rowTypes.push("Utility");
+    if (row.utility) rowTypes.push("Utility");
 
     rowCreatedBy.push(row.userDefined ? "User" : "System");
 
@@ -459,6 +459,7 @@ const FunctionTable = ({ query }) => {
 
         if (row.filter) badges.push("Stock Filter");
         if (row.buysell) badges.push("Trade Rule");
+        if (row.utility) badges.push("utility");
 
         if (row.gentry && row.gexit) {
           badges.push("Global Entry & Exit");
@@ -501,7 +502,9 @@ const FunctionTable = ({ query }) => {
         }
         if (row.psizing) badges.push("Portfolio Sizing");
         if (row.sort) badges.push("Trade Sequence");
-        if (row.ulying) badges.push("Utility");
+        if (row.utility) {
+          badges.push("Utility");
+        }
 
         // if(!row.filter && !row.buysell && !row.gentry && !row.gexit && !row.entry && !row.exit)
 
@@ -574,6 +577,7 @@ const FunctionTable = ({ query }) => {
                 { status: "Dynamic" },
                 { status: "Buy" },
                 { status: "Sell" },
+                { status: "Account" },
               ]}
               fieldName="status"
               applyValue={handleSubTypeFilterChange}
@@ -596,6 +600,9 @@ const FunctionTable = ({ query }) => {
         if (row.buysell) {
           badges.push("Buy", "Sell");
         }
+        if (row.accountRule) {
+          badges.push("Account");
+        }
 
         return badges.length > 0 ? badges.join(", ") : "NA";
       },
@@ -610,6 +617,9 @@ const FunctionTable = ({ query }) => {
         if (row.buysell) {
           badges.push("Buy");
           badges.push("Sell");
+        }
+        if (row.accountRule) {
+          badges.push("Account");
         }
 
         return (
@@ -798,7 +808,7 @@ const FunctionTable = ({ query }) => {
             isDuplicateButton
             isEditButton={isRemove}
             handleDelete={() => {
-              setDeleteRow({ name: row.func });
+              setDeleteRow({ name: row.shortFuncName });
               setIsDelete(true);
             }}
             handleEdit={() =>

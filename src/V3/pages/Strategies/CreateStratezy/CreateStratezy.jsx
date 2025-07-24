@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { Divider, Grid } from "@mui/material";
 import * as Yup from "yup";
@@ -14,16 +14,69 @@ import PortfolioSizing from "../PortfolioSizing/PortfolioSizing";
 import CreateStrategyHeader from "./CreateStrategyHeader";
 import { useRouterBlocker } from "../../../hooks/useRouterBlocker";
 import WarningPopupModal from "./WarningPopupModal";
+import { useLazyGetQuery } from "../../../../slices/api";
 
 const CreateStrategy = () => {
   useLabTitle("Create Strategies");
+  const [getAdvanceConfig] = useLazyGetQuery();
 
+  const [advancePortfolioSizeConfig, setAdvancePortfolioSizeConfig] = useState({
+    booleanParams: [],
+    textParams: [],
+    desc: {},
+  });
   const [step, setStep] = useState(0); // Start from step 0
   const [isDirty, setIsDirty] = useState(false);
 
   const { showPrompt, confirmNavigation, cancelNavigation } = useRouterBlocker({
     when: isDirty,
   });
+
+  const transformConfig = (input) => {
+    const booleanParams = Object.keys(input.configBoolParm || {});
+    const textParams = Object.keys(input.configTextParm || {});
+
+    const desc = {
+      ...input.configTextParm,
+      ...input.configBoolParm,
+    };
+
+    return {
+      booleanParams,
+      textParams,
+      desc,
+    };
+  };
+
+  const advanceBooleanDefaults =
+    advancePortfolioSizeConfig.booleanParams.reduce((acc, key) => {
+      acc[key] = false;
+      return acc;
+    }, {});
+
+  const advanceTextDefaults = advancePortfolioSizeConfig.textParams.reduce(
+    (acc, key) => {
+      acc[key] = "";
+      return acc;
+    },
+    {}
+  );
+
+  useEffect(() => {
+    try {
+      (async () => {
+        const { data } = await getAdvanceConfig({
+          endpoint: `command/backtest/configparm `,
+        }).unwrap();
+        const transformedData = transformConfig(data);
+        // console.log("data", transformedData);
+
+        setAdvancePortfolioSizeConfig(transformedData);
+      })();
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const validationByStep = [
     {
@@ -140,6 +193,10 @@ const CreateStrategy = () => {
         portfolioRisk: "",
         maxInvestment: "",
         minInvestment: "",
+        advanceConfig: {
+          booleanParams: advanceBooleanDefaults,
+          textParams: advanceTextDefaults,
+        },
       },
     },
     enableReinitialize: true,
@@ -260,7 +317,11 @@ const CreateStrategy = () => {
                 lg: 8,
               }}
             >
-              <CurrentStepComponent setIsDirty={setIsDirty} formik={formik} />
+              <CurrentStepComponent
+                setIsDirty={setIsDirty}
+                formik={formik}
+                advancePortfolioSizeConfig={advancePortfolioSizeConfig}
+              />
             </Grid>
           </Grid>
         </div>

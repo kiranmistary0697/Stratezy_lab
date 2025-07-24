@@ -70,7 +70,7 @@ const FunctionSelect = ({
     ],
     portfolioSizing: data?.psizing ? ["Portfolio Sizing"] : [],
     tradeSequence: data?.sort ? ["Trade Sequence"] : [],
-    utility: data?.ulying ? ["Utility"] : [],
+    utility: data?.utility ? ["Utility"] : [],
   });
 
   // Helper: shallow compare two objects (simple JSON string comparison)

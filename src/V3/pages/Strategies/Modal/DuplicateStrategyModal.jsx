@@ -143,13 +143,14 @@ const CustomizedDialogs = ({
     } = values || {};
 
     const strategy = {
+      ...portfolioSizing.advanceConfig.booleanParams,
+      ...portfolioSizing.advanceConfig.textParams,
       exchange: "",
       name: strategyName,
       initialCapital: 0,
       portfolioRisk: parseFloat(portfolioSizing?.portfolioRisk || 0),
       maxInvestmentPerTrade: parseFloat(portfolioSizing?.maxInvestment || 0),
       minInvestmentPerTrade: parseFloat(portfolioSizing?.minInvestment || 0),
-      ...portfolioSizing?.advancePortfolioSizeConfig,
       zeroDate: "",
       nDate: "",
       ...(stockBundle.filter(({ name }) => name)?.length > 0 && {
@@ -242,6 +243,8 @@ const CustomizedDialogs = ({
     };
 
     const duplicateStrategy = {
+      ...portfolioSizing.advanceConfig.booleanParams,
+      ...portfolioSizing.advanceConfig.textParams,
       name: strategyName,
       version: versionName || "v1",
       description: descriptionName || "",

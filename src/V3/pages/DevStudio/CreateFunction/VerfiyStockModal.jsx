@@ -42,8 +42,8 @@ const VerfiyStockModal = ({
   const [dateRangeError, setDateRangeError] = useState(false);
 
   const handlePlotGraph = () => {
-    const start = moment(startDate).startOf("day");
-    const end = moment(endDate).startOf("day");
+    const start = moment(startDate, "DD/MM/YYYY").startOf("day");
+    const end = moment(endDate, "DD/MM/YYYY").startOf("day");
 
     if (start == end) {
       setDateRangeError(true);

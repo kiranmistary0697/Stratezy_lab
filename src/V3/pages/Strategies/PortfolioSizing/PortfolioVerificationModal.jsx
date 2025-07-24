@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useState, useEffect } from "react";
 import {
   Box,
   Dialog,
@@ -20,22 +21,44 @@ const PortfolioVerificationModal = ({
   fields,
   isView,
 }) => {
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    setFieldValue,
-  } = formik;
+  const { values, setFieldValue } = formik;
 
-  const advancePortfolioSizeConfig = values?.advancePortfolioSizeConfig || {};
+  const [booleanParams, setBooleanParams] = useState({});
+  const [textParams, setTextParams] = useState({});
 
-  // Form submission handler wrapped for modal
-  const onFormSubmit = async (e) => {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const advanceConfigFromFormik =
+      values?.portfolioSizing?.advanceConfig || {};
+    const booleanParamsFromFormik = advanceConfigFromFormik.booleanParams || {};
+    const textParamsFromFormik = advanceConfigFromFormik.textParams || {};
+
+    setBooleanParams({ ...booleanParamsFromFormik });
+    setTextParams({ ...textParamsFromFormik });
+  }, [isOpen, values?.portfolioSizing?.advanceConfig]);
+
+  const handleBooleanChange = (key, checked) => {
+    setBooleanParams((prev) => ({ ...prev, [key]: checked }));
+  };
+
+  const handleTextChange = (key, value) => {
+    setTextParams((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const onFormSubmit = (e) => {
     e.preventDefault();
-    await handleSubmit();
+
+    // Update Formik nested advanceConfig booleanParams
+    Object.entries(booleanParams).forEach(([key, val]) => {
+      setFieldValue(`portfolioSizing.advanceConfig.booleanParams.${key}`, val);
+    });
+
+    // Update Formik nested advanceConfig textParams
+    Object.entries(textParams).forEach(([key, val]) => {
+      setFieldValue(`portfolioSizing.advanceConfig.textParams.${key}`, val);
+    });
+
     onClose();
   };
 
@@ -79,129 +102,116 @@ const PortfolioVerificationModal = ({
 
         <Box sx={{ mt: 1 }}>
           {/* Text Fields Section */}
-          {fields?.configTextParm &&
-            Object.entries(fields.configTextParm).length > 0 && (
-              <Box sx={{ mb: 3 }}>
-                <Typography
-                  variant="subtitle1"
-                  sx={{
-                    fontSize: 18,
-                    fontWeight: 600,
-                    color: "#0A0A0A",
-                    fontFamily: "Inter",
-                    mb: 2,
-                  }}
-                >
-                  Parameters
-                </Typography>
-                {Object.entries(fields.configTextParm).map(([key, tooltip]) => (
-                  <InputField
-                    key={key}
-                    label={key}
-                    name={`advancePortfolioSizeConfig.${key}`}
-                    tooltip={tooltip}
-                    size="small"
-                    value={advancePortfolioSizeConfig[key] ?? ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    disable={isView}
-                    error={
-                      !!(
-                        errors.advancePortfolioSizeConfig &&
-                        errors.advancePortfolioSizeConfig[key] &&
-                        touched.advancePortfolioSizeConfig &&
-                        touched.advancePortfolioSizeConfig[key]
-                      )
-                    }
-                    errorText={
-                      errors.advancePortfolioSizeConfig &&
-                      errors.advancePortfolioSizeConfig[key]
-                    }
-                  />
-                ))}
-              </Box>
-            )}
+          {fields?.textParams && fields.textParams.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontSize: 18,
+                  fontWeight: 600,
+                  color: "#0A0A0A",
+                  fontFamily: "Inter",
+                  mb: 2,
+                }}
+              >
+                Parameters
+              </Typography>
+
+              {fields.textParams.map((key) => (
+                <InputField
+                  key={key}
+                  label={key}
+                  name={`portfolioSizing.advanceConfig.textParams.${key}`}
+                  tooltip={fields.desc?.[key] ?? ""}
+                  size="small"
+                  value={textParams[key] ?? ""}
+                  onChange={(e) => handleTextChange(key, e.target.value)}
+                  onBlur={() => {}}
+                  disable={isView}
+                  error={false}
+                  errorText={""}
+                />
+              ))}
+            </Box>
+          )}
 
           {/* Boolean Fields Section */}
-          {fields?.configBoolParm &&
-            Object.entries(fields.configBoolParm).length > 0 && (
-              <Box>
-                <Typography
-                  variant="subtitle1"
-                  sx={{ mb: 1, fontWeight: 600, color: "#0A0A0A" }}
-                >
-                  Options
-                </Typography>
-                {Object.entries(fields.configBoolParm).map(([key, tooltip]) => (
-                  <FormControlLabel
-                    key={key}
-                    sx={{ display: "flex", mb: 1 }}
-                    control={
-                      <Checkbox
-                        checked={!!advancePortfolioSizeConfig[key]}
-                        onChange={(e) =>
-                          setFieldValue(
-                            `advancePortfolioSizeConfig.${key}`,
-                            e.target.checked
-                          )
-                        }
-                        disabled={isView}
-                      />
-                    }
-                    label={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: 1,
-                          alignItems: "center",
-                          userSelect: "none",
+          {fields?.booleanParams && fields.booleanParams.length > 0 && (
+            <Box>
+              <Typography
+                variant="subtitle1"
+                sx={{ mb: 1, fontWeight: 600, color: "#0A0A0A" }}
+              >
+                Options
+              </Typography>
+
+              {fields.booleanParams.map((key) => (
+                <FormControlLabel
+                  key={key}
+                  sx={{ display: "flex", mb: 1 }}
+                  control={
+                    <Checkbox
+                      checked={!!booleanParams[key]}
+                      onChange={(e) =>
+                        handleBooleanChange(key, e.target.checked)
+                      }
+                      disabled={isView}
+                    />
+                  }
+                  label={
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                        alignItems: "center",
+                        userSelect: "none",
+                      }}
+                    >
+                      {key}
+                      <Tooltip
+                        title={fields.desc?.[key] ?? ""}
+                        placement="right"
+                        componentsProps={{
+                          tooltip: {
+                            sx: {
+                              padding: "16px",
+                              background: "#FFFFFF",
+                              color: "#666666",
+                              boxShadow: "0px 8px 16px 0px #7B7F8229",
+                              fontFamily: "Inter",
+                              fontWeight: 400,
+                              fontSize: "14px",
+                              lineHeight: "20px",
+                            },
+                          },
                         }}
                       >
-                        {key}
-                        <Tooltip
-                          title={tooltip}
-                          placement="right"
-                          componentsProps={{
-                            tooltip: {
-                              sx: {
-                                padding: "16px",
-                                background: "#FFFFFF",
-                                color: "#666666",
-                                boxShadow: "0px 8px 16px 0px #7B7F8229",
-                                fontFamily: "Inter",
-                                fontWeight: 400,
-                                fontSize: "14px",
-                                lineHeight: "20px",
-                              },
-                            },
-                          }}
-                        >
-                          <InfoOutlinedIcon
-                            sx={{ fontSize: 16 }}
-                            aria-label={`Info about ${key}`}
-                          />
-                        </Tooltip>
-                      </Box>
-                    }
-                  />
-                ))}
-              </Box>
-            )}
-
-          <DialogActions sx={{ px: 0, py: 2, justifyContent: "center" }}>
-            <ModalButton variant="secondary" onClick={onClose}>
-              Cancel
-            </ModalButton>
-            <ModalButton
-              variant="primary"
-              type="submit"
-              style={{ minWidth: 160 }}
-              onClick={onFormSubmit}
-            >
-              Save
-            </ModalButton>
-          </DialogActions>
+                        <InfoOutlinedIcon
+                          sx={{ fontSize: 16 }}
+                          aria-label={`Info about ${key}`}
+                        />
+                      </Tooltip>
+                    </Box>
+                  }
+                />
+              ))}
+            </Box>
+          )}
         </Box>
+
+        <DialogActions sx={{ px: 0, py: 2, justifyContent: "center" }}>
+          <ModalButton variant="secondary" onClick={onClose}>
+            Cancel
+          </ModalButton>
+          <ModalButton
+            variant="primary"
+            type="submit"
+            style={{ minWidth: 160 }}
+            onClick={onFormSubmit}
+          >
+            Save
+          </ModalButton>
+        </DialogActions>
       </DialogContent>
     </Dialog>
   );
