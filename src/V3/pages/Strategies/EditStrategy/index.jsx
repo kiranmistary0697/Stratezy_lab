@@ -53,6 +53,7 @@ const EditStrategy = () => {
   const [version, setVersion] = useState([]);
   const [isDeleteCase, setIsDeleteCase] = useState(false);
   const [deleteRow, setDeleteRow] = useState({});
+  const [versionList, setVersionList] = useState([]);
 
   const [isDelete, setIsDelete] = useState(false);
   const [rowToDelete, setRowToDelete] = useState(null);
@@ -157,6 +158,8 @@ const EditStrategy = () => {
       const filterData = data.filter(
         ({ version }) => version !== resolvedVersion
       );
+      const formattedVersions = data.map(({ version }) => version);
+      setVersionList(formattedVersions);
       setVersion(filterData);
     } catch (error) {
       console.error("Failed to fetch version data:", error);
@@ -185,10 +188,12 @@ const EditStrategy = () => {
   useEffect(() => {
     if (defaultVersion) {
       handleVersionData(defaultVersion);
-      handleViewData(defaultVersion);
+      if (tabIndex === 1) {
+        handleViewData(defaultVersion);
+      }
       handleLocation(defaultVersion);
     }
-  }, [defaultVersion]);
+  }, [defaultVersion, tabIndex]);
 
   useEffect(() => {
     if (strategyName && !selectedVersion) {
@@ -197,10 +202,10 @@ const EditStrategy = () => {
   }, [strategyName, demoStrategy, tabIndex]);
 
   useEffect(() => {
-    if (view) {
+    if (view && tabIndex === 1) {
       handleViewData();
     }
-  }, [view]);
+  }, [view, tabIndex]);
 
   const handleTabChange = (event, newIndex) => {
     if (selectedVersion === "All Versions" && newIndex === 0) return;
@@ -371,8 +376,6 @@ const EditStrategy = () => {
 
   useEffect(() => {
     const strategy = filterData?.strategy;
-    console.log("strategy", strategy);
-
     if (!strategy) {
       // If strategy is missing, reset or set defaults as needed
       formik.setValues((prevValues) => ({
@@ -629,6 +632,7 @@ const EditStrategy = () => {
               disableDeploy={!rows.length}
               version={version}
               setIsDirty={setIsDirty}
+              versionList={versionList}
               handleViewData={handleViewData}
             />
           ) : (

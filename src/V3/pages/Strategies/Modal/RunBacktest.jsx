@@ -43,6 +43,8 @@ const RunBacktest = ({
             : `strategystore/get/name/${strategyName}?version=${defaultVersion}`,
         tags: [tagTypes.GET_ALLDATA],
       }).unwrap();
+      console.log("backtestData", data);
+
       setBacktestData(data);
     } catch (error) {}
   };
@@ -77,14 +79,14 @@ const RunBacktest = ({
       "id",
       "strategy",
       "groupRisk",
-      "maxPrincipalToAccountRatio",
-      "maxOpenTrades",
-      "priortizeOrder",
+      // "maxPrincipalToAccountRatio",
+      // "maxOpenTrades",
+      // "priortizeOrder",
       "incrementalCapital",
       "timestamp",
       "customRule",
       "predefRuleArgs",
-      "ndate",
+      // "ndate",
     ]);
 
     const payload = {
@@ -94,7 +96,7 @@ const RunBacktest = ({
       backtestType: "BACKTEST_TYPE_FULL",
       zeroDate: moment(endDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
       nDate: moment(startDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
-      tradeExecutionDate: moment(startDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+      // tradeExecutionDate: moment(startDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
       exchange: "nse",
       underlyingRule: {
         ruleType: "TRADE_UNDERLYING_RULE",

@@ -58,9 +58,8 @@ const StrategyHeader = ({
   version,
   setIsDirty = () => {},
   handleViewData = () => {},
+  versionList = [],
 }) => {
-  const [getVersionData] = useLazyGetQuery();
-
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedVersion, setSelectedVersion] = useState(
     defaultVersion.toLowerCase()
@@ -68,7 +67,7 @@ const StrategyHeader = ({
   const [isOpenBacktest, setIsOpenBacktest] = useState(false);
   const [isOpenDeploy, setIsOpenDeploy] = useState(false);
   const [isOpenSaveDraft, setIsOpenSaveDraft] = useState(false);
-  const [versionList, setVersionList] = useState([]);
+
   const [successModalOpen, setSuccessModalOpen] = useState(false);
 
   const excludedKeys = [
@@ -107,21 +106,6 @@ const StrategyHeader = ({
     });
   };
 
-  const handleVersionData = async () => {
-    try {
-      const { data } = await getVersionData({
-        endpoint: `strategystore/getall?name=${strategyName}`,
-        tags: [tagTypes.GET_VERSION],
-      }).unwrap();
-
-      const formattedVersions = data.map(({ version }) => version);
-
-      setVersionList(formattedVersions);
-    } catch (error) {
-      console.error("Failed to fetch version data:", error);
-    }
-  };
-
   const handleDropdownClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -138,9 +122,6 @@ const StrategyHeader = ({
     }
   }, [runBacktest]);
 
-  useEffect(() => {
-    handleVersionData();
-  }, [version]);
   useEffect(() => {
     if (defaultVersion && defaultVersion.toLowerCase() !== selectedVersion) {
       setSelectedVersion(defaultVersion.toLowerCase());

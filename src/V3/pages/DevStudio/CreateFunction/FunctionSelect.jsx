@@ -84,7 +84,7 @@ const FunctionSelect = ({
 
       const defaultSelectedTypes = {};
       Object.keys(defaultSelectedValues).forEach((key) => {
-        if (key === "tradeSequence" || key === "portfolioSizing") {
+        if (defaultSelectedValues[key].length) {
           defaultSelectedTypes[key] = true;
         } else {
           defaultSelectedTypes[key] = defaultSelectedValues[key]?.length > 0;
@@ -351,8 +351,6 @@ const FunctionSelect = ({
           }}
         >
           {Object.entries(selectedTypes).map(([key, value]) => {
-            console.log(key, "key");
-
             const shouldHide =
               key === "utility" && stockData?.filter && stockData?.stockList;
             if (shouldHide) return null;

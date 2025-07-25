@@ -101,7 +101,8 @@ const AddFunctionModal = ({
         num_arg: receivedArgs.length || 0,
         equation: `/config/library/${values.identifier}`,
         desc: values.descriptionName,
-        shortFuncName: values.identifier,
+        shortFuncName:
+          values.identifier || replaceSpaceWithUnderscore(values.functionName),
         args: receivedArgs || [],
         adesc: receivedAdesc || [],
         filter: selectedFunction?.filterRule || false,
@@ -122,15 +123,17 @@ const AddFunctionModal = ({
       };
 
       try {
-        const verifyResponse = await verifyNewStock({
-          endpoint: "stock-analysis-function/verify",
-          payload,
-          tags: [tagTypes.GET_FILTERTYPE],
-        }).unwrap();
+        if (!isNewFunc) {
+          const verifyResponse = await verifyNewStock({
+            endpoint: "stock-analysis-function/verify",
+            payload,
+            tags: [tagTypes.GET_FILTERTYPE],
+          }).unwrap();
 
-        if (!verifyResponse?.data?.success) {
-          handleClose();
-          return;
+          if (!verifyResponse?.data?.success) {
+            handleClose();
+            return;
+          }
         }
         // Save only if verification succeeded
         const saveStockResponse = await saveNewStock({

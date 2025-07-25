@@ -54,7 +54,6 @@ const BackTestOutput = () => {
       handleRequestId();
     }
   }, [id]);
-  console.log(tabIndex, "tabIndex");
 
   useEffect(() => {
     if (id && tabIndex === 2) {
@@ -100,7 +99,7 @@ const BackTestOutput = () => {
           <BacktestDetailHeader
             tab={tabIndex}
             csvData={tradeTableData}
-            data={backTestIdData}
+            data={requestData}
             requestData={requestData}
             handleRequestId={handleRequestId}
             id={id}
@@ -125,7 +124,7 @@ const BackTestOutput = () => {
                   lg: 8,
                 }}
               >
-                <Output summary={summaryData} data={backTestIdData} />
+                <Output summary={summaryData} data={requestData} />
               </Grid>
             </div>
           )}

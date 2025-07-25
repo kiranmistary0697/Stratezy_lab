@@ -143,8 +143,8 @@ const CustomizedDialogs = ({
     } = values || {};
 
     const strategy = {
-      ...portfolioSizing.advanceConfig.booleanParams,
-      ...portfolioSizing.advanceConfig.textParams,
+      ...portfolioSizing.advanceConfig?.booleanParams,
+      ...portfolioSizing.advanceConfig?.textParams,
       exchange: "",
       name: strategyName,
       initialCapital: 0,
@@ -243,8 +243,8 @@ const CustomizedDialogs = ({
     };
 
     const duplicateStrategy = {
-      ...portfolioSizing.advanceConfig.booleanParams,
-      ...portfolioSizing.advanceConfig.textParams,
+      ...portfolioSizing.advanceConfig?.booleanParams,
+      ...portfolioSizing.advanceConfig?.textParams,
       name: strategyName,
       version: versionName || "v1",
       description: descriptionName || "",

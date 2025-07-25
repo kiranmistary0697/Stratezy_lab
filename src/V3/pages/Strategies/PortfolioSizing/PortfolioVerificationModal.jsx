@@ -56,7 +56,10 @@ const PortfolioVerificationModal = ({
 
     // Update Formik nested advanceConfig textParams
     Object.entries(textParams).forEach(([key, val]) => {
-      setFieldValue(`portfolioSizing.advanceConfig.textParams.${key}`, val);
+      setFieldValue(
+        `portfolioSizing.advanceConfig.textParams.${key}`,
+        parseFloat(val)
+      );
     });
 
     onClose();

@@ -25,8 +25,7 @@ const BacktestDetailHeader = ({
   const combinedArrayWithId = csvData.flat().map((item, index) => ({
     id: index,
     ...item,
-  }));
-
+  }));  
   const csvLink = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenBacktest, setIsOpenBacktest] = useState(false);
@@ -42,14 +41,14 @@ const BacktestDetailHeader = ({
   };
 
   useEffect(() => {
-    const fetchInterval = setInterval(() => {
+    const fetchInterval = setInterval(() => {      
       if (requestData?.status === "PENDING") {
         handleRequestId();
       }
     }, 30000);
 
     return () => clearInterval(fetchInterval);
-  }, []);
+  }, [requestData]);
 
   return (
     <>
@@ -87,9 +86,9 @@ const BacktestDetailHeader = ({
         <Box className="flex flex-col gap-2 space-y-1 w-full md:w-auto">
           <Box className="flex flex-wrap items-center gap-2">
             <div className="text-xl font-semibold leading-tight text-neutral-950">
-              {data?.name}
+              {requestData?.name}
             </div>
-            <Badge variant="version">{data?.version || "v1"}</Badge>
+            <Badge variant="version">{requestData?.version || "v1"}</Badge>
             <Badge
               variant={
                 requestData?.status === "PENDING"
@@ -114,7 +113,7 @@ const BacktestDetailHeader = ({
               color: "#6B7280",
             }}
           >
-            {data?.requestId}
+            {requestData?.requestId}
           </Typography>
         </Box>
 
@@ -122,15 +121,15 @@ const BacktestDetailHeader = ({
         <Box className="flex flex-col sm:flex-row gap-4 w-full md:flex-1 md:justify-start">
           <Box className="flex flex-col space-y-2 gap-1">
             <div className="font-semibold text-base text-neutral-950">
-              ₹ {data?.initialCapital?.toLocaleString("en-IN")}
+              ₹ {requestData?.initialCapital?.toLocaleString("en-IN")}
             </div>
             <Typography className="text-sm text-gray-500">Capital</Typography>
           </Box>
           <Box className="flex flex-col  space-y-2 gap-1">
             <div className="font-semibold text-base text-neutral-950">
-              {`${moment(data?.startDate, "YYYY-MM-DD").format(
+              {`${moment(requestData?.startDate, "YYYY-MM-DD").format(
                 "DD/MM/YYYY"
-              )} to ${moment(data?.endDate, "YYYY-MM-DD").format(
+              )} to ${moment(requestData?.endDate, "YYYY-MM-DD").format(
                 "DD/MM/YYYY"
               )}`}
             </div>
@@ -140,7 +139,7 @@ const BacktestDetailHeader = ({
 
         {/* Action Buttons */}
         <Box className="flex flex-col sm:flex-row flex-wrap gap-3 w-full md:w-auto justify-end md:items-center">
-          {data?.summary?.includes("Backtest summary for") ? (
+          {requestData?.summary?.includes("Backtest summary for") ? (
             <>
               <HeaderButton
                 variant="primary"
