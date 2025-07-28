@@ -45,12 +45,12 @@ const AddFunctionModal = ({
   const dispatchMap = [
     { key: "filterRule", stateKey: "stockBundle" },
     { key: "tradeRule", stateKey: "tradeRule" },
+    { key: "tradeSequence", stateKey: "traderSequence" },
     { key: "entry", stateKey: "stockEntryExitEntry" },
     { key: "exit", stateKey: "stockEntryExitExit" },
+    { key: "portfolioSizing", stateKey: "portfolioSizing" },
     { key: "gentry", stateKey: "marketEntryExitEntry" },
     { key: "gexit", stateKey: "marketEntryExitExit" },
-    { key: "tradeSequence", stateKey: "traderSequence" },
-    { key: "portfolioSizing", stateKey: "portfolioSizing" },
   ];
 
   //replace Space with Underscore
