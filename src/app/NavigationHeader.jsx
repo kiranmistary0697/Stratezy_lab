@@ -59,7 +59,6 @@ const NavigationHeader = () => {
         // tags: [tagTypes.GET_DEPLOY],
       }).unwrap();
 
-      console.log("rreesss", data);
       setPlanDetails(data);
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -115,7 +114,10 @@ const NavigationHeader = () => {
           ) : (
             <div className="text-sm text-gray-600">Not Subscribed</div>
           )}
-          <div className="text-sm text-blue-700 cursor-pointer">
+          <div
+            className="text-sm text-blue-700 cursor-pointer"
+            onClick={handleSubscribe}
+          >
             Subscribe to Pro Plan
           </div>
         </div>

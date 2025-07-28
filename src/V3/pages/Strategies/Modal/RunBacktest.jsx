@@ -43,7 +43,6 @@ const RunBacktest = ({
             : `strategystore/get/name/${strategyName}?version=${defaultVersion}`,
         tags: [tagTypes.GET_ALLDATA],
       }).unwrap();
-      console.log("backtestData", data);
 
       setBacktestData(data);
     } catch (error) {}
@@ -125,7 +124,7 @@ const RunBacktest = ({
         isNavigate && setTimeout(() => navigate("/Backtest"), 1000);
       }
     } catch (error) {
-      console.log("Backtest error:", error);
+      console.error("Backtest error:", error);
     } finally {
       setLoading(false);
     }

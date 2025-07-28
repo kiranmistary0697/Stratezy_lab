@@ -46,7 +46,9 @@ const BackTestOutput = () => {
       }).unwrap();
 
       setRequestData(data);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

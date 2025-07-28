@@ -30,6 +30,7 @@ import { useLazyGetQuery, usePostMutation } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
 
 import GlobalFunctionActionMenu from "./GlobalFunctionActionMenu";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles({
   // This targets the column and operator dropdowns in the filter modal
@@ -349,10 +350,14 @@ const FunctionTable = ({ query }) => {
 
   const handleDelete = async () => {
     try {
-      await deleteData({
+      const { data } = await deleteData({
         endpoint: `stock-analysis-function/delete/${deleteRow.name}`,
         tags: [tagTypes.GET_FILTERTYPE],
       }).unwrap();
+
+      if (data?.success) {
+        toast.success(data.message);
+      }
     } catch (error) {
       console.error("Failed to delete:", error);
     } finally {
@@ -409,12 +414,15 @@ const FunctionTable = ({ query }) => {
           >
             Type
           </span>
-          <IconButton size="small" onClick={handleTypeFilterOpen}>
-            {selectedStatuses.length ? (
-              <FilterListIcon fontSize="small" color="primary" />
-            ) : (
-              <FilterListIcon fontSize="small" />
-            )}
+          <IconButton
+            size="small"
+            onClick={handleTypeFilterOpen}
+            sx={{ backgroundColor: selectedStatuses.length ? "#D0E7FF" : "" }}
+          >
+            <FilterListIcon
+              fontSize="small"
+              color={selectedStatuses.length ? "primary" : ""}
+            />
           </IconButton>
 
           <Popover
@@ -550,12 +558,17 @@ const FunctionTable = ({ query }) => {
           >
             Sub Type
           </span>
-          <IconButton size="small" onClick={handleSubTypeFilterOpen}>
-            {selectedSubStatuses.length ? (
-              <FilterListIcon fontSize="small" color="primary" />
-            ) : (
-              <FilterListIcon fontSize="small" />
-            )}
+          <IconButton
+            size="small"
+            onClick={handleSubTypeFilterOpen}
+            sx={{
+              backgroundColor: selectedSubStatuses.length ? "#D0E7FF" : "",
+            }}
+          >
+            <FilterListIcon
+              fontSize="small"
+              color={selectedSubStatuses.length ? "primary" : ""}
+            />
           </IconButton>
           <Popover
             open={Boolean(subTypeAnchorEl)}
@@ -693,12 +706,17 @@ const FunctionTable = ({ query }) => {
           >
             Created By
           </span>
-          <IconButton size="small" onClick={handleCreatedByFilterOpen}>
-            {selectedCreatedBy.length ? (
-              <FilterListIcon fontSize="small" color="primary" />
-            ) : (
-              <FilterListIcon fontSize="small" />
-            )}
+          <IconButton
+            size="small"
+            onClick={handleCreatedByFilterOpen}
+            sx={{
+              backgroundColor: selectedCreatedBy.length ? "#D0E7FF" : "",
+            }}
+          >
+            <FilterListIcon
+              fontSize="small"
+              color={selectedCreatedBy.length ? "primary" : ""}
+            />
           </IconButton>
           <Popover
             open={Boolean(createdByAnchor)}
@@ -807,7 +825,8 @@ const FunctionTable = ({ query }) => {
             isDeleteButton={isRemove}
             isDuplicateButton
             isEditButton={isRemove}
-            handleDelete={() => {
+            handleDelete={(event) => {
+              event.stopPropagation();
               setDeleteRow({ name: row.shortFuncName });
               setIsDelete(true);
             }}

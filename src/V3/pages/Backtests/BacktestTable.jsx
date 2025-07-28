@@ -375,6 +375,9 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
             <IconButton
               size="small"
               onClick={(e) => handlePopoverOpen(e, "strategy")}
+              sx={{
+                backgroundColor: selectedStrategies.length ? "#D0E7FF" : "",
+              }}
             >
               <FilterListIcon
                 fontSize="small"
@@ -442,6 +445,9 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
             <IconButton
               size="small"
               onClick={(e) => handlePopoverOpen(e, "status")}
+              sx={{
+                backgroundColor: selectedStatuses.length ? "#D0E7FF" : "",
+              }}
             >
               <FilterListIcon
                 fontSize="small"
@@ -567,6 +573,24 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
         ),
       },
       {
+        field: "maxAccountValue",
+        headerName: "Max Account Value",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.maxDrawdown ? parseFloat(row.maxAccountValue) : 0,
+        renderCell: (params) => {
+          const value = params?.row?.maxAccountValue;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
+      },
+      {
         field: "avgProfitPerTrade",
         headerName: "Average profit/trade",
         // minWidth: 140,
@@ -584,7 +608,16 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
         flex: 1,
         valueGetter: (_, row) =>
           row?.expectancy ? parseFloat(row.expectancy) : 0,
-        renderCell: (params) => <span>{params.row.expectancy || "0"}</span>,
+        renderCell: (params) => {
+          const value = params?.row?.expectancy;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "sharpeRatio",
@@ -593,7 +626,33 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
         flex: 1,
         valueGetter: (_, row) =>
           row?.sharpeRatio ? parseFloat(row.sharpeRatio) : 0,
-        renderCell: (params) => <span>{params.row?.sharpeRatio || "0"}</span>,
+        renderCell: (params) => {
+          const value = params?.row?.sharpeRatio;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
+      },
+      {
+        field: "sqn",
+        headerName: "SQN",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) => (row?.sqn ? parseFloat(row.sqn) : 0),
+        renderCell: (params) => {
+          const value = params?.row?.sqn;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "avgAnnualProfit",

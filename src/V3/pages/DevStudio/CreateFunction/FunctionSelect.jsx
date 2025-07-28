@@ -61,15 +61,23 @@ const FunctionSelect = ({
     stockEntryExit: [
       ...(data?.entry ? ["Entry"] : []),
       ...(data?.exit ? ["Exit"] : []),
-      ...(data?.accountRule ? ["Account"] : []),
+      ...((data?.entry || data?.exit) && data?.accountRule ? ["Account"] : []),
     ],
     globalEntryExit: [
       ...(data?.gentry ? ["Entry"] : []),
       ...(data?.gexit ? ["Exit"] : []),
       ...(data?.accountRule ? ["Account"] : []),
     ],
-    tradeSequence: data?.sort ? ["Trade Sequence"] : [],
-    portfolioSizing: data?.psizing ? ["Portfolio Sizing"] : [],
+    // tradeSequence: data?.sort ? ["Trade Sequence"] : [],
+    tradeSequence: [
+      // ...(data?.sort ? ["Trade Sequence"] : []),
+      ...(data?.sort && data?.accountRule ? ["Account"] : []),
+    ],
+    // portfolioSizing: data?.psizing ? ["Portfolio Sizing"] : [],
+    portfolioSizing: [
+      // ...(data?.psizing ? ["Portfolio Sizing"] : []),
+      ...(data?.psizing && data?.accountRule ? ["Account"] : []),
+    ],
     utility: data?.utility ? ["Utility"] : [],
   });
 
@@ -79,36 +87,31 @@ const FunctionSelect = ({
 
   // Initialize selectedTypes and selectedValues based on stockData when id or stockData changes
   useEffect(() => {
-    if (id && stockData) {
-      const defaultSelectedValues = getDefaultValues(stockData);
+    if (!id || !stockData) return;
 
-      const defaultSelectedTypes = {};
-      Object.keys(defaultSelectedValues).forEach((key) => {
-        if (defaultSelectedValues[key].length) {
-          defaultSelectedTypes[key] = true;
-        } else {
-          defaultSelectedTypes[key] = defaultSelectedValues[key]?.length > 0;
-        }
-      });
+    // Recalculate defaults
+    const defaultSelectedValues = getDefaultValues(stockData);
 
-      // Override tradeSequence & portfolioSizing dropdown to be empty arrays
-      const newSelectedValues = {
-        ...defaultSelectedValues,
-        tradeSequence: [],
-        portfolioSizing: [],
-      };
+    // Compute defaultSelectedTypes: true if any subtypes selected, else false
+    const defaultSelectedTypes = Object.fromEntries(
+      Object.entries(defaultSelectedValues).map(([key, arr]) => [
+        key,
+        arr.length > 0,
+      ])
+    );
 
-      // Update state only if changed - prevents infinite loops
-      if (!shallowEqual(selectedValues, newSelectedValues)) {
-        setSelectedValues(newSelectedValues);
-      }
-      if (!shallowEqual(selectedTypes, defaultSelectedTypes)) {
-        setSelectedTypes(defaultSelectedTypes);
-      }
-
-      localStorage.removeItem("selectedTypes");
-      localStorage.removeItem("selectedValues");
+    // Only update if changed
+    if (!shallowEqual(selectedValues, defaultSelectedValues)) {
+      setSelectedValues(defaultSelectedValues);
     }
+    if (!shallowEqual(selectedTypes, defaultSelectedTypes)) {
+      setSelectedTypes(defaultSelectedTypes);
+    }
+
+    // Only clear local storage if needed
+    localStorage.removeItem("selectedTypes");
+    localStorage.removeItem("selectedValues");
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stockData, id]);
 
@@ -214,6 +217,11 @@ const FunctionSelect = ({
         selectedValues.filterRule.includes("Static")
       ) {
         updatedFunction.stockList = true;
+      } else if (
+        selectedTypes.filterRule &&
+        selectedValues.filterRule.includes("Dynamic")
+      ) {
+        updatedFunction.stockList = false;
       }
     }
 

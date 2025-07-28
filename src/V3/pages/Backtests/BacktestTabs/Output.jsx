@@ -85,6 +85,11 @@ const Output = ({ summary, data }) => {
       <span className="font-semibold whitespace-nowrap"> Expectancy</span>
       <span className="text-[#666666]">{summary["expectancy"] || "-"}</span>
 
+      <span className="font-semibold whitespace-nowrap"> Sharpe ratio</span>
+      <span className="text-[#666666]">
+        {Number(data?.sharpeRatio)?.toFixed(2) || "-"}
+      </span>
+
       <span className="font-semibold whitespace-nowrap"> Stddev of R</span>
       <span className="text-[#666666]">{summary["stddev of R"] || "-"}</span>
 

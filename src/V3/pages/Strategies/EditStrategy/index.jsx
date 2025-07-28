@@ -103,7 +103,6 @@ const EditStrategy = () => {
           endpoint: `command/backtest/configparm `,
         }).unwrap();
         const transformedData = transformConfig(data);
-        // console.log("data", transformedData);
 
         setAdvancePortfolioSizeConfig(transformedData);
       })();
@@ -138,7 +137,7 @@ const EditStrategy = () => {
       setFilterData(data);
       setSelectedVersion(data);
     } catch (error) {
-      // console.log(error);
+      console.error(error);
     }
   };
 
@@ -579,7 +578,7 @@ const EditStrategy = () => {
         advanceConfig,
       },
     });
-  }, [filterData]);
+  }, [filterData, selectedVersion, advancePortfolioSizeConfig]);
 
   const steps = [
     StockBundleStep,

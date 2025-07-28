@@ -65,7 +65,9 @@ const AddFunctionModal = ({
         : stockData?.func || "",
       descriptionName: stockData?.desc || "",
       identifier: replaceSpaceWithUnderscore(
-        isDuplicate ? `${stockData?.func} duplicate` : stockData?.func || ""
+        isDuplicate
+          ? `${stockData?.func} duplicate`
+          : stockData?.shortFuncName || ""
       ),
     },
     validationSchema: Yup.object({

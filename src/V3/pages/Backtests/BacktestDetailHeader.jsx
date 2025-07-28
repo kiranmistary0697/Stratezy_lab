@@ -60,6 +60,7 @@ const BacktestDetailHeader = ({
           strategyName={data?.name}
           defaultVersion={data?.version}
           demoStrategy={data?.demo?.toString()}
+          isNavigate
         />
       )}
       {isOpen && (

@@ -442,6 +442,9 @@ const TableRow = () => {
             <IconButton
               size="small"
               onClick={(e) => handlePopoverOpen(e, "status")}
+              sx={{
+                backgroundColor: selectedStatuses.length ? "#D0E7FF" : "",
+              }}
             >
               <FilterListIcon
                 fontSize="small"

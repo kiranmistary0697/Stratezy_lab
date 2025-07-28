@@ -17,7 +17,9 @@ const NavigationTab = ({ children, gradient = false, to }) => {
   if (gradient) {
     return (
       <div
-        className={`flex ${baseClasses} ${isActive ? "bg-slate-100" : "bg-white"}`}
+        className={`flex ${baseClasses} ${
+          isActive ? "bg-slate-100" : "bg-white"
+        }`}
         onClick={() => navigate("/Devstudio/create-function")}
       >
         <span

@@ -38,10 +38,11 @@ import WarningPopupModal from "../../Strategies/CreateStratezy/WarningPopupModal
 import CommonModal from "./CommonModal";
 
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import HeaderButton from "../../../common/Table/HeaderButton";
 
 const EditFunction = () => {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down(1024)); // Breakpoint at 1024px
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down(1024));
 
   const [getStockDetails] = useLazyGetQuery();
   const [getKeywords] = useLazyGetQuery();
@@ -173,7 +174,7 @@ const EditFunction = () => {
   };
 
   const handleDeleteFunction = async () => {
-    setDeleteFunctionName(stockData.func);
+    setDeleteFunctionName(stockData.shortFuncName);
     setIsDeleteOpen(true);
   };
 
@@ -185,7 +186,20 @@ const EditFunction = () => {
       }).unwrap();
 
       if (data.success) {
+        localStorage.removeItem("argsData");
+        localStorage.removeItem("editorFunctionCode");
+        localStorage.removeItem("selectedValues");
+        localStorage.removeItem("selectedTypes");
         toast.success(data.message);
+
+        navigate(`/Globalfunctions`);
+      } else {
+        localStorage.removeItem("argsData");
+        localStorage.removeItem("editorFunctionCode");
+        localStorage.removeItem("selectedValues");
+        localStorage.removeItem("selectedTypes");
+        toast.error(data.message);
+
         navigate(`/Globalfunctions`);
       }
     } catch (error) {
@@ -565,7 +579,7 @@ const EditFunction = () => {
             }}
             systemDefine={stockData?.userDefined}
             showButtons={stockData?.userDefined}
-            isVerify
+            isVerify={!isSmallScreen}
             // id={id}
           />
           <Grid
@@ -602,15 +616,19 @@ const EditFunction = () => {
                       fontSize: "14px",
                       letterSpacing: "0px",
                       color: "#0A0A0A",
+                      backgroundColor: "#f5f5f5", // light gray background for unselected tab
                       "&.Mui-selected": {
                         color: "#3D69D3",
+                        backgroundColor: "#eef2ff", // background for selected tab
                       },
                       "&:hover, &:active, &:focus": {
                         outline: "none",
                         boxShadow: "none",
+                        backgroundColor: "#e0e0e0", // slightly darker gray on hover
                       },
                     }}
                   />
+
                   <Tab
                     label="Functions"
                     sx={{
@@ -622,12 +640,15 @@ const EditFunction = () => {
                       fontSize: "14px",
                       letterSpacing: "0px",
                       color: "#0A0A0A",
+                      backgroundColor: "#f5f5f5", // light gray background for unselected tab
                       "&.Mui-selected": {
                         color: "#3D69D3",
+                        backgroundColor: "#eef2ff", // white background for selected tab
                       },
                       "&:hover, &:active, &:focus": {
                         outline: "none",
                         boxShadow: "none",
+                        backgroundColor: "#e0e0e0", // slightly darker gray on hover
                       },
                     }}
                   />
@@ -662,6 +683,22 @@ const EditFunction = () => {
                   isNewFuncOrDuplicate={isDuplicate}
                   setIsDirty={setIsDirty}
                 />
+              )}
+              {isSmallScreen && !internalData && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row-reverse",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <HeaderButton
+                    variant="contained"
+                    onClick={() => setOpenStockModal(true)}
+                  >
+                    Verify
+                  </HeaderButton>
+                </Box>
               )}
             </Grid>
 

@@ -39,6 +39,7 @@ import { useRouterBlocker } from "../../hooks/useRouterBlocker";
 
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import CommonModal from "./CreateFunction/CommonModal";
+import HeaderButton from "../../common/Table/HeaderButton";
 
 const CreateFunction = () => {
   useLabTitle("Dev Studio");
@@ -492,7 +493,7 @@ const CreateFunction = () => {
             isFunction
             systemDefine={true}
             showButtons
-            isVerify
+            isVerify={!isSmallScreen}
             // showButtons={true}
           />
           <Grid
@@ -585,6 +586,22 @@ const CreateFunction = () => {
                 isNewFuncOrDuplicate={true}
                 setIsDirty={setIsDirty}
               />
+              {isSmallScreen && !internalData && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row-reverse",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <HeaderButton
+                    variant="contained"
+                    onClick={() => setOpenStockModal(true)}
+                  >
+                    Verify
+                  </HeaderButton>
+                </Box>
+              )}
             </Grid>
 
             {/* Stock Bundle Step - Full Width on Small Screens, Half on Medium+, 6.7/12 on Large+ */}

@@ -306,6 +306,17 @@ const TradeToDoTable = forwardRef((props, ref) => {
       // minWidth: 100,
       flex: 1,
       disableColumnMenu: true,
+      valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
+      renderCell: (params) => {
+        return <div> {params.row.closed ? "EXIT" : "ENTER"}</div>;
+      },
+    },
+    {
+      field: "moreaction",
+      headerName: "Column Setting",
+      // minWidth: 100,
+      flex: 1,
+      disableColumnMenu: true,
       renderHeader: () => (
         <IconButton
           size="small"
@@ -316,7 +327,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
       ),
       valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
       renderCell: (params) => {
-        return <div> {params.row.closed ? "EXIT" : "ENTER"}</div>;
+        return <div> </div>;
       },
     },
   ];
