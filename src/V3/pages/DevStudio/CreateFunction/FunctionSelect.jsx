@@ -66,7 +66,9 @@ const FunctionSelect = ({
     globalEntryExit: [
       ...(data?.gentry ? ["Entry"] : []),
       ...(data?.gexit ? ["Exit"] : []),
-      ...(data?.accountRule ? ["Account"] : []),
+      ...((data?.gentry || data?.gexit) && data?.accountRule
+        ? ["Account"]
+        : []),
     ],
     // tradeSequence: data?.sort ? ["Trade Sequence"] : [],
     tradeSequence: [

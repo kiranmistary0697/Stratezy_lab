@@ -145,6 +145,7 @@ const FunctionTable = ({ query }) => {
 
   // Separate handler for type filter
   const handleTypeFilterOpen = (event) => {
+    event.stopPropagation();
     setTypeAnchorEl(event.currentTarget);
   };
 
@@ -154,10 +155,12 @@ const FunctionTable = ({ query }) => {
 
   // Separate handler for subType filter
   const handleSubTypeFilterOpen = (event) => {
+    event.stopPropagation();
     setSubTypeAnchorEl(event.currentTarget);
   };
 
   const handleCreatedByFilterOpen = (event) => {
+    event.stopPropagation();
     setCreatedByAnchor(event.currentTarget);
   };
 
@@ -318,6 +321,8 @@ const FunctionTable = ({ query }) => {
     } else {
       if (row.gentry) rowTypes.push("Global Entry");
       if (row.gexit) rowTypes.push("Global Exit");
+      if (row.gentry) rowSubTypes.push("Global Entry");
+      if (row.gexit) rowSubTypes.push("Global Exit");
     }
 
     if (row.entry && row.exit) {
@@ -325,6 +330,8 @@ const FunctionTable = ({ query }) => {
     } else {
       if (row.entry) rowTypes.push("Stock Entry");
       if (row.exit) rowTypes.push("Stock Exit");
+      if (row.entry) rowSubTypes.push("Stock Entry");
+      if (row.exit) rowSubTypes.push("Stock Exit");
     }
 
     if (row.psizing) rowTypes.push("Portfolio Sizing");
@@ -443,14 +450,10 @@ const FunctionTable = ({ query }) => {
               data={[
                 { status: "Stock Filter" },
                 { status: "Trade Rule" },
-                { status: "Global Entry & Exit" },
-                { status: "Global Entry" },
-                { status: "Global Exit" },
                 { status: "Stock Entry & Exit" },
-                { status: "Stock Entry" },
-                { status: "Stock Exit" },
-                { status: "Portfolio Sizing" },
+                { status: "Global Entry & Exit" },
                 { status: "Trade Sequence" },
+                { status: "Portfolio Sizing" },
                 { status: "Utility" },
               ]}
               fieldName="status"
@@ -467,25 +470,11 @@ const FunctionTable = ({ query }) => {
 
         if (row.filter) badges.push("Stock Filter");
         if (row.buysell) badges.push("Trade Rule");
-        if (row.utility) badges.push("utility");
-
-        if (row.gentry && row.gexit) {
-          badges.push("Global Entry & Exit");
-        } else if (row.gentry) {
-          badges.push("Global Entry");
-        } else if (row.gexit) {
-          badges.push("Global Exit");
-        }
-
-        if (row.entry && row.exit) {
-          badges.push("Stock Entry & Exit");
-        } else if (row.entry) {
-          badges.push("Stock Entry");
-        } else if (row.exit) {
-          badges.push("Stock Exit");
-        }
-
+        if (row.entry && row.exit) badges.push("Stock Entry & Exit");
+        if (row.gentry && row.gexit) badges.push("Global Entry & Exit");
+        if (row.sort) badges.push("Trade Sequence");
         if (row.psizing) badges.push("Portfolio Sizing");
+        if (row.utility) badges.push("utility");
 
         return badges.length > 0 ? badges.join(", ") : "NA";
       },
@@ -494,27 +483,11 @@ const FunctionTable = ({ query }) => {
 
         if (row.filter) badges.push("Stock Filter");
         if (row.buysell) badges.push("Trade Rule");
-        if (row.gentry && row.gexit) {
-          badges.push("Global Entry & Exit");
-        } else if (row.gentry) {
-          badges.push("Global Entry");
-        } else if (row.gexit) {
-          badges.push("Global Exit");
-        }
-        if (row.entry && row.exit) {
-          badges.push("Stock Entry & Exit");
-        } else if (row.entry) {
-          badges.push("Stock Entry");
-        } else if (row.exit) {
-          badges.push("Stock Exit");
-        }
-        if (row.psizing) badges.push("Portfolio Sizing");
+        if (row.entry && row.exit) badges.push("Stock Entry & Exit");
+        if (row.gentry && row.gexit) badges.push("Global Entry & Exit");
         if (row.sort) badges.push("Trade Sequence");
-        if (row.utility) {
-          badges.push("Utility");
-        }
-
-        // if(!row.filter && !row.buysell && !row.gentry && !row.gexit && !row.entry && !row.exit)
+        if (row.psizing) badges.push("Portfolio Sizing");
+        if (row.utility) badges.push("utility");
 
         return (
           <Box
@@ -590,6 +563,10 @@ const FunctionTable = ({ query }) => {
                 { status: "Dynamic" },
                 { status: "Buy" },
                 { status: "Sell" },
+                { status: "Global Entry" },
+                { status: "Global Exit" },
+                { status: "Stock Entry" },
+                { status: "Stock Exit" },
                 { status: "Account" },
               ]}
               fieldName="status"
@@ -610,12 +587,12 @@ const FunctionTable = ({ query }) => {
           badges.push("Dynamic");
         }
 
-        if (row.buysell) {
-          badges.push("Buy", "Sell");
-        }
-        if (row.accountRule) {
-          badges.push("Account");
-        }
+        if (row.buysell) badges.push("Buy", "Sell");
+        if (row.accountRule) badges.push("Account");
+        if (row.gentry) badges.push("Global Entry");
+        if (row.gexit) badges.push("Global Exit");
+        if (row.entry) badges.push("Stock Entry");
+        if (row.exit) badges.push("Stock Exit");
 
         return badges.length > 0 ? badges.join(", ") : "NA";
       },
@@ -631,9 +608,11 @@ const FunctionTable = ({ query }) => {
           badges.push("Buy");
           badges.push("Sell");
         }
-        if (row.accountRule) {
-          badges.push("Account");
-        }
+        if (row.accountRule) badges.push("Account");
+        if (row.gentry) badges.push("Global Entry");
+        if (row.gexit) badges.push("Global Exit");
+        if (row.entry) badges.push("Stock Entry");
+        if (row.exit) badges.push("Stock Exit");
 
         return (
           <Box

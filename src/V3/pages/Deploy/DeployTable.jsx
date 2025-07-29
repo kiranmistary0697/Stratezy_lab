@@ -334,11 +334,15 @@ const DeployTable = ({
         flex: 1,
         valueGetter: (_, row) =>
           row.initialCapital ? parseFloat(row.initialCapital) : 0,
-        renderCell: (params) => (
-          <Typography sx={tableTextSx}>
-            {params.row.initialCapital || "-"}
-          </Typography>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.initialCapital;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+          }
+          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        },
       },
       {
         field: "currentCapital",
@@ -349,11 +353,16 @@ const DeployTable = ({
           row.currentCapital && row.currentCapital !== "N/A"
             ? parseFloat(row.currentCapital)
             : 0,
-        renderCell: (params) => (
-          <Typography sx={tableTextSx}>
-            {params.row.currentCapital || "-"}
-          </Typography>
-        ),
+
+        renderCell: (params) => {
+          const value = params?.row?.currentCapital;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+          }
+          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        },
       },
       {
         field: "avgAnProfit",
@@ -362,11 +371,15 @@ const DeployTable = ({
         flex: 1,
         valueGetter: (_, row) =>
           row.avgAnProfit ? parseFloat(row.avgAnProfit) : 0,
-        renderCell: (params) => (
-          <Typography sx={tableTextSx}>
-            {params.row.avgAnProfit || "-"}
-          </Typography>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.avgAnProfit;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+          }
+          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        },
       },
       {
         field: "avgProfitPerTrade",
@@ -375,11 +388,15 @@ const DeployTable = ({
         flex: 1,
         valueGetter: (_, row) =>
           row.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
-        renderCell: (params) => (
-          <Typography sx={tableTextSx}>
-            {params.row.avgProfitPerTrade || "-"}
-          </Typography>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.avgProfitPerTrade;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+          }
+          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        },
       },
       {
         field: "maxDrawdown",
@@ -388,11 +405,15 @@ const DeployTable = ({
         flex: 1,
         valueGetter: (_, row) =>
           row.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
-        renderCell: (params) => (
-          <Typography sx={tableTextSx}>
-            {params.row.maxDrawdown || "-"}
-          </Typography>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.maxDrawdown;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+          }
+          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        },
       },
       {
         field: "netProfit",
@@ -401,11 +422,15 @@ const DeployTable = ({
         flex: 1,
         valueGetter: (_, row) =>
           row.netProfit ? parseFloat(row.netProfit) : 0,
-        renderCell: (params) => (
-          <Typography sx={tableTextSx}>
-            {params.row.netProfit || "-"}
-          </Typography>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.netProfit;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+          }
+          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        },
       },
       {
         field: "exchange",
@@ -421,6 +446,7 @@ const DeployTable = ({
         headerName: "Action",
         // minWidth: 170,
         flex: 1,
+        valueGetter: (_, row) => (row.active === "Yes" ? 1 : 0),
         renderCell: (params) => {
           const isColor = params.row.active === "Yes" ? "#CD3D64" : "#3D69D3";
           const actionName =

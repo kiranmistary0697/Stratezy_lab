@@ -167,71 +167,127 @@ const TradeToDoTable = forwardRef((props, ref) => {
       headerName: "Buy Price",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.buyPrice}</Typography>
-      ),
+      valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.buyPrice;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "sellPrice",
       headerName: "Sell Price",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.sellPrice}
-        </Typography>
-      ),
+      valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.sellPrice;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "principal",
       headerName: "Principal",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.principal}
-        </Typography>
-      ),
+      valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.principal;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "investment",
       headerName: "Investment",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.investment}
-        </Typography>
-      ),
+      valueGetter: (_, row) =>
+        row.investment ? parseFloat(row.investment) : 0,
+      renderCell: (params) => {
+        const value = params?.row?.investment;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "netProfit",
       headerName: "Net Profit",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.netProfit}
-        </Typography>
-      ),
+      valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.netProfit;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "profit",
       headerName: "Profit",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.profit}</Typography>
-      ),
+      valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.profit;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "anPrf",
       headerName: "Annual Prf",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.anPrf}</Typography>
-      ),
+      valueGetter: (_, row) => (row.anPrf ? parseFloat(row.anPrf) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.anPrf;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "buyTime",
@@ -265,18 +321,36 @@ const TradeToDoTable = forwardRef((props, ref) => {
       headerName: "Risk1R",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.risk1R}</Typography>
-      ),
+      valueGetter: (_, row) => (row.risk1R ? parseFloat(row.risk1R) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.risk1R;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "prf1R",
       headerName: "Prf1R",
       // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.prf1R}</Typography>
-      ),
+      valueGetter: (_, row) => (row.prf1R ? parseFloat(row.prf1R) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.prf1R;
+        const num = Number(value);
+
+        if (isNaN(num)) {
+          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+        }
+        return (
+          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+        );
+      },
     },
     {
       field: "closeReason",

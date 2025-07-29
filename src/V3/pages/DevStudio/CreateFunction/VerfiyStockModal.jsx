@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { forwardRef, useRef, useState } from "react";
+import Draggable from "react-draggable";
 import {
   Box,
   Dialog,
@@ -8,18 +9,34 @@ import {
   Autocomplete,
   Tooltip,
   CircularProgress,
+  Paper,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import TimelineDateRangePicker from "../../../common/TimelineDateRangePicker";
-import ModalButton from "../../../common/Table/ModalButton";
+
+import moment from "moment";
+
 import {
   PrimaryYAxis,
   SecondaryYAxis,
-  TimelineAxis,
   VERIFY_SUB_TITLE_TOOLTIP,
 } from "../../../../constants/CommonText";
-import moment from "moment";
 import CustomDatePicker from "../../../common/CustomDatePicker";
+import ModalButton from "../../../common/Table/ModalButton";
+
+// Draggable Paper Component for Dialog
+const PaperComponent = forwardRef(function PaperComponent(props, ref) {
+  const nodeRef = useRef(null);
+
+  return (
+    <Draggable
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+      nodeRef={nodeRef}
+    >
+      <Paper {...props} ref={nodeRef} />
+    </Draggable>
+  );
+});
 
 const VerfiyStockModal = ({
   title,
@@ -65,53 +82,63 @@ const VerfiyStockModal = ({
   };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogContent className="!p-[30px]">
-        {/* Header */}
-        <Box className="flex gap-2.5 items-center text-center md:text-left">
-          <Typography
-            sx={{
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "20px",
-              color: "#0A0A0A",
-            }}
-          >
-            {title}
-          </Typography>
-          <Tooltip
-            title={VERIFY_SUB_TITLE_TOOLTIP}
-            placement="right-end"
-            componentsProps={{
-              tooltip: {
-                sx: {
-                  padding: "16px",
-                  background: "#FFFFFF",
-                  color: "#666666",
-                  boxShadow: "0px 8px 16px 0px #7B7F8229",
-                  fontFamily: "Inter",
-                  fontWeight: 400,
-                  fontSize: "14px",
-                  lineHeight: "20px",
-                },
-              },
-            }}
-          >
-            <InfoOutlinedIcon
-              sx={{
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+      PaperComponent={PaperComponent}
+      aria-labelledby="draggable-dialog-title"
+    >
+      <Box
+        id="draggable-dialog-title"
+        sx={{
+          cursor: "move",
+          paddingTop: "30px ",
+          paddingLeft: "30px ",
+          fontWeight: 600,
+          fontSize: "20px",
+          fontFamily: "Inter",
+          userSelect: "none",
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          color: "#0A0A0A",
+        }}
+      >
+        {title}
+        <Tooltip
+          title={VERIFY_SUB_TITLE_TOOLTIP}
+          placement="right-end"
+          componentsProps={{
+            tooltip: {
+              sx: {
+                padding: "16px",
+                background: "#FFFFFF",
                 color: "#666666",
-                width: "17px",
-                height: "17px",
-                cursor: "pointer",
-              }}
-            />
-          </Tooltip>
-        </Box>
-
-        {/* Body */}
-        <Box
-          sx={{ display: "flex", flexDirection: "column", gap: "20px", mt: 4 }}
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+              },
+            },
+          }}
         >
+          <InfoOutlinedIcon
+            sx={{
+              color: "#666666",
+              width: "17px",
+              height: "17px",
+              cursor: "pointer",
+            }}
+          />
+        </Tooltip>
+      </Box>
+
+      <DialogContent className="!p-[30px]">
+        {/* Body */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           {/* Stock Name */}
           <Box className="flex gap-2.5 items-center text-center md:text-left">
             <Typography
@@ -332,7 +359,7 @@ const VerfiyStockModal = ({
         </Box>
 
         {/* Footer */}
-        <div className="flex gap-5 justify-center items-center w-full mt-[30px]">
+        <Box className="flex gap-5 justify-center items-center w-full mt-[30px]">
           <ModalButton
             variant="secondary"
             disabled={isSaving}
@@ -353,7 +380,7 @@ const VerfiyStockModal = ({
             )}
             Plot Graph
           </ModalButton>
-        </div>
+        </Box>
       </DialogContent>
     </Dialog>
   );

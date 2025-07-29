@@ -441,7 +441,10 @@ const TableRow = () => {
             </span>
             <IconButton
               size="small"
-              onClick={(e) => handlePopoverOpen(e, "status")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePopoverOpen(e, "status");
+              }}
               sx={{
                 backgroundColor: selectedStatuses.length ? "#D0E7FF" : "",
               }}

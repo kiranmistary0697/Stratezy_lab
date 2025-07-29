@@ -374,7 +374,10 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
             </span>
             <IconButton
               size="small"
-              onClick={(e) => handlePopoverOpen(e, "strategy")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePopoverOpen(e, "strategy");
+              }}
               sx={{
                 backgroundColor: selectedStrategies.length ? "#D0E7FF" : "",
               }}
@@ -444,7 +447,10 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
             </span>
             <IconButton
               size="small"
-              onClick={(e) => handlePopoverOpen(e, "status")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePopoverOpen(e, "status");
+              }}
               sx={{
                 backgroundColor: selectedStatuses.length ? "#D0E7FF" : "",
               }}
