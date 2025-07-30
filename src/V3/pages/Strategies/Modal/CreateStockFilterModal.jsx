@@ -19,10 +19,15 @@ import { setAllData } from "../../../../slices/page/reducer";
 
 const validationSchema = Yup.object({
   strategyName: Yup.string()
+    .trim()
     .required("Name is required")
     .matches(/^[a-zA-Z0-9_]+$/, "Whitespace is not permitted"),
 
   descriptionName: Yup.string().trim().required("Description is required"),
+  identifier: Yup.string().matches(
+    /^[a-zA-Z0-9_]+$/,
+    "Only letters, numbers, and underscores are permitted"
+  ),
 });
 
 const CreateStockFilterModal = ({
@@ -37,6 +42,10 @@ const CreateStockFilterModal = ({
   /* ---------------- local state ---------------- */
   const [isSaving, setIsSaving] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+
+  const replaceSpaceWithUnderscore = (str) => {
+    return str.replace(/ /g, "_");
+  };
 
   /* ---------------- hooks ---------------- */
   const dispatch = useDispatch();
@@ -53,6 +62,7 @@ const CreateStockFilterModal = ({
     initialValues: {
       strategyName: "",
       descriptionName: "",
+      identifier: "",
     },
     enableReinitialize: true,
     validationSchema,
@@ -66,6 +76,8 @@ const CreateStockFilterModal = ({
         num_arg: 0,
         equation: `/config/library/${values.strategyName}`,
         desc: values.descriptionName,
+        shortFuncName:
+          values.identifier || replaceSpaceWithUnderscore(values.functionName),
         args: [],
         adesc: [],
         filter: true,
@@ -76,7 +88,7 @@ const CreateStockFilterModal = ({
         gentry: false,
         gexit: false,
         sort: false,
-        ulying: false,
+        utility: false,
         candle_stick: false,
         future_rule: false,
         cacheable: false,
@@ -98,66 +110,12 @@ const CreateStockFilterModal = ({
 
         /* ---- 2 Save on server ---- */
         await saveNewStock({
-          endpoint: "stock-analysis-function/save",
+          endpoint: "stock-analysis-function/create",
           payload,
           tags: [tagTypes.CREATE_STRATEGY, tagTypes.GET_FILTERTYPE],
         }).unwrap();
 
-        /* ---- 3 Build the object you want in Redux ---- */
-        const newStockData = {
-          func: values.strategyName,
-          shortFuncName: values.strategyName,
-          num_arg: 0,
-          desc: values.descriptionName,
-          args: [],
-          userDefined: false,
-          filter: true,
-          buysell: false,
-          entry: false,
-          exit: false,
-          psizing: false,
-          gentry: false,
-          gexit: false,
-          sort: false,
-          ulying: false,
-          recommended: false,
-          candle_stick: false,
-          future_rule: false,
-          cacheable: false,
-          static: true,
-          stockList: true,
-          adesc: [],
-          graphFunction: {
-            func: values.strategyName,
-            shortFuncName: values.strategyName,
-            exchange: null,
-            rule: null,
-            num_arg: 1,
-            equation: null,
-            desc: values.descriptionName,
-            args: [null],
-            argumentName: null,
-            cache_path: null,
-            filter: true,
-            buysell: false,
-            entry: false,
-            exit: false,
-            psizing: false,
-            gentry: false,
-            gexit: false,
-            sort: false,
-            ulying: false,
-            recommended: false,
-            candle_stick: false,
-            future_rule: false,
-            cacheable: false,
-            static: false,
-            stockList: false,
-            adesc: [null],
-          },
-        };
-
-        dispatch(setAllData({ key: "stockBundle", data: newStockData }));
+        dispatch(setAllData({ key: "stockBundle", data: [] }));
 
         /* ---- 5 Notify parent & UI ---- */
         setSuccessModalOpen(true);
@@ -243,6 +201,27 @@ const CreateStockFilterModal = ({
                 helperText={
                   formik.touched.descriptionName &&
                   formik.errors.descriptionName
+                }
+              />
+              {/* Identifier */}
+              <label className="text-xs font-semibold text-neutral-950">
+                Identifier
+              </label>
+              <TextField
+                fullWidth
+                name="identifier"
+                value={formik.values.identifier}
+                onChange={(e) => {
+                  formik.setFieldValue("identifier", e.target.value);
+                  if (!formik.touched.identifier) {
+                    formik.setFieldTouched("identifier", true, false);
+                  }
+                }}
+                error={
+                  formik.touched.identifier && Boolean(formik.errors.identifier)
+                }
+                helperText={
+                  formik.touched.identifier && formik.errors.identifier
                 }
               />
             </Box>

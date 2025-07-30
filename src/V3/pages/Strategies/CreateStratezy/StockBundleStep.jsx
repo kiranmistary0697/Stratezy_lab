@@ -73,7 +73,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
         }
       }
     })();
-  }, []);
+  }, [stockBundle]);
 
   // Restore filters from localStorage
   useEffect(() => {

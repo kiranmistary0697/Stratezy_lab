@@ -170,6 +170,7 @@ const CreateStock = ({
                   if (filteredStockList.length === 0 && index === 0) {
                     return (
                       <li
+                        key={index}
                         {...props}
                         style={{ justifyContent: "center", padding: "10px" }}
                       >
@@ -179,7 +180,7 @@ const CreateStock = ({
                   }
 
                   return (
-                    <li {...props}>
+                    <li {...props} key={index}>
                       <Box display="flex" flexDirection="column">
                         <Typography fontWeight="bold">
                           {option.symbol?.toUpperCase()}
