@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
   Box,
@@ -59,6 +60,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     "duration",
     "annualPrf",
     "closeReason",
+    "maxPrf",
   ]);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
@@ -406,6 +408,21 @@ const TradeHistroyTable = forwardRef((props, ref) => {
           }}
         >
           {params.row.profit}
+        </Typography>
+      ),
+    },
+    {
+      field: "maxPrf",
+      headerName: "Max Profit",
+      // minWidth: 100,
+      flex: 1,
+      renderCell: (params) => (
+        <Typography
+          sx={{
+            ...tableTextSx,
+          }}
+        >
+          {params.row.maxPrf}
         </Typography>
       ),
     },

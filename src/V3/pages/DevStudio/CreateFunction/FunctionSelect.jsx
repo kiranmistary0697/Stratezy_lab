@@ -327,6 +327,7 @@ const FunctionSelect = ({
             componentsProps={{
               tooltip: {
                 sx: {
+                  maxWidth: 350,
                   padding: "16px",
                   background: "#FFFFFF",
                   color: "#666666",
@@ -400,6 +401,7 @@ const FunctionSelect = ({
             componentsProps={{
               tooltip: {
                 sx: {
+                  maxWidth: 350,
                   padding: "16px",
                   background: "#FFFFFF",
                   color: "#666666",

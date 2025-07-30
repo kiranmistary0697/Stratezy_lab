@@ -238,7 +238,7 @@ const EditorFunctionModal = ({
                 value={code}
                 onChange={handleChange}
                 width="100%"
-                height={isSmallScreen ? "600px" : 820}
+                height={isSmallScreen ? "600px" : "820px"}
                 fontSize={16}
                 setOptions={{
                   enableBasicAutocompletion: true,

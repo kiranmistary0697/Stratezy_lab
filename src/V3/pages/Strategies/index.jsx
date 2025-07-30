@@ -59,7 +59,7 @@ const Strategies = () => {
               componentsProps={{
                 tooltip: {
                   sx: {
-                    width: "400px",
+                    maxWidth: 450,
                     padding: "16px",
                     background: "#FFFFFF",
                     color: "#666666",

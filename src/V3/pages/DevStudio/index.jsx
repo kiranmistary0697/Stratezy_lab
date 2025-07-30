@@ -521,6 +521,7 @@ const CreateFunction = () => {
                   <Tab
                     label="Primitives"
                     sx={{
+                      maxWidth: 350,
                       outline: "none",
                       boxShadow: "none",
                       textTransform: "none",

@@ -51,21 +51,17 @@ import { BACKEND_BASE_URL } from "../../V2/services/apiEndpoints";
 
 //modified transformResponse to handle text and JSON response as we defined in RTK Query
 const displayErrorMessage = (error) => {
-  console.log(error, "errorrr");
-
   const statusCode =
     error?.originalStatus || error?.data?.StatusCode || error?.status || 0;
   let parsedData = error?.data;
 
-  if (typeof parsedData === "string") {
+  if (typeof parsedData === "string" && statusCode !== 502) {
     try {
       parsedData = JSON.parse(parsedData);
     } catch (parseErr) {
       console.warn("Failed to parse error data:", parseErr);
     }
   }
-
-  console.log("Parsed Error Data:", parsedData);
 
   if (Math.floor(statusCode / 100) === 2) return;
 
@@ -89,6 +85,9 @@ const displayErrorMessage = (error) => {
       break;
     case 500:
       errorMessage = parsedData?.Error || "Internal server error";
+      break;
+    case 502:
+      errorMessage = parsedData || "Internal server error";
       break;
     default:
       errorMessage =

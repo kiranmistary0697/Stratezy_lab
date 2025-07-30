@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Tooltip,
   useMediaQuery,
+  Autocomplete,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
@@ -28,6 +29,7 @@ import {
   SYMBOL_DESC,
   PLOT_GRAPH_TOOLTIP,
 } from "../../../../constants/CommonText";
+import HeaderButton from "../../../common/Table/HeaderButton";
 
 const chartOptions = [
   { value: "capital", label: "Capital", desc: CAPTITAL_DESC },
@@ -41,16 +43,17 @@ const chartOptions = [
     desc: COMPARE_WITH_INDEX_DESC,
   },
   { value: "opentrades", label: "Open Trades", desc: OPEN_TRADES_DESC },
-  { value: "totaltrades", label: "Total Trades", TOTAL_TRADES_DESC },
+  { value: "totaltrades", label: "Total Trades", desc: TOTAL_TRADES_DESC },
   { value: "duration", label: "Duration", desc: DURATION_DESC },
   { value: "symbol", label: "Symbol", desc: SYMBOL_DESC },
 ];
 
-const Visualisation = ({ id }) => {
+const Visualisation = ({ id, tradeTableSymbol }) => {
+  const uniqueTradeSymbols = Array.from(new Set(tradeTableSymbol));
   const theme = useTheme();
   const [getChartData] = useLazyGetQuery([]);
   const [selectedOption, setSelectedOption] = useState(chartOptions[0]);
-  const [symbolName, setSymbolName] = useState(""); // default symbol
+  const [symbolName, setSymbolName] = useState("");
   const [preparedData, setPreparedData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -166,10 +169,14 @@ const Visualisation = ({ id }) => {
   const y2Range = y2Values.length
     ? [Math.min(...y2Values), Math.max(...y2Values)]
     : undefined;
-
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down(1180));
   return (
     <>
-      <Box className="w-full flex flex-col md:flex-row md:items-start gap-6">
+      <Box
+        className={`w-full flex ${
+          isSmallScreen ? " flex-col" : "flex-row "
+        } md:items-start gap-6`}
+      >
         {/* Left Controls */}
         <Box className="flex flex-col md:flex-row md:space-x-8 gap-4 w-full">
           {/* Chart Type Selector */}
@@ -184,6 +191,7 @@ const Visualisation = ({ id }) => {
                 componentsProps={{
                   tooltip: {
                     sx: {
+                      maxWidth: 450,
                       padding: "16px",
                       background: "#FFFFFF",
                       color: "#666666",
@@ -197,7 +205,12 @@ const Visualisation = ({ id }) => {
                 }}
               >
                 <InfoOutlinedIcon
-                  sx={{ color: "#666666", width: "17px", height: "17px" }}
+                  sx={{
+                    color: "#666666",
+                    width: "17px",
+                    height: "17px",
+                    cursor: "pointer",
+                  }}
                 />
               </Tooltip>
             </Box>
@@ -228,19 +241,66 @@ const Visualisation = ({ id }) => {
                   NSE Symbol name
                 </label>
               </Box>
-              <TextField
-                value={symbolName}
-                onChange={(e) => setSymbolName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && symbolName.trim() !== "") {
-                    handleBacktest();
-                  }
-                }}
-                size="small"
-                placeholder="Enter NSE symbol"
-                aria-label="Symbol input"
-                className="custom-select max-md:w-full"
-              />
+              <Box sx={{ display: "flex", gap: "10px" }}>
+                {/* <TextField
+                  value={symbolName}
+                  onChange={(e) => setSymbolName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && symbolName.trim() !== "") {
+                      handleBacktest();
+                    }
+                  }}
+                  size="small"
+                  placeholder="Enter NSE symbol"
+                  aria-label="Symbol input"
+                  className="custom-select max-md:w-full"
+                /> */}
+                <Autocomplete
+                  className="custom-select max-md:w-full"
+                  size="small"
+                  freeSolo // allows inputting values not in the list if desired
+                  options={uniqueTradeSymbols}
+                  value={symbolName}
+                  onInputChange={(event, newInputValue) => {
+                    setSymbolName(newInputValue);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && symbolName.trim() !== "") {
+                      handleBacktest();
+                      // Prevent form submission or input field from losing focus if needed
+                      e.preventDefault();
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Enter NSE symbol"
+                      aria-label="Symbol input"
+                      // className="custom-select max-md:w-full"
+                      size="small"
+                    />
+                  )}
+                />
+                <HeaderButton
+                  onClick={() => {
+                    if (symbolName.trim() !== "") {
+                      handleBacktest();
+                    }
+                  }}
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  disableElevation
+                  sx={{
+                    minWidth: 60,
+                    borderRadius: 1,
+                    textTransform: "none",
+                  }}
+                  aria-label="submit"
+                >
+                  Submit
+                </HeaderButton>
+              </Box>
             </Box>
           )}
         </Box>

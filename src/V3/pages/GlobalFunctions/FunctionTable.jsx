@@ -299,6 +299,7 @@ const FunctionTable = ({ query }) => {
     const rowSubTypes = [];
     const rowCreatedBy = [];
 
+    if (row.filter) rowTypes.push("Stock Filter");
     if (row.filter && row.stockList) {
       rowSubTypes.push("Static");
     } else {
@@ -309,29 +310,28 @@ const FunctionTable = ({ query }) => {
       rowSubTypes.push("Account");
     }
 
-    if (row.filter) rowTypes.push("Stock Filter");
     if (row.buysell) {
       rowTypes.push("Trade Rule");
       rowSubTypes.push("Buy");
       rowSubTypes.push("Sell");
     }
 
-    if (row.gentry && row.gexit) {
+    if (row.gentry) {
       rowTypes.push("Global Entry & Exit");
-    } else {
-      if (row.gentry) rowTypes.push("Global Entry");
-      if (row.gexit) rowTypes.push("Global Exit");
-      if (row.gentry) rowSubTypes.push("Global Entry");
-      if (row.gexit) rowSubTypes.push("Global Exit");
+      rowSubTypes.push("Global Entry");
+    }
+    if (row.gexit) {
+      rowTypes.push("Global Entry & Exit");
+      rowSubTypes.push("Global Exit");
     }
 
-    if (row.entry && row.exit) {
+    if (row.entry) {
       rowTypes.push("Stock Entry & Exit");
-    } else {
-      if (row.entry) rowTypes.push("Stock Entry");
-      if (row.exit) rowTypes.push("Stock Exit");
-      if (row.entry) rowSubTypes.push("Stock Entry");
-      if (row.exit) rowSubTypes.push("Stock Exit");
+      rowSubTypes.push("Stock Entry");
+    }
+    if (row.exit) {
+      rowTypes.push("Stock Entry & Exit");
+      rowSubTypes.push("Stock Exit");
     }
 
     if (row.psizing) rowTypes.push("Portfolio Sizing");
@@ -470,11 +470,11 @@ const FunctionTable = ({ query }) => {
 
         if (row.filter) badges.push("Stock Filter");
         if (row.buysell) badges.push("Trade Rule");
-        if (row.entry && row.exit) badges.push("Stock Entry & Exit");
-        if (row.gentry && row.gexit) badges.push("Global Entry & Exit");
+        if (row.entry || row.exit) badges.push("Stock Entry & Exit");
+        if (row.gentry || row.gexit) badges.push("Global Entry & Exit");
         if (row.sort) badges.push("Trade Sequence");
         if (row.psizing) badges.push("Portfolio Sizing");
-        if (row.utility) badges.push("utility");
+        if (row.utility) badges.push("Utility");
 
         return badges.length > 0 ? badges.join(", ") : "NA";
       },
@@ -483,11 +483,11 @@ const FunctionTable = ({ query }) => {
 
         if (row.filter) badges.push("Stock Filter");
         if (row.buysell) badges.push("Trade Rule");
-        if (row.entry && row.exit) badges.push("Stock Entry & Exit");
-        if (row.gentry && row.gexit) badges.push("Global Entry & Exit");
+        if (row.entry || row.exit) badges.push("Stock Entry & Exit");
+        if (row.gentry || row.gexit) badges.push("Global Entry & Exit");
         if (row.sort) badges.push("Trade Sequence");
         if (row.psizing) badges.push("Portfolio Sizing");
-        if (row.utility) badges.push("utility");
+        if (row.utility) badges.push("Utility");
 
         return (
           <Box

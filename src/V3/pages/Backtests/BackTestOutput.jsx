@@ -25,6 +25,7 @@ const BackTestOutput = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [tradeTableData, setTradeTableData] = useState([]);
   const [requestData, setRequestData] = useState({});
+  const [tradeTableSymbol, setTradeTableSymbol] = useState([]);
 
   const fetchAllData = async () => {
     try {
@@ -33,6 +34,8 @@ const BackTestOutput = () => {
         tags: [tagTypes.GET_TRADETABLE],
       }).unwrap();
       setTradeTableData(data);
+      const symbolData = data?.map(({ symbol }) => symbol);
+      setTradeTableSymbol(symbolData);
     } catch (error) {
       console.error("Failed to fetch backtest data:", error);
     }
@@ -58,10 +61,10 @@ const BackTestOutput = () => {
   }, [id]);
 
   useEffect(() => {
-    if (id && tabIndex === 2) {
+    if (id) {
       fetchAllData();
     }
-  }, [id, tabIndex]);
+  }, [id]);
 
   const handleTabChange = (event, newIndex) => {
     setTabIndex(newIndex);
@@ -140,7 +143,7 @@ const BackTestOutput = () => {
                   lg: 8,
                 }}
               >
-                <Visualisation id={id} />
+                <Visualisation id={id} tradeTableSymbol={tradeTableSymbol} />
               </Grid>
             </div>
           )}

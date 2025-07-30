@@ -1,5 +1,7 @@
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HeaderButton from "../../common/Table/HeaderButton";
+import { BACKTEST_HEADER_TOOLTIP } from "../../../constants/CommonText";
 
 const BacktestHeader = ({ fetchAllData }) => {
   return (
@@ -17,11 +19,34 @@ const BacktestHeader = ({ fetchAllData }) => {
       >
         <Box className="flex gap-2.5 items-center text-center md:text-left">
           <div className="font-semibold text-xl">Backtests</div>
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/210b8daf015b06103be81ff1712af0dbe8cd7159f8f97a1788ce3745ee166757?placeholderIfAbsent=true&apiKey=1f17ac0e4ad64f5ca0e3026152f5a7de"
-            alt="Info"
-            className="object-contain shrink-0 aspect-square w-[17px]"
-          />
+          <Tooltip
+            title={BACKTEST_HEADER_TOOLTIP}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <InfoOutlinedIcon
+              sx={{
+                color: "#666666",
+                width: "17px",
+                height: "17px",
+                cursor: "pointer",
+              }}
+            />
+          </Tooltip>
         </Box>
 
         <Box>

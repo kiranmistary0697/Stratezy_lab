@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CreateDeploy from "./DeployModal/CreateDeploy";
 
 import SuccessModal from "../../common/SuccessModal";
 import HeaderButton from "../../common/Table/HeaderButton";
+import { DEPLOY_HEADER_TOOLTIP } from "../../../constants/CommonText";
 
 const DeployHeader = ({
   createdeploy,
@@ -57,14 +58,34 @@ const DeployHeader = ({
         <Box display="flex" alignItems="center" gap={1}>
           <div className=" flex items-center gap-2 font-semibold text-xl">
             Deploy
-            <InfoOutlinedIcon
-              sx={{
-                color: "#666666",
-                width: "17px",
-                height: "17px",
-                cursor: "pointer",
+            <Tooltip
+              title={DEPLOY_HEADER_TOOLTIP}
+              componentsProps={{
+                tooltip: {
+                  sx: {
+                    maxWidth: 450,
+                    padding: "16px",
+                    background: "#FFFFFF",
+                    color: "#666666",
+                    boxShadow: "0px 8px 16px 0px #7B7F8229",
+                    fontFamily: "Inter",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                  },
+                },
               }}
-            />
+              placement="right-end"
+            >
+              <InfoOutlinedIcon
+                sx={{
+                  color: "#666666",
+                  width: "17px",
+                  height: "17px",
+                  cursor: "pointer",
+                }}
+              />
+            </Tooltip>
           </div>
         </Box>
         <HeaderButton variant="contained" onClick={() => setIsOpen(true)}>

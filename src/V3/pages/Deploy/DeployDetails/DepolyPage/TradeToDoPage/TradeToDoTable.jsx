@@ -386,6 +386,16 @@ const TradeToDoTable = forwardRef((props, ref) => {
       },
     },
     {
+      field: "yetToDo",
+      headerName: "Yet To Do",
+      flex: 1,
+      disableColumnMenu: true,
+      valueGetter: (_, row) => (row.yetToDo ? "True" : "False"),
+      renderCell: (params) => (
+        <div>{params.row.yetToDo ? "True" : "False"}</div>
+      ),
+    },
+    {
       field: "moreaction",
       headerName: "Column Setting",
       // minWidth: 100,
@@ -399,7 +409,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
           <SettingsIcon fontSize="small" />
         </IconButton>
       ),
-      valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
+      // valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
       renderCell: (params) => {
         return <div> </div>;
       },
@@ -478,7 +488,16 @@ const TradeToDoTable = forwardRef((props, ref) => {
               letterSpacing: "0px",
               color: "#666666",
             },
+            "& .row-yetToDo": {
+              bgcolor: "#dce9f5",
+              // "&:hover": {
+              //   bgcolor: "#c3d6f7",
+              // },
+            },
           }}
+          getRowClassName={(params) =>
+            params.row.yetToDo ? "row-yetToDo" : ""
+          }
         />
       </Box>
     </>

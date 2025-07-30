@@ -1,3 +1,5 @@
+/* eslint-disable react/display-name */
+/* eslint-disable react/prop-types */
 import React, {
   forwardRef,
   useEffect,
@@ -58,6 +60,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     "prf1R",
     "closeReason",
     "openReason",
+    "yetToDo",
   ]);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
@@ -180,7 +183,6 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "symbol",
       headerName: "Symbol",
-      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.symbol}</Typography>
@@ -189,158 +191,187 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "buyPrice",
       headerName: "Buy Price",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.buyPrice}</Typography>
-      ),
+      valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.buyPrice;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
     {
       field: "number",
       headerName: "Number",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.number}</Typography>
-      ),
+      // Assuming number is numeric, apply logic accordingly:
+      valueGetter: (_, row) => (row.number ? parseFloat(row.number) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.number;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
     {
       field: "sellPrice",
       headerName: "Sell Price",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.sellPrice}
-        </Typography>
-      ),
+      valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.sellPrice;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
     {
       field: "sellTime",
       headerName: "Sell Time",
-      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.sellTime}</Typography>
+        <Typography sx={tableTextSx}>{params?.row?.sellTime}</Typography>
       ),
     },
     {
       field: "investment",
       headerName: "Investment",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.investment}
-        </Typography>
-      ),
+      valueGetter: (_, row) =>
+        row.investment ? parseFloat(row.investment) : 0,
+      renderCell: (params) => {
+        const value = params?.row?.investment;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
     {
       field: "principal",
       headerName: "Principal",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.principal}
-        </Typography>
-      ),
+      valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.principal;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
     {
       field: "netProfit",
       headerName: "Net Profit",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.netProfit}
-        </Typography>
-      ),
+      valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.netProfit;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
     {
       field: "profit",
       headerName: "Profit %",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.profit}</Typography>
-      ),
+      valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.profit;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
-
     {
       field: "anPrf",
       headerName: "Annual %",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.anPrf}</Typography>
-      ),
+      valueGetter: (_, row) => (row.anPrf ? parseFloat(row.anPrf) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.anPrf;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
-
     {
       field: "buyTime",
       headerName: "Buy Time",
-      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.buyTime}</Typography>
+        <Typography sx={tableTextSx}>{params?.row?.buyTime}</Typography>
       ),
     },
     {
       field: "prf1R",
       headerName: "Prf1R",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.prf1R}</Typography>
-      ),
+      valueGetter: (_, row) => (row.prf1R ? parseFloat(row.prf1R) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.prf1R;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
     {
       field: "risk1R",
       headerName: "Risk1R",
-      // minWidth: 100,
       flex: 1,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.risk1R}</Typography>
-      ),
+      valueGetter: (_, row) => (row.risk1R ? parseFloat(row.risk1R) : 0),
+      renderCell: (params) => {
+        const value = params?.row?.risk1R;
+        const num = Number(value);
+        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
+        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+      },
     },
     {
       field: "duration",
       headerName: "Duration Time",
-      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.duration}</Typography>
+        <Typography sx={tableTextSx}>{params?.row?.duration}</Typography>
       ),
     },
     {
       field: "closeReason",
       headerName: "Close Reason",
-      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.closeReason}
-        </Typography>
+        <Typography sx={tableTextSx}>{params?.row?.closeReason}</Typography>
       ),
     },
     {
       field: "openReason",
       headerName: "Open Reason",
-      // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.openReason}
-        </Typography>
+        <Typography sx={tableTextSx}>{params?.row?.openReason}</Typography>
       ),
     },
     {
       field: "action",
       headerName: "Action",
-      // minWidth: 100,
       flex: 1,
-
+      disableColumnMenu: true,
+      valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
+      renderCell: (params) => <div>{params.row.closed ? "EXIT" : "ENTER"}</div>,
+    },
+    {
+      field: "yetToDo",
+      headerName: "Yet To Do",
+      flex: 1,
+      disableColumnMenu: true,
+      valueGetter: (_, row) => (row.yetToDo ? "True" : "False"),
+      renderCell: (params) => (
+        <div>{params.row.yetToDo ? "True" : "False"}</div>
+      ),
+    },
+    {
+      field: "moreAction",
+      headerName: "Setting",
+      flex: 1,
       disableColumnMenu: true,
       renderHeader: () => (
         <IconButton
@@ -350,9 +381,7 @@ const HoldingsTable = forwardRef((props, ref) => {
           <SettingsIcon fontSize="small" />
         </IconButton>
       ),
-      renderCell: (params) => {
-        return <div> {params.row.closed ? "EXIT" : "ENTER"}</div>;
-      },
+      renderCell: () => <div>{null}</div>,
     },
   ].filter(Boolean);
 

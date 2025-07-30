@@ -3,7 +3,7 @@ import { Box, TextField, Tooltip, Typography } from "@mui/material";
 import KeywordItem from "./KeywordItem";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
-  FUNCTION_TOOLTIP,
+  FUNCTION_TOOLTIP_TITLE,
   PRIMITIVES_TOOLTIP,
 } from "../../../../constants/CommonText";
 
@@ -39,7 +39,7 @@ const KeywordSearch = ({
           {isFunction ? "Functions" : "Primitives"}
         </div>
         <Tooltip
-          title={isFunction ? FUNCTION_TOOLTIP : PRIMITIVES_TOOLTIP}
+          title={isFunction ? FUNCTION_TOOLTIP_TITLE : PRIMITIVES_TOOLTIP}
           placement="right-end"
           componentsProps={{
             tooltip: {

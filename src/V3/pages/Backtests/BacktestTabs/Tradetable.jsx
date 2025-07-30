@@ -29,7 +29,7 @@ const tableTextSx = {
 };
 
 const Tradetable = (props) => {
-  const { rows = [] } = props; // ✅ get rows from props safely
+  const { rows = [] } = props;
 
   const [hiddenColumns, setHiddenColumns] = useState([
     "sellTime",

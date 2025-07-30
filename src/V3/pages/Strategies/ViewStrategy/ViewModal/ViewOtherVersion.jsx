@@ -82,7 +82,7 @@ const ViewOtherVersion = ({
       },
       {
         field: "createdOn",
-        headerName: "timestamp",
+        headerName: "Timestamp",
         valueGetter: (_, row) => moment(row.timestamp).format("Do MMM YYYY"),
         renderCell: (params) => {
           return moment(params.row.timestamp).format("Do MMM YYYY");

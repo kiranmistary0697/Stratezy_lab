@@ -1,3 +1,36 @@
+//Bactest
+export const BACKTEST_HEADER_TOOLTIP =
+  "Backtesting simulates the execution of a strategy’s defined stages over historical stock market data for a specified time period and investment amount. It provides insights into the strategy’s performance, including metrics like capital growth, annual returns, maximum drawdown, and other key indicators to help users evaluate how well the strategy aligns with their investment goals.";
+
+export const RUNBACKTEST_DISABLE_TOOLTIP =
+  "The strategy should be in completed state to run a backtest";
+
+export const PLOT_GRAPH_TOOLTIP = "Graphs to visualize backtest results";
+
+export const CAPTITAL_DESC =
+  "Capital Graph plots current total account value, uninvested capital and net profit v/s time";
+
+export const PARAMETERS_DESC =
+  "Parameter Graph plots various performance metrices such as Sharpe Ratio, SQN, Expectancy v/s time";
+export const DRAWDOWN_DESC =
+  "Drawdown Graph plots % drawdown in total capital v/s time";
+export const PROFITS_DESC =
+  "Profit Graph plots Annual % Profit, Average % Profit, and Accuracy v/s time";
+export const AVG1R_DESC = "Avg1r Graph plots average risk v/s time";
+export const COMPARE_WITH_INDEX_DESC =
+  "Compare With Index plots Account % growth in relation to Nifty and NiftyMidCap100 change v/s time";
+export const OPEN_TRADES_DESC =
+  "Open Trades Graph plots number of open trades v/s time";
+export const TOTAL_TRADES_DESC =
+  "Total Trades Graph plots number of total trades v/s time";
+export const DURATION_DESC =
+  "Durations Graph plots average holding duration of the trades v/s time";
+export const SYMBOL_DESC =
+  "Symbol Graph plots the closing price of chosen stock symbol along with its buy and sell signals v/s time";
+//Deploy
+export const DEPLOY_HEADER_TOOLTIP =
+  "Deploy enables users to activate a strategy for live capital investment. To deploy, users specify the investment amount, the brokerage account for trade execution, and a deployment date—which can be today’s date or a past date. Once deployed, the platform automatically runs the strategy at the end of each trading day and may generate trade signals (buy/sell), including the recommended quantity of shares to transact.";
+
 export const STRATEGY_TOOLTIP_TITLE =
   "A trading strategy is a systematic plan that outlines step-by-step actions to leverage market opportunities while managing risks. It includes clear entry, execution, and exit points tailored to achieve specific financial objectives.";
 
@@ -89,8 +122,6 @@ export const STRATEGY_DEFINITION_TAB_TOOLTIP =
 export const STRATEGY_DEPLOY_BTN_TOOLTIP =
   "The strategy should have at least one backtest to deploy a strategy";
 
-export const RUNBACKTEST_DISABLE_TOOLTIP =
-  "The strategy should be in completed state to run a backtest";
 export const DEPLOY_DISABLE_TOOLTIP =
   "The strategy should be in completed state and should have at least one backtest to deploy a strategy";
 export const DEPLOY_DISABLE =
@@ -103,12 +134,15 @@ export const FUNCTION_TITLE_TOOLTIP = "Create Function";
 
 export const FUNCTION_SUB_TITLE = "Function Definition";
 export const FUNCTION_SUB_TITLE_BUTTON = "Verify";
-export const FUNCTION_SUB_TITLE_TOOLTIP = "Function Definition";
+export const FUNCTION_SUB_TITLE_TOOLTIP =
+  "Defines the function in terms of its code and arguments";
 
 export const FUNCTION_TYPE_TITLE = "Type of Function";
-export const FUNCTION_TYPE_TOOLTIP = "Type of Function";
+export const FUNCTION_TYPE_TOOLTIP =
+  "Identifies type of a function as Filter Rule/Trade Rule/Stock Entry & Exit/Global Entry & Exit/Trade Sequence/Portfolio Sizing/Utility rule";
 export const FUNCTION_SUBTYPE_TITLE = "Sub Type";
-export const FUNCTION_SUBTYPE_TOOLTIP = "Sub Type";
+export const FUNCTION_SUBTYPE_TOOLTIP =
+  "Identifies Sub-type of a function. Sub-Type depends on Type of the function";
 
 //verifymodal tooltips and subtitles
 export const VERIFY_TITLE = "Verify Function";
@@ -124,29 +158,7 @@ export const TimelineAxis = "Timeline";
 
 export const ARGUMENTS_TOOLTIP = "Arguments";
 
-export const PRIMITIVES_TOOLTIP = "Primitives";
+export const PRIMITIVES_TOOLTIP =
+  "Primitives are system defined low level functions that are useful to create higher level functions of various types (e.g. Filter Rule or Trade Rule). A special class of Primitives, called Account Rules, are named with an underscore in the end (for e.g. curprofit_";
 export const FUNCTION_TOOLTIP = "Function";
 export const IDENTIFIER_TOOLTIP = "Identifier";
-
-export const PLOT_GRAPH_TOOLTIP = "Plot Graph";
-
-export const CAPTITAL_DESC =
-  "Capital Graph plots profit, average profit etc. against time to give a better point of view.";
-export const PARAMETERS_DESC =
-  "Parameter Graph plots profit, average profit etc. against time to give a better point of view.";
-export const DRAWDOWN_DESC =
-  "Draw Down Graph plots profit, average profit etc. against time to give a better point of view.";
-export const PROFITS_DESC =
-  "Profits Graph plots profit, average profit etc. against time to give a better point of view.";
-export const AVG1R_DESC =
-  "AVG1R Graph plots profit, average profit etc. against time to give a better point of view.";
-export const COMPARE_WITH_INDEX_DESC =
-  "Compare with index Graph plots profit, average profit etc. against time to give a better point of view.";
-export const OPEN_TRADES_DESC =
-  "Open Trades Graph plots profit, average profit etc. against time to give a better point of view.";
-export const TOTAL_TRADES_DESC =
-  "Total trades Graph plots profit, average profit etc. against time to give a better point of view.";
-export const DURATION_DESC =
-  "Duration Graph plots profit, average profit etc. against time to give a better point of view.";
-export const SYMBOL_DESC =
-  "Symbol Graph plots profit, average profit etc. against time to give a better point of view.";
