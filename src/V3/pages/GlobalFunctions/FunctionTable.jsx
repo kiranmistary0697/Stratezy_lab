@@ -805,7 +805,6 @@ const FunctionTable = ({ query }) => {
             isDuplicateButton
             isEditButton={isRemove}
             handleDelete={(event) => {
-              event.stopPropagation();
               setDeleteRow({ name: row.shortFuncName });
               setIsDelete(true);
             }}

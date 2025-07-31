@@ -38,6 +38,7 @@ const Tradetable = (props) => {
     "principal",
     "duration",
     "annualPrf",
+    "maxPrf",
   ]);
 
   const [popoverAnchor, setPopoverAnchor] = useState(null);
@@ -315,6 +316,22 @@ const Tradetable = (props) => {
     {
       field: "profit",
       headerName: "Profit %",
+      // minWidth: 100,
+      flex: 1,
+      valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
+      renderCell: (params) => (
+        <Typography
+          sx={{
+            ...tableTextSx,
+          }}
+        >
+          {params.row.profit}
+        </Typography>
+      ),
+    },
+    {
+      field: "maxPrf",
+      headerName: "Max Profit",
       // minWidth: 100,
       flex: 1,
       valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),

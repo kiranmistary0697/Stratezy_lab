@@ -30,7 +30,8 @@ const CustomizedDialogs = ({
   fetchAllData,
   demoData,
   textButton = "",
-}) => {
+  isNameDisabled = false,
+}) => {  
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const strategy = queryParams.get("name");
@@ -499,6 +500,7 @@ const CustomizedDialogs = ({
                 }}
                 error={touched?.name && Boolean(errors?.name)}
                 helperText={touched?.name && errors?.name}
+                disabled={isNameDisabled}
               />
             </Box>
 

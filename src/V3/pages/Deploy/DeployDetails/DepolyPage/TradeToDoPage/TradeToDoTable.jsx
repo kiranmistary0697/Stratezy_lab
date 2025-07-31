@@ -7,6 +7,7 @@ import {
   FormGroup,
   IconButton,
   Popover,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -17,6 +18,7 @@ import {
 } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
+import { YET_TO_DO_MSG } from "../../../../../../constants/CommonText";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -150,7 +152,28 @@ const TradeToDoTable = forwardRef((props, ref) => {
       // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.symbol}</Typography>
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <Typography sx={{ ...tableTextSx }}>{params?.row?.symbol}</Typography>
+        </Tooltip>
       ),
     },
     {
@@ -159,7 +182,28 @@ const TradeToDoTable = forwardRef((props, ref) => {
       // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.number}</Typography>
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <Typography sx={{ ...tableTextSx }}>{params?.row?.number}</Typography>
+        </Tooltip>
       ),
     },
     {
@@ -171,12 +215,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
       renderCell: (params) => {
         const value = params?.row?.buyPrice;
         const num = Number(value);
-
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -190,11 +253,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
         const value = params?.row?.sellPrice;
         const num = Number(value);
 
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -208,11 +291,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
         const value = params?.row?.principal;
         const num = Number(value);
 
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -227,11 +330,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
         const value = params?.row?.investment;
         const num = Number(value);
 
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -245,11 +368,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
         const value = params?.row?.netProfit;
         const num = Number(value);
 
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -263,11 +406,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
         const value = params?.row?.profit;
         const num = Number(value);
 
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -281,11 +444,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
         const value = params?.row?.anPrf;
         const num = Number(value);
 
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -295,7 +478,30 @@ const TradeToDoTable = forwardRef((props, ref) => {
       // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.buyTime}</Typography>
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <Typography sx={{ ...tableTextSx }}>
+            {params?.row?.buyTime}
+          </Typography>
+        </Tooltip>
       ),
     },
     {
@@ -304,7 +510,30 @@ const TradeToDoTable = forwardRef((props, ref) => {
       // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.sellTime}</Typography>
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <Typography sx={{ ...tableTextSx }}>
+            {params?.row?.sellTime}
+          </Typography>
+        </Tooltip>
       ),
     },
     {
@@ -313,7 +542,30 @@ const TradeToDoTable = forwardRef((props, ref) => {
       // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.duration}</Typography>
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <Typography sx={{ ...tableTextSx }}>
+            {params?.row?.duration}
+          </Typography>
+        </Tooltip>
       ),
     },
     {
@@ -326,11 +578,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
         const value = params?.row?.risk1R;
         const num = Number(value);
 
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -344,11 +616,31 @@ const TradeToDoTable = forwardRef((props, ref) => {
         const value = params?.row?.prf1R;
         const num = Number(value);
 
-        if (isNaN(num)) {
-          return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-        }
         return (
-          <Typography sx={{ ...tableTextSx }}>{num.toFixed(2)}</Typography>
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <Typography sx={{ ...tableTextSx }}>
+              {isNaN(num) ? "0" : num.toFixed(2)}
+            </Typography>
+          </Tooltip>
         );
       },
     },
@@ -358,9 +650,30 @@ const TradeToDoTable = forwardRef((props, ref) => {
       // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.closeReason}
-        </Typography>
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <Typography sx={{ ...tableTextSx }}>
+            {params?.row?.closeReason}
+          </Typography>
+        </Tooltip>
       ),
     },
     {
@@ -369,9 +682,30 @@ const TradeToDoTable = forwardRef((props, ref) => {
       // minWidth: 100,
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>
-          {params?.row?.openReason}
-        </Typography>
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <Typography sx={{ ...tableTextSx }}>
+            {params?.row?.openReason}
+          </Typography>
+        </Tooltip>
       ),
     },
     {
@@ -382,7 +716,30 @@ const TradeToDoTable = forwardRef((props, ref) => {
       disableColumnMenu: true,
       valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
       renderCell: (params) => {
-        return <div> {params.row.closed ? "EXIT" : "ENTER"}</div>;
+        return (
+          <Tooltip
+            title={YET_TO_DO_MSG}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  maxWidth: 450,
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                  boxShadow: "0px 8px 16px 0px #7B7F8229",
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  visibility: params?.row?.yetToDo ? "visible" : "hidden",
+                },
+              },
+            }}
+            placement="right-end"
+          >
+            <div> {params.row.closed ? "EXIT" : "ENTER"}</div>;
+          </Tooltip>
+        );
       },
     },
     {
@@ -392,7 +749,28 @@ const TradeToDoTable = forwardRef((props, ref) => {
       disableColumnMenu: true,
       valueGetter: (_, row) => (row.yetToDo ? "True" : "False"),
       renderCell: (params) => (
-        <div>{params.row.yetToDo ? "True" : "False"}</div>
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <div>{params.row.yetToDo ? "True" : "False"}</div>
+        </Tooltip>
       ),
     },
     {

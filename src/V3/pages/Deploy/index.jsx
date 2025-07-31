@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 
@@ -10,17 +10,18 @@ import { tagTypes } from "../../tagTypes";
 
 const Deploy = () => {
   const [getDeployData] = useLazyGetQuery();
-  const { search, state } = useLocation();
+  const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const strategyName = queryParams.get("name");
-  const id = queryParams.get("id");
   const requestId = queryParams.get("requestId");
   const createdeploy = queryParams.get("createdeploy");
   const version = queryParams.get("version");
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchAllData = async () => {
+
+  // Memoize fetchAllData to avoid unnecessary re-creation
+  const fetchAllData = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await getDeployData({
@@ -28,17 +29,31 @@ const Deploy = () => {
         tags: [tagTypes.GET_DEPLOY],
       }).unwrap();
       const abc = [...data];
+
+      // Defensive copy & sort by deployedDate descending
       const sortedData = abc?.sort((a, b) => {
         return new Date(b.deployedDate || 0) - new Date(a.deployedDate || 0);
       });
-
       setRows(sortedData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [getDeployData]);
+
+  useEffect(() => {
+    // Initial fetch
+    fetchAllData();
+    // Set up polling every 4 seconds
+    const intervalId = setInterval(() => {
+      fetchAllData();
+    }, 4000);
+
+    // Clean up on unmount
+    return () => clearInterval(intervalId);
+  }, [fetchAllData]);
+
   return (
     <div className="sm:h-[calc(100vh-100px)] overflow-auto">
       <div className="h-full space-y-4 p-8">
@@ -49,29 +64,7 @@ const Deploy = () => {
           requestId={requestId}
           version={version}
           fetchAllData={fetchAllData}
-        />{" "}
-        {/* <div className="flex gap-8 justify-center px-5 max-md:flex-col">
-          <Box className="flex flex-col gap-5 items-center px-5  max-w-[584px]">
-            <Box className="w-full flex justify-center">
-              <img
-                src={Deployimg}
-                alt="Deploy Strategy Illustration"
-                className="max-w-[769] h-auto bg-[#3D69D30A]"
-              />
-            </Box>
-            <Box className="subheader !text-[20px] !font-[600] ">
-              Deploy your Strategy
-            </Box>
-            <p className="text-sm text-center text-stone-500">
-              When you deploy your strategy, the system executes your strategy
-              rules at the close of each trading day, generating buy and sell
-              trade signals for you to manually execute in your brokerage
-              account. Alternatively, you can use the "Rebalance" feature to
-              automate these trades directly within your brokerage account
-            </p>
-            <HeaderButton variant="contained">Deploy Strategy</HeaderButton>
-          </Box>
-        </div> */}
+        />
         <Box>
           <DeployTable
             fetchAllData={fetchAllData}

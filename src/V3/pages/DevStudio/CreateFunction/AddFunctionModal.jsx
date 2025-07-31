@@ -177,6 +177,16 @@ const AddFunctionModal = ({
     },
   });
 
+  const handleNameChange = (event) => {
+    formik.handleChange(event);
+    if (isNewFunc) {
+      formik.setFieldValue(
+        "identifier",
+        replaceSpaceWithUnderscore(event.target.value)
+      );
+    }
+  };
+
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogContent className="space-y-4 !p-[30px]">
@@ -212,7 +222,7 @@ const AddFunctionModal = ({
               fullWidth
               name="functionName"
               value={formik.values.functionName}
-              onChange={formik.handleChange}
+              onChange={handleNameChange}
               onBlur={formik.handleBlur}
               error={
                 formik.touched.functionName &&
@@ -297,6 +307,7 @@ const AddFunctionModal = ({
             <TextField
               fullWidth
               name="identifier"
+              disabled={!isNewFunc}
               value={formik.values.identifier}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

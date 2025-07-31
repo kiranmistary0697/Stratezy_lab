@@ -13,6 +13,7 @@ const CancelStrategyModal = ({
   isOpen,
   handleClose = () => {},
   isCancel = false,
+  disableName = false,
 }) => {
   const [openDraftModal, setOpenDraftModal] = useState(false);
   return (
@@ -23,6 +24,7 @@ const CancelStrategyModal = ({
         isOpen={openDraftModal}
         handleClose={() => setOpenDraftModal(false)} // FIX: Pass function
         isCancel={isCancel}
+        isNameDisabled={disableName}
       />
       <div>
         <Dialog

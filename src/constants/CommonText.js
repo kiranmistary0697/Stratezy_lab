@@ -162,3 +162,5 @@ export const PRIMITIVES_TOOLTIP =
   "Primitives are system defined low level functions that are useful to create higher level functions of various types (e.g. Filter Rule or Trade Rule). A special class of Primitives, called Account Rules, are named with an underscore in the end (for e.g. curprofit_";
 export const FUNCTION_TOOLTIP = "Function";
 export const IDENTIFIER_TOOLTIP = "Identifier";
+
+export const YET_TO_DO_MSG =  "Platform will populate price and other data for this trade at end of the day";

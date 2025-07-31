@@ -1,12 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import ActionMenu from "../../../../common/DropDownButton";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import Badge from "../../../../common/Badge";
-import { Settings } from "@mui/icons-material";
 import moment from "moment";
-import { useDeleteMutation } from "../../../../../slices/api";
-import { tagTypes } from "../../../../tagTypes";
 import DeleteModal from "../../../../common/DeleteModal";
 import { useNavigate } from "react-router-dom";
 
@@ -165,7 +162,8 @@ const ViewOtherVersion = ({
           rows={selectedVersion}
           columns={columns}
           // hideFooter
-          getRowId={(row) => row.id}
+          // getRowId={(row) => row.version}
+          getRowId={(row) => `${row.version}-${row.id}`}
           onRowClick={handleRowClick}
           disableSelectionOnClick
           GridLinesVisibility="None"

@@ -57,6 +57,7 @@ const CreateStrategyHeader = ({
         isOpen={isCancelStrategy}
         handleClose={() => setIsCancelStrategy(false)}
         isCancel
+        disableName={!!id}
       />
       {isWarning && (
         <WarningPopupModal
@@ -93,6 +94,7 @@ const CreateStrategyHeader = ({
           id={strategyName}
           step
           onSave={handleSaveStrategy}
+          isNameDisabled={!!id}
         />
       )}
 

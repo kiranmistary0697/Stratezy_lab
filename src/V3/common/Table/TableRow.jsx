@@ -750,6 +750,7 @@ const TableRow = () => {
           columns={visibleColumns}
           // hideFooter
           disableSelectionOnClick
+          getRowId={(row) => `${row.version}-${row.id}`}
           onRowClick={handleRowClick}
           filterModel={filterModel}
           onFilterModelChange={setFilterModel}

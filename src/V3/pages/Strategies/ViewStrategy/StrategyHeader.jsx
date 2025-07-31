@@ -147,6 +147,7 @@ const StrategyHeader = ({
         // step
         onSave={() => setIsOpenSaveDraft(true)}
         setIsDirty={setIsDirty}
+        isNameDisabled={!!id}
       />
       {successModalOpen && (
         <SuccessModal
@@ -166,7 +167,7 @@ const StrategyHeader = ({
             setIsOpenBacktest(false), setSuccessModalOpen(false);
           }}
           title="Run Backtest"
-          isNavigate={runBacktest === "true"}
+          isNavigate
           status={status}
           defaultVersion={defaultVersion}
           demoStrategy={demoStrategy}

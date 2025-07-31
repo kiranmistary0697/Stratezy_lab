@@ -242,7 +242,7 @@ const NavigationHeader = () => {
           >
             <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
             <Divider />
-            <MenuItem onClick={() => navigate("/subscription")}>
+            <MenuItem onClick={handleSubscribe}>
               Subscription
             </MenuItem>
             <MenuItem onClick={() => navigate("/plans")}>Plans</MenuItem>

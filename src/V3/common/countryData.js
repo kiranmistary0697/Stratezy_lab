@@ -11,9 +11,9 @@ export const countries = [
     //   flag: "https://cdn.builder.io/api/v1/image/assets/TEMP/d167fa83183369e8ba7d25fcf1848c31ff7f1fe1",
     flag: flagIndia,
   },
-  {
-    code: "US",
-    name: "United States",
-    flag: flagUSA,
-  },
+  // {
+  //   code: "US",
+  //   name: "United States",
+  //   flag: flagUSA,
+  // },
 ];
