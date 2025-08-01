@@ -71,6 +71,8 @@ const StrategyTimeline = ({ strategy }) => {
               key={index}
               sx={{
                 display: "flex",
+                // minHeight: "unset",
+                minHeight: "45px",
               }}
             >
               <TimelineSeparator
