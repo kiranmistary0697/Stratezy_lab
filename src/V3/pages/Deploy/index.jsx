@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 
@@ -19,40 +19,71 @@ const Deploy = () => {
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isAnyInProgress, setIsAnyInProgress] = useState(false);
 
-  // Memoize fetchAllData to avoid unnecessary re-creation
+  const intervalRef = useRef(null);
+  const isFetching = useRef(false);
+
   const fetchAllData = useCallback(async () => {
+    if (isFetching.current) return;
+    isFetching.current = true;
     setLoading(true);
     try {
       const { data } = await getDeployData({
         endpoint: "deploy/strategy/findall",
         tags: [tagTypes.GET_DEPLOY],
       }).unwrap();
-      const abc = [...data];
 
-      // Defensive copy & sort by deployedDate descending
-      const sortedData = abc?.sort((a, b) => {
-        return new Date(b.deployedDate || 0) - new Date(a.deployedDate || 0);
-      });
+      const sortedData = [...(data || [])].sort(
+        (a, b) => new Date(b.deployedDate || 0) - new Date(a.deployedDate || 0)
+      );
       setRows(sortedData);
+
+      const anyInProgress = sortedData.some(
+        (item) => item.state === "IN_PROGRESS"
+      );
+      setIsAnyInProgress(anyInProgress);
+      if (!anyInProgress) {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      }
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      console.error("Failed to fetch deploy data:", error);
     } finally {
       setLoading(false);
+      isFetching.current = false;
     }
   }, [getDeployData]);
 
-  useEffect(() => {
-    // Initial fetch
-    fetchAllData();
-    // Set up polling every 4 seconds
-    const intervalId = setInterval(() => {
-      fetchAllData();
-    }, 4000);
-
-    // Clean up on unmount
-    return () => clearInterval(intervalId);
+  const startPolling = useCallback(() => {
+    if (intervalRef.current) return; // Already polling
+    intervalRef.current = setInterval(() => {
+      setTimeout(() => {
+        fetchAllData();
+      }, 200);
+    }, 10000); // Poll every 10 seconds
   }, [fetchAllData]);
+
+  const stopPolling = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAllData();
+  }, [fetchAllData]);
+
+  useEffect(() => {
+    if (isAnyInProgress) {
+      startPolling();
+    } else {
+      stopPolling();
+    }
+  }, [isAnyInProgress]);
 
   return (
     <div className="sm:h-[calc(100vh-100px)] overflow-auto">
@@ -68,8 +99,10 @@ const Deploy = () => {
         <Box>
           <DeployTable
             fetchAllData={fetchAllData}
-            setRows={setRows}
+            startPolling={startPolling} // pass polling controls to child, unchanged for child
+            stopPolling={stopPolling}
             rows={rows}
+            setRows={setRows}
             loading={loading}
             setLoading={setLoading}
           />

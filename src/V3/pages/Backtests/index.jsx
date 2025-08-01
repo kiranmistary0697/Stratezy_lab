@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import BacktestHeader from "./BacktestHeader";
 import BacktestTable from "./BacktestTable";
@@ -10,10 +10,12 @@ import { useDispatch } from "react-redux";
 import { useLazyGetQuery } from "../../../slices/api";
 import { setBacktestData } from "../../../slices/page/reducer";
 import { tagTypes } from "../../tagTypes";
+import { CSVLink } from "react-csv";
 
 const Backtest = () => {
   const [rows, setRows] = useState([]);
   const dispatch = useDispatch();
+  const csvLink = useRef(null);
 
   const [
     getBackTestData,
@@ -43,15 +45,61 @@ const Backtest = () => {
     fetchAllData();
   }, []);
 
+  const csvHeaders = [
+    { label: "requestId ID", key: "requestId" },
+    { label: "name", key: "name" },
+    { label: "version", key: "version" },
+    { label: "executionTime", key: "executionTime" },
+    { label: "startDate", key: "startDate" },
+    { label: "endDate", key: "endDate" },
+    { label: "initialCapital", key: "initialCapital" },
+    { label: "currentCapital", key: "currentCapital" },
+    { label: "netProfit", key: "netProfit" },
+    { label: "avgAnnualProfitt", key: "avgAnnualProfit" },
+    { label: "avgProfitPerTrade", key: "avgProfitPerTrade" },
+    { label: "maxAccountValue", key: "maxAccountValue" },
+    { label: "maxDrawdown", key: "maxDrawdown" },
+    { label: "expectancy", key: "expectancy" },
+    { label: "sharpeRatio", key: "sharpeRatio" },
+    { label: "sqn", key: "sqn" },
+    { label: "completed", key: "completed" },
+    { label: "description", key: "description" },
+  ];
+
+  // Data to export in CSV (use your rows state)
+  const csvReport = {
+    data: rows || [],
+    headers: csvHeaders,
+    filename: "Backtest_data.csv",
+    separator: ",",
+    wrapColumnChar: '"',
+  };
+
+  // Ref to hidden CSVLink
+
+  const handleCSVDownload = () => {
+    if (csvLink.current) {
+      csvLink.current.link.click();
+    }
+  };
+
   useLabTitle("Backtest");
   return (
     <div className="sm:h-[calc(100vh-100px)] overflow-auto">
+      <CSVLink
+        {...csvReport}
+        className="hidden"
+        ref={csvLink}
+        target="_blank"
+      />
+
       <div className=" h-full space-y-4 p-8">
         {/* Added px-4 for side padding */}
         <BacktestHeader
           className="my-[-30px]"
           fetchAllData={fetchAllData}
-        />{" "}
+          handleCSVDownload={handleCSVDownload}
+        />
         {/* Applied -30px margin on top and bottom */}
         <Box>
           <BacktestTable

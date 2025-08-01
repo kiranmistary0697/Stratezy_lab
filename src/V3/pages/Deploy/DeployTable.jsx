@@ -55,6 +55,7 @@ const useStyles = makeStyles({
 
 const DeployTable = ({
   fetchAllData = () => {},
+  startPolling = () => {},
   setLoading,
   setRows,
   rows,
@@ -181,9 +182,9 @@ const DeployTable = ({
     localStorage.removeItem("portfolioSizing-saved");
   };
 
-  useEffect(() => {
-    fetchAllData();
-  }, []);
+  // useEffect(() => {
+  //   fetchAllData();
+  // }, []);
 
   useEffect(() => {
     if (hiddenColumnsFromLocalStorage) {
@@ -552,7 +553,12 @@ const DeployTable = ({
           activeDeactive={selectedId}
           setSuccessModalOpen={() => setSuccessModalOpen(true)}
           close={() => setSuccessModalOpen(false)}
-          onActionSuccess={fetchAllData}
+          onActionSuccess={() => {
+            setTimeout(() => {
+              fetchAllData();
+            }, 200);
+          }}
+          // onActionSuccess={startPolling}
         />
       )}
 
@@ -594,6 +600,7 @@ const DeployTable = ({
         <DataGrid
           disableColumnSelector
           rows={filterRow}
+          getRowId={(row) => `${row.version}-${row.id}`}
           columns={visibleColumns}
           disableSelectionOnClick
           onRowClick={handleRowClick}

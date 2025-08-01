@@ -3,7 +3,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HeaderButton from "../../common/Table/HeaderButton";
 import { BACKTEST_HEADER_TOOLTIP } from "../../../constants/CommonText";
 
-const BacktestHeader = ({ fetchAllData }) => {
+const BacktestHeader = ({ fetchAllData, handleCSVDownload = () => {} }) => {
   return (
     <Box
       className="flex flex-col md:flex-row gap-6 md:gap-10 w-full max-w-screen max-md:max-w-full"
@@ -49,7 +49,14 @@ const BacktestHeader = ({ fetchAllData }) => {
           </Tooltip>
         </Box>
 
-        <Box>
+        <Box sx={{ display: "flex", gap: "12px" }}>
+          <HeaderButton
+            variant="outlined"
+            onClick={handleCSVDownload}
+            className="w-full sm:w-auto"
+          >
+            Download CSV
+          </HeaderButton>
           <HeaderButton variant="contained" onClick={fetchAllData}>
             Refresh
           </HeaderButton>
