@@ -72,7 +72,7 @@ const Backtest = () => {
     headers: csvHeaders,
     filename: "Backtest_data.csv",
     separator: ",",
-    wrapColumnChar: '"',
+    wrapolumnhar: '"',
   };
 
   // Ref to hidden CSVLink
