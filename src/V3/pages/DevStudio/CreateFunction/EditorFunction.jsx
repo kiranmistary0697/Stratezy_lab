@@ -17,6 +17,17 @@ import "ace-builds/src-noconflict/theme-monokai"; // Ensure the theme is importe
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 
+import ace from "ace-builds/src-noconflict/ace";
+ace.config.set(
+  "basePath",
+  "https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.1/"
+);
+ace.config.set(
+  "workerPath",
+  "https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.1/"
+);
+const langTools = ace.require("ace/ext/language_tools"); // Initialize language tools
+
 const StyledLabel = ({ children }) => (
   <Typography
     sx={{
@@ -41,6 +52,8 @@ const EditorFunction = ({
   handleArgsDataChange,
   setIsFunctionDialogOpen,
   isNewFuncOrDuplicate,
+  keywordData = [],
+  functionData = [],
 }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(1024)); // Breakpoint at 1024px
@@ -60,6 +73,36 @@ const EditorFunction = ({
       setCode(previousEditorFunctionCode);
     }
   }, []);
+
+  const registerKeywords = (keywordList) => {
+    const customCompleter = {
+      getCompletions: (editor, session, pos, prefix, callback) => {
+        if (prefix.length === 0) return callback(null, []);
+        const suggestions = keywordList.map((kw) => ({
+          caption: kw,
+          value: kw,
+          meta: kw.meta || "keyword",
+        }));
+        callback(null, suggestions);
+      },
+    };
+    langTools.addCompleter(customCompleter);
+  };
+
+  useEffect(() => {
+    const keywordForSuggestion = keywordData.map((d) => (d.name, d.value));
+
+    const functionForSuggestion = functionData.map(
+      (d) => (d.func, d.shortFuncName)
+    );
+    const nonRep = Array.from(
+      new Set([...keywordForSuggestion, ...functionForSuggestion])
+    );
+
+    if (nonRep.length) {
+      registerKeywords(nonRep);
+    }
+  });
 
   return (
     <Box

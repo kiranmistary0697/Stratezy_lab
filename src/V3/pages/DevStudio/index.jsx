@@ -586,6 +586,8 @@ const CreateFunction = () => {
                 setIsFunctionDialogOpen={setIsFunctionDialogOpen}
                 isNewFuncOrDuplicate={true}
                 setIsDirty={setIsDirty}
+                keywordData={keywordData}
+                functionData={functionData}
               />
               {isSmallScreen && !internalData && (
                 <Box
