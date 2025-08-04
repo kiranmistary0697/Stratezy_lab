@@ -86,6 +86,7 @@ const RunBacktest = ({
       "customRule",
       "predefRuleArgs",
       // "ndate",
+      "backtestSummaryRes",
     ]);
 
     const payload = {

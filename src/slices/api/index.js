@@ -72,6 +72,7 @@ const displayErrorMessage = (error) => {
         parsedData?.Error ||
         parsedData?.error ||
         parsedData?.errorMessage ||
+        parsedData?.message ||
         "Invalid data";
       break;
     case 401:

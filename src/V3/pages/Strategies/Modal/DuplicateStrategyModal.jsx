@@ -31,7 +31,7 @@ const CustomizedDialogs = ({
   demoData,
   textButton = "",
   isNameDisabled = false,
-}) => {  
+}) => {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const strategy = queryParams.get("name");
@@ -393,7 +393,6 @@ const CustomizedDialogs = ({
         isDuplicate && fetchAllData();
       }
       setSuccessModalOpen(true);
-      handleClose();
       localStorage.removeItem("stockFilters");
       localStorage.removeItem("marketEntryExit.entry");
       localStorage.removeItem("marketEntryExit.exit");
@@ -404,6 +403,7 @@ const CustomizedDialogs = ({
       localStorage.removeItem("tradeSequence");
 
       setTimeout(() => {
+        handleClose();
         navigate("/Strategies");
       }, 2000);
     } catch (error) {

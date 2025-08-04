@@ -9,6 +9,7 @@ import HeaderButton from "../../../common/Table/HeaderButton";
 import Badge from "../../../common/Badge";
 import { CREATE_STRATEGY_BTN_TOOLTIP } from "../../../../constants/CommonText";
 import WarningPopupModal from "./WarningPopupModal";
+import { useNavigate } from "react-router-dom";
 
 const CreateStrategyHeader = ({
   onNext,
@@ -17,6 +18,7 @@ const CreateStrategyHeader = ({
   id,
   strategyName,
   setIsDirty = () => {},
+  confirmNavigation = () => {},
 }) => {
   const [isCancelStrategy, setIsCancelStrategy] = useState(false);
   const [isOpenSaveDraft, setIsOpenSaveDraft] = useState(false);
@@ -24,6 +26,8 @@ const CreateStrategyHeader = ({
   const [isWarning, setIsWarning] = useState(false);
 
   const { values } = formik;
+
+  const navigate = useNavigate();
 
   const hasAllValues = (obj) => {
     const stockBundleValid =
@@ -50,12 +54,19 @@ const CreateStrategyHeader = ({
     }
   };
 
+  const handleCancelStrategy = () => {
+    confirmNavigation();
+    setIsDirty(false);
+    setIsCancelStrategy(false);
+    navigate("/Strategies");
+  };
+
   return (
     <>
       {/* Cancel Modal */}
       <CancelStrategyModal
         isOpen={isCancelStrategy}
-        handleClose={() => setIsCancelStrategy(false)}
+        handleClose={handleCancelStrategy}
         isCancel
         disableName={!!id}
       />

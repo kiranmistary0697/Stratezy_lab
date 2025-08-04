@@ -85,6 +85,16 @@ const Deploy = () => {
     }
   }, [isAnyInProgress]);
 
+  useEffect(() => {
+    // This function runs when the component unmounts
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, []);
+
   return (
     <div className="sm:h-[calc(100vh-100px)] overflow-auto">
       <div className="h-full space-y-4 p-8">

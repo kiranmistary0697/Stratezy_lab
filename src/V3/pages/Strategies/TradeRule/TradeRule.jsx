@@ -218,7 +218,18 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
 
                   return (
                     <Tooltip
-                      title={selectedOption.desc || ""}
+                      title={
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: 500, fontFamily: "Inter" }}
+                          >
+                            {selectedOption.func}
+                          </Typography>
+                          <Typography variant="string">
+                            {selectedOption.desc}
+                          </Typography>
+                        </Box>
+                      }
                       placement="right"
                       componentsProps={{
                         tooltip: {
@@ -256,7 +267,6 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
                   return (
                     <li {...props} key={option?.func}>
                       <Tooltip
-                        // title={option?.desc}
                         title={
                           <Box>
                             <Typography

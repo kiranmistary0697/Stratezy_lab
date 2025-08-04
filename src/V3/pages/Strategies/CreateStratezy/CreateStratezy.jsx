@@ -286,6 +286,7 @@ const CreateStrategy = () => {
             step={step}
             formik={formik}
             setIsDirty={setIsDirty}
+            confirmNavigation={confirmNavigation}
           />
 
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
