@@ -77,7 +77,13 @@ const DeployPage = () => {
         </div>
         {/* <div className="flex-grow overflow-auto"> */}
         <div className="p-8 space-y-4 flex-grow overflow-auto">
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6,
+              lg: 8,
+            }}
+          >
             <TabComponent data={deployFilterData} />
           </Grid>
         </div>

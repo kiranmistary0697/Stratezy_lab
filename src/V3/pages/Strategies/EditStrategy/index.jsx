@@ -669,7 +669,6 @@ const EditStrategy = () => {
             >
               <Grid
                 className="md:border-r md:border-r-zinc-200"
-                item
                 size={{ xs: 12, md: 6, lg: 4 }}
               >
                 <TimeLineStock
@@ -681,7 +680,6 @@ const EditStrategy = () => {
               </Grid>
 
               <Grid
-                item
                 size={{
                   xs: 12,
                   md: 6,

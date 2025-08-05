@@ -632,7 +632,6 @@ const CreateFunction = () => {
                 sx={{ height: isSmallScreen ? "auto" : "calc(100%-76px)" }}
               >
                 <Grid
-                  item
                   size={{
                     xs: 12,
                     lg: isSmallScreen ? 12 : 4,
@@ -672,7 +671,6 @@ const CreateFunction = () => {
                   />
                 </Grid>
                 <Grid
-                  item
                   size={{
                     xs: 12,
                     lg: isSmallScreen ? 12 : 8,

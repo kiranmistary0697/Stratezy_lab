@@ -130,7 +130,6 @@ const EditorFunctionModal = ({
         className="w-full overflow-auto px-4 border border-zinc-200"
       >
         <Grid
-          item
           size={{
             xs: 12,
             lg: isSmallScreen ? 12 : 4,
@@ -202,7 +201,6 @@ const EditorFunctionModal = ({
         </Grid>
 
         <Grid
-          item
           size={{
             xs: 12,
             lg: isSmallScreen ? 12 : 8,

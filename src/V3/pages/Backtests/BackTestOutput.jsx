@@ -131,7 +131,6 @@ const BackTestOutput = () => {
           {tabIndex === 0 && (
             <div className="px-1 py-2 sm:p-4 md:p-8 space-y-4">
               <Grid
-                item
                 size={{
                   xs: 12,
                   md: 6,
@@ -146,7 +145,6 @@ const BackTestOutput = () => {
           {tabIndex === 1 && (
             <div className="px-1 py-2 sm:p-4 md:p-8 space-y-4">
               <Grid
-                item
                 size={{
                   xs: 12,
                   md: 6,
