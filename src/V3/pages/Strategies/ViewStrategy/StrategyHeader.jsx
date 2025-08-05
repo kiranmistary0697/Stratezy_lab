@@ -169,7 +169,8 @@ const StrategyHeader = ({
           title="Run Backtest"
           isNavigate
           status={status}
-          defaultVersion={defaultVersion}
+          // defaultVersion={defaultVersion}
+          defaultVersion={selectedVersion}
           demoStrategy={demoStrategy}
           handleViewData={handleViewData}
         />

@@ -7,11 +7,11 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import "ace-builds/src-noconflict/mode-javascript";
+// import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/ext-language_tools";
-import "ace-builds/src-noconflict/mode-java"; // For Java
+// import "ace-builds/src-noconflict/mode-java"; // For Java
 import "ace-builds/src-noconflict/mode-c_cpp"; // For C/C++
 import "ace-builds/src-noconflict/theme-monokai"; // Ensure the theme is imported as well
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";

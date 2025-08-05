@@ -420,6 +420,99 @@ const ViewBacktestResult = ({
         ),
       },
       {
+        field: "maxDrawdown",
+        headerName: "Max Drawdown",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
+        renderCell: (params) => (
+          <span>{params.row.backtestSummary?.["Max Drawdown"] || "0"}</span>
+        ),
+      },
+      {
+        field: "maxAccountValue",
+        headerName: "Max Account Value",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.maxDrawdown ? parseFloat(row.maxAccountValue) : 0,
+        renderCell: (params) => {
+          const value = params?.row?.maxAccountValue;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
+      },
+      {
+        field: "avgProfitPerTrade",
+        headerName: "Average profit/trade",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
+        renderCell: (params) => (
+          <span>{params.row.backtestSummary?.["avg profit/trade"] || "0"}</span>
+        ),
+      },
+      {
+        field: "expectancy",
+        headerName: "Expectancy",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.expectancy ? parseFloat(row.expectancy) : 0,
+        renderCell: (params) => {
+          const value = params?.row?.expectancy;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
+      },
+      {
+        field: "sharpeRatio",
+        headerName: "Sharpe ratio",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) =>
+          row?.sharpeRatio ? parseFloat(row.sharpeRatio) : 0,
+        renderCell: (params) => {
+          const value = params?.row?.sharpeRatio;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
+      },
+      {
+        field: "sqn",
+        headerName: "SQN",
+        // minWidth: 140,
+        flex: 1,
+        valueGetter: (_, row) => (row?.sqn ? parseFloat(row.sqn) : 0),
+        renderCell: (params) => {
+          const value = params?.row?.sqn;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
+      },
+      {
         field: "avgAnnualProfit",
         headerName: "Avg Annual Profit",
         // minWidth: 140,

@@ -167,11 +167,6 @@ const CustomizedDialogs = ({
 
       ...(tradeSequence[0]?.name && {
         orderRule: [
-          // {
-          //   ruleType: "TRADE_ORDER_RULE",
-          //   ruleSubType: "PREDEF_RULE",
-          //   predefRule: "asc",
-          // },
           ...tradeSequence.map((seq) => ({
             ruleType: "TRADE_ORDER_RULE",
             ruleSubType: "LIB_FUNC_RULE",
@@ -250,6 +245,7 @@ const CustomizedDialogs = ({
       version: versionName || "v1",
       description: descriptionName || "",
       strategy: {
+        ...formatStrategyData?.strategy,
         exchange: formatStrategyData?.strategy?.exchange || "",
         name: strategyName || "",
         initialCapital: formatStrategyData?.strategy?.initialCapital || 0,
