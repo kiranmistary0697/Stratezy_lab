@@ -1,10 +1,9 @@
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
   Checkbox,
-  Chip,
   FormControlLabel,
   FormGroup,
   IconButton,
@@ -15,18 +14,15 @@ import {
 import {
   FilterList as FilterListIcon,
   Settings as SettingsIcon,
-  MoreVert as MoreVertIcon,
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxOutlinedIcon,
 } from "@mui/icons-material";
 import Badge from "../../../../common/Badge";
-import SettingsTwoToneIcon from "@mui/icons-material/SettingsTwoTone";
 import ActionMenu from "../../../../common/DropDownButton";
 import CustomFilterPanel from "./CustomFilterPanel";
 import { makeStyles } from "@mui/styles";
 import useDateTime from "../../../../hooks/useDateTime";
 import DeleteModal from "../../../../common/DeleteModal";
-import { useLazyGetQuery } from "../../../../../slices/api";
 import CreateDeploy from "../../../Deploy/DeployModal/CreateDeploy";
 // import FilterListIcon from "@mui/icons-material/FilterList";
 // import SettingsIcon from "@mui/icons-material/Settings";
@@ -125,6 +121,7 @@ const ViewBacktestResult = ({
       }),
     [rowsWithId, selectedStrategies, selectedStatuses]
   );
+
   const handlePopoverOpen = (event, type) => {
     event.stopPropagation();
     setPopoverAnchor(event.currentTarget);
@@ -135,14 +132,17 @@ const ViewBacktestResult = ({
     setPopoverAnchor(null);
     setActiveFilter(null);
   };
+
   const handleRowClick = ({ row }) => {
-    // if (row.summary?.includes("Backtest command still running")) {
-    //   navigate(
-    //     `/Backtest/backtest-detail?id=${row.requestId}&name=${row.name}`
-    //   );
-    // } else if (row.summary?.includes("Backtest summary for")) {
-    navigate(`/Backtest/backtest-output?id=${row.requestId}&name=${row.name}`);
-    // }
+    row.summary.includes("still running")
+      ? navigate(
+          `/Backtest/backtest-detail?id=${row.requestId}&name=${row.name}`
+        )
+      : row.summary.includes("Backtest summary for")
+      ? navigate(
+          `/Backtest/backtest-output?id=${row.requestId}&name=${row.name}`
+        )
+      : "";
   };
 
   const handleStrategyNavigation = (
@@ -590,6 +590,7 @@ const ViewBacktestResult = ({
     ],
     [navigate, hiddenColumns]
   );
+
   const visibleColumns = columns.filter(
     (col) => !hiddenColumns.includes(col.field)
   );

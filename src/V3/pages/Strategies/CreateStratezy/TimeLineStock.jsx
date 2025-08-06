@@ -61,15 +61,19 @@ const TimeLineStock = ({ values, goToStep, step, isView = false }) => {
             break;
 
           case "Market Entry & Exit":
-            iconColor = values.marketEntryExit?.entry?.name
-              ? "#0A994A"
-              : "#E0E1E4";
+            iconColor =
+              values.marketEntryExit?.entry?.name ||
+              values.marketEntryExit?.exit?.name
+                ? "#0A994A"
+                : "#E0E1E4";
             break;
 
           case "Stock Entry & Exit":
-            iconColor = values.stockEntryExit?.entry?.[0]?.name
-              ? "#0A994A"
-              : "#E0E1E4";
+            iconColor =
+              values.stockEntryExit?.entry?.[0]?.name ||
+              values.stockEntryExit?.exit?.[0]?.name
+                ? "#0A994A"
+                : "#E0E1E4";
             break;
 
           case "Trade Sequence":
