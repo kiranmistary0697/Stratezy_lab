@@ -133,10 +133,10 @@ const StrategyHeader = ({
       <CustomizedDialogs
         formik={formik}
         title={
-          hasAllValues(!formik.values)
-            ? "Save Strategy"
-            : id
+          id
             ? "Update Strategy"
+            : hasAllValues(!formik.values)
+            ? "Save Strategy"
             : "Save as Draft"
         }
         textButton={"Update"}
@@ -148,6 +148,7 @@ const StrategyHeader = ({
         onSave={() => setIsOpenSaveDraft(true)}
         setIsDirty={setIsDirty}
         isNameDisabled={!!id}
+        version={selectedVersion}
       />
       {successModalOpen && (
         <SuccessModal
@@ -167,7 +168,7 @@ const StrategyHeader = ({
             setIsOpenBacktest(false), setSuccessModalOpen(false);
           }}
           title="Run Backtest"
-          isNavigate
+          // isNavigate
           status={status}
           // defaultVersion={defaultVersion}
           defaultVersion={selectedVersion}

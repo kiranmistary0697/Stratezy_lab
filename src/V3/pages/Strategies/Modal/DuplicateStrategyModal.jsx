@@ -34,7 +34,6 @@ const CustomizedDialogs = ({
 }) => {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
-  const strategy = queryParams.get("name");
   const defaultVersion = queryParams.get("version");
   const demo = queryParams.get("demo");
   const navigate = useNavigate();
@@ -86,7 +85,7 @@ const CustomizedDialogs = ({
     } else if (demo === "true" || demoStrategy === "true") {
       endpointApi = `strategystore/get/name/${id}?demo=true&version=${defaultVersion}`;
     } else {
-      endpointApi = `strategystore/get/name/${id}?version=${defaultVersion}`;
+      endpointApi = `strategystore/get/name/${id}?version=${version}`;
     }
     try {
       const { data } = await getStrategyData({
@@ -111,7 +110,7 @@ const CustomizedDialogs = ({
     if (id) {
       fetchStrategy();
     }
-  }, [id, demoStrategy]);
+  }, [id, demoStrategy, version]);
 
   useEffect(() => {
     if (demoStrategy) {
@@ -354,25 +353,40 @@ const CustomizedDialogs = ({
             }
           : null,
       },
+      id: null,
     };
     const newEntry = {
       name: strategyName,
       isDemo: false,
       version: versionName || "v1",
       description: descriptionName,
-      ...(id && !isDuplicate && { id: values.id }),
+      id: id && !isDuplicate ? values.id : null,
       strategy,
     };
 
     try {
       setIsDirty(false);
-      if (defaultVersion !== versionName) {
-        await createStock({
-          endpoint: `strategystore/save`,
-          payload: isDuplicate ? duplicateStrategy : newEntry,
-          tags: [tagTypes.STRATEGY],
-        }).unwrap();
-      } else if (id && !isDuplicate) {
+      // if (defaultVersion !== versionName) {
+      //   await createStock({
+      //     endpoint: `strategystore/save`,
+      //     payload: isDuplicate ? duplicateStrategy : newEntry,
+      //     tags: [tagTypes.STRATEGY],
+      //   }).unwrap();
+      // } else if (id && !isDuplicate) {
+      //   await editStock({
+      //     endpoint: `strategystore/update`,
+      //     payload: newEntry,
+      //     tags: [tagTypes.STRATEGY],
+      //   }).unwrap();
+      // } else {
+      //   await createStock({
+      //     endpoint: `strategystore/save`,
+      //     payload: isDuplicate ? duplicateStrategy : newEntry,
+      //     tags: [tagTypes.STRATEGY],
+      //   }).unwrap();
+      // }
+
+      if (id && !isDuplicate) {
         await editStock({
           endpoint: `strategystore/update`,
           payload: newEntry,
@@ -385,6 +399,7 @@ const CustomizedDialogs = ({
           tags: [tagTypes.STRATEGY],
         }).unwrap();
       }
+
       {
         isDuplicate && fetchAllData();
       }
@@ -438,17 +453,21 @@ const CustomizedDialogs = ({
         isOpen={successModalOpen}
         handleClose={() => setSuccessModalOpen(false)}
         title={
-          hasAllValues(values)
+          isDuplicate
             ? "Strategy Saved"
             : id
             ? "Update Strategy"
+            : hasAllValues(values)
+            ? "Strategy Saved"
             : "Draft Strategy Saved"
         }
         description={
-          hasAllValues(values)
-            ? "Your strategy has been successfully saved and is ready for use"
+          isDuplicate
+            ? "Your strategy has been successfully saved"
             : id
             ? "Your strategy has been successfully updated"
+            : hasAllValues(values)
+            ? "Your strategy has been successfully saved and is ready for use"
             : "Your strategy draft has been saved. It is not ready to use until it is complete."
         }
         name={strategyName}
@@ -545,6 +564,7 @@ const CustomizedDialogs = ({
                 fullWidth
                 value={versionName}
                 onChange={(e) => setVersionName(e.target.value)}
+                disabled={!isDuplicate && !!id}
               />
             </Box>
           </Box>

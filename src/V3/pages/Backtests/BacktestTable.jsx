@@ -115,11 +115,13 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
 
   const rowsWithId = useMemo(
     () =>
-      rows.map((row, index) => ({
-        id: index + 1,
-        ...row,
-        backtestSummary: extractSummaryMetrics(row.summary || ""),
-      })),
+      rows
+        .map((row, index) => ({
+          id: index + 1,
+          ...row,
+          backtestSummary: extractSummaryMetrics(row.summary || ""),
+        }))
+        .sort((a, b) => new Date(a.executionTime) - new Date(b.executionTime)),
     [rows]
   );
 

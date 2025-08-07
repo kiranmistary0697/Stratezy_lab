@@ -96,7 +96,7 @@ const AuthProvider = ({ children }) => {
   const login = () => {
     console.log("Redirecting to Keycloak login...");
     keycloakInstance.login({
-      redirectUri: `${window.location.origin}/app`,
+      redirectUri: `${window.location.origin}/Strategies`,
     });
   };
 

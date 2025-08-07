@@ -24,7 +24,10 @@ const Backtest = () => {
 
   useEffect(() => {
     if (backtestData?.length) {
-      setRows(backtestData);
+      const sorted = [...backtestData].sort(
+        (a, b) => new Date(b.executionTime) - new Date(a.executionTime)
+      );
+      setRows(sorted);
     }
   }, [backtestData]);
 

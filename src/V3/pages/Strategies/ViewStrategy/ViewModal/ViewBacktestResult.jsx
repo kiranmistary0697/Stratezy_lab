@@ -88,11 +88,13 @@ const ViewBacktestResult = ({
 
   const rowsWithId = useMemo(
     () =>
-      rows.map((row, index) => ({
-        id: index + 1,
-        ...row,
-        backtestSummary: extractSummaryMetrics(row.summary || ""),
-      })),
+      rows
+        .map((row, index) => ({
+          id: index + 1,
+          ...row,
+          backtestSummary: extractSummaryMetrics(row.summary || ""),
+        }))
+        .sort((a, b) => new Date(b.executionTime) - new Date(a.executionTime)),
     [rows]
   );
 

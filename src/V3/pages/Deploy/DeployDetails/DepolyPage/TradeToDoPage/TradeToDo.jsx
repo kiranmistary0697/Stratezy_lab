@@ -111,13 +111,13 @@ const TradeToDo = ({ data = {} }) => {
       setCompletedDates(completedDatesArray);
       setPendingDates(pendingDatesArray);
 
-      if (pendingDatesArray.length > 0) {
+      // if (pendingDatesArray.length > 0) {
         const { data: tradeData } = await getTradeToDoData({
           endpoint: `deploy/strategy/viewn?name=${name}&days=${pendingDatesArray.length}&exchange=${exchange}&brokerage=${brokerage}&version=${version}`,
           tags: [tagTypes.GET_TRADETODO],
         }).unwrap();
         setTradeData(tradeData);
-      }
+      // }
     } catch (error) {
       console.error("Failed in fetchDeployAndTradeData:", error);
     } finally {
@@ -137,7 +137,7 @@ const TradeToDo = ({ data = {} }) => {
     }
   };
 
-  const handleMarkComplete = async () => {
+  const  handleMarkComplete = async () => {
     const todayStr = moment().format("YYYY-MM-DD");
 
     try {
@@ -163,8 +163,8 @@ const TradeToDo = ({ data = {} }) => {
       setPendingDates(pendingDatesArray);
       setWasMarkedComplete(pendingDatesArray.length > 0);
 
-      await fetchDeployAndTradeData(); // helper function to rerun full pipeline
       await fetchDeployData();
+      await fetchDeployAndTradeData(); // helper function to rerun full pipeline
     } catch (error) {
       console.error("Error marking date as complete:", error);
       setWasMarkedComplete(false);

@@ -112,12 +112,6 @@ const DeployTable = ({
     }
   };
 
-  const handlePopoverOpen = (event, type) => {
-    event.stopPropagation();
-    setPopoverAnchor(event.currentTarget);
-    setActiveFilter(type);
-  };
-
   const handlePopoverClose = () => {
     setPopoverAnchor(null);
     setActiveFilter(null);
@@ -556,7 +550,7 @@ const DeployTable = ({
           onActionSuccess={() => {
             setTimeout(() => {
               fetchAllData();
-            }, 200);
+            }, 400);
           }}
           // onActionSuccess={startPolling}
         />
