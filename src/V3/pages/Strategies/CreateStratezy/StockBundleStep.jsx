@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Typography,
@@ -32,6 +32,17 @@ import {
 
 const LOCAL_STORAGE_KEY = "stockFilters";
 
+// Deduplicate helper by shortFuncName (unique key)
+const deduplicateStockBundles = (arr) => {
+  const seen = new Set();
+  return arr.filter((item) => {
+    const key = item?.shortFuncName || "";
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
   const dispatch = useDispatch();
   const stockBundle = useSelector((state) => state.Stock.stockBundle);
@@ -55,19 +66,22 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
         const sortedStockBundle = [...stockBundle].sort((a, b) =>
           a.func.localeCompare(b.func)
         );
-        setStockBundleOptions(sortedStockBundle);
+        // Deduplicate before setting local state
+        setStockBundleOptions(deduplicateStockBundles(sortedStockBundle));
       } else {
         const { data } = await getStockBundle({
           endpoint: "stock-analysis-function/details",
           payload: { filter: true },
           tags: [tagTypes.GET_FILTERTYPE, tagTypes.CREATE_STRATEGY],
         });
-        dispatch(setAllData({ data: data?.data, key: "stockBundle" }));
-        if (data?.data.length) {
-          const sortedStockBundle = [...data.data].sort((a, b) =>
+        const fetchedData = data?.data || [];
+        dispatch(setAllData({ data: fetchedData, key: "stockBundle" }));
+        if (fetchedData.length) {
+          const sortedStockBundle = [...fetchedData].sort((a, b) =>
             a.func.localeCompare(b.func)
           );
-          setStockBundleOptions(sortedStockBundle) || [];
+          // Deduplicate before setting local state
+          setStockBundleOptions(deduplicateStockBundles(sortedStockBundle));
         } else {
           setStockBundleOptions([]);
         }
@@ -80,7 +94,6 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
     const saved = localStorage?.getItem(LOCAL_STORAGE_KEY);
     if (saved && saved !== "undefined") {
       const parsed = JSON.parse(saved);
-
       setFieldValue("stockBundle", parsed);
     }
   }, []);
@@ -93,8 +106,8 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
 
   const handleSaveCreatedStock = (newFilter) => {
     // 1. Add new name to options if it's not already there
-    if (!stockBundleOptions.includes(newFilter.name)) {
-      setStockBundleOptions((prev) => [...prev, newFilter.name]);
+    if (!stockBundleOptions.some((opt) => opt.name === newFilter.name)) {
+      setStockBundleOptions((prev) => [...prev, newFilter]);
     }
 
     // 2. Set this new filter name into Formik
@@ -139,6 +152,12 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
       return `${option?.func?.toLowerCase()} ${option?.shortFuncName?.toLowerCase()}`;
     },
   });
+
+  // Deduplicate options again before passing to Autocomplete
+  const deduplicatedOptions = useMemo(
+    () => deduplicateStockBundles(stockBundleOptions),
+    [stockBundleOptions]
+  );
 
   const addFilter = () => {
     const updated = [
@@ -264,7 +283,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
           </Typography>
 
           {(values?.stockBundle || []).map((filter, index) => {
-            const type = stockBundleOptions?.find(
+            const type = deduplicatedOptions?.find(
               (item) => item.shortFuncName === filter?.name
             )?.stockList;
             return (
@@ -286,7 +305,6 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                       }
                       size="small"
                       disabled={isView}
-                      // className="custom-select max-md:w-full"
                       style={{ "--custom-width": "w-[80px]", height: "80%" }}
                     >
                       <MenuItem value="AND">AND</MenuItem>
@@ -295,9 +313,9 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
 
                   <FormGroup className="w-full flex-1">
                     <Autocomplete
-                      options={stockBundleOptions}
+                      options={deduplicatedOptions}
                       value={
-                        stockBundleOptions.find(
+                        deduplicatedOptions.find(
                           (o) => o.shortFuncName === filter?.name
                         ) || null
                       }
@@ -334,16 +352,13 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                       renderInput={(params) => {
                         const selectedOption =
                           typeof filter?.name === "string"
-                            ? stockBundleOptions.find(
+                            ? deduplicatedOptions.find(
                                 (opt) => opt.shortFuncName === filter.name
                               )
                             : filter?.name;
 
-                        // const tooltipTitle = selectedOption?.desc || "";
-
                         return (
                           <Tooltip
-                            // title={tooltipTitle}
                             title={
                               <Box>
                                 <Typography
@@ -414,7 +429,6 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                         return (
                           <li {...props} key={option?.func}>
                             <Tooltip
-                              // title={option?.desc}
                               title={
                                 <Box>
                                   <Typography
@@ -434,7 +448,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                               componentsProps={{
                                 tooltip: {
                                   sx: {
-                                    fontFamily: "inherit",
+                                    fontFamily: "Inter",
                                     fontWeight: 400,
                                     fontSize: "14px",
                                     maxWidth: 400,
@@ -448,7 +462,10 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                               }}
                             >
                               <Box className="flex gap-2 items-center w-full">
-                                <Typography variant="body2">
+                                <Typography
+                                  variant="body2"
+                                  className="text-neutral-950"
+                                >
                                   {option?.func}
                                 </Typography>
                                 <Typography
