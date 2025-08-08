@@ -38,7 +38,17 @@ const useStyles = makeStyles({
   },
 });
 
-const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
+const BacktestTable = ({
+  isLoading,
+  fetchAllData,
+  rows,
+  seletedRows = [],
+  setSeletedRows = () => {},
+  confirmMultiDelete = () => {},
+  setIsRowSelectionEnabled = () => {},
+  isRowSelectionEnabled = false,
+  isMultideleteOpen = false,
+}) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -116,8 +126,8 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
   const rowsWithId = useMemo(
     () =>
       rows
-        .map((row, index) => ({
-          id: index + 1,
+        .map((row) => ({
+          id: row.requestId,
           ...row,
           backtestSummary: extractSummaryMetrics(row.summary || ""),
         }))
@@ -142,7 +152,7 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
           );
         })
         ?.reverse(),
-    [rowsWithId, selectedStrategies, selectedStatuses]
+    [rowsWithId, selectedStrategies, selectedStatuses, seletedRows]
   );
 
   const handlePopoverOpen = (event, type) => {
@@ -731,12 +741,24 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
               }}
               isDeployStrategy={isDeployable}
               isDeleteButton
+              isDeleteMultipleButton
+              handleMultiDelete={() => {
+                setIsRowSelectionEnabled(true);
+              }}
+              isRowSelectionEnabled={isRowSelectionEnabled}
             />
           );
         },
       },
     ],
-    [hiddenColumns, selectedStrategies, selectedStatuses]
+    [
+      hiddenColumns,
+      selectedStrategies,
+      selectedStatuses,
+      seletedRows,
+      isRowSelectionEnabled,
+      isMultideleteOpen,
+    ]
   );
 
   const visibleColumns = columns.filter(
@@ -766,7 +788,16 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
           handleClose={() => setIsDelete(false)}
           handleConfirm={confirmDelete}
           title="Are you Sure?"
-          description="This action is irreversible. Once deleted, the deployment and all its data cannot be recovered."
+          description="This action is irreversible. Once deleted, the backtest and all its data cannot be recovered."
+        />
+      )}
+      {isMultideleteOpen && (
+        <DeleteModal
+          isOpen={isMultideleteOpen}
+          handleClose={() => setIsRowSelectionEnabled(false)}
+          handleConfirm={confirmMultiDelete}
+          title="Are you Sure?"
+          description="This action is irreversible. Once deleted, the backtest and all its data cannot be recovered."
         />
       )}
       <Popover
@@ -795,6 +826,11 @@ const BacktestTable = ({ isLoading, fetchAllData, rows }) => {
         }}
       >
         <DataGrid
+          checkboxSelection={isRowSelectionEnabled}
+          selectionModel={seletedRows}
+          onRowSelectionModelChange={(newSelection) => {
+            setSeletedRows(newSelection);
+          }}
           rows={filteredRows}
           columns={visibleColumns}
           onRowClick={handleRowClick}

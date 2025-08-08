@@ -3,7 +3,12 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HeaderButton from "../../common/Table/HeaderButton";
 import { BACKTEST_HEADER_TOOLTIP } from "../../../constants/CommonText";
 
-const BacktestHeader = ({ fetchAllData, handleCSVDownload = () => {} }) => {
+const BacktestHeader = ({
+  fetchAllData,
+  handleCSVDownload = () => {},
+  handleBacktestDelete = () => {},
+  seletedRows = [],
+}) => {
   return (
     <Box
       className="flex flex-col md:flex-row gap-6 md:gap-10 w-full max-w-screen max-md:max-w-full"
@@ -60,6 +65,16 @@ const BacktestHeader = ({ fetchAllData, handleCSVDownload = () => {} }) => {
           <HeaderButton variant="contained" onClick={fetchAllData}>
             Refresh
           </HeaderButton>
+
+          {!!seletedRows.length && (
+            <HeaderButton
+              variant="error"
+              onClick={handleBacktestDelete}
+              className="w-full sm:w-auto"
+            >
+              Delete Selected
+            </HeaderButton>
+          )}
         </Box>
       </Box>
     </Box>

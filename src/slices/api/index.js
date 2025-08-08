@@ -189,11 +189,12 @@ export const api = createApi({
       onQueryStarted,
     }),
     delete: builder.mutation({
-      query: ({ endpoint, query = null }) => {
+      query: ({ endpoint, payload = null, query = null }) => {
         const deleteEndpoint = generateEndPoint(endpoint, query);
         return {
           url: deleteEndpoint,
           method: "DELETE",
+          body: payload,
         };
       },
       invalidatesTags: (_, __, { tags = [] }) => tags,

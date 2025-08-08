@@ -9,6 +9,9 @@ const ActionMenu = ({
   isDuplicateButton = false,
   isEditButton = false,
   isDeleteButton = false,
+  isDeleteMultipleButton = false,
+  handleMultiDelete = () => {},
+  isRowSelectionEnabled = false,
   handleEdit = () => {},
   formik,
   id,
@@ -160,6 +163,25 @@ const ActionMenu = ({
             }}
           >
             Delete
+          </MenuItem>
+        )}
+
+        {isDeleteMultipleButton && (
+          <MenuItem
+            sx={{
+              color: "#666666",
+              fontSize: "14px",
+              padding: "5px 12px",
+              // marginBottom: "1px",
+              fontFamily: "Inter",
+            }}
+            onClick={(e) => {
+              handleMultiDelete(e);
+              handleClose();
+            }}
+            disabled={isRowSelectionEnabled}
+          >
+            Delete Multiple
           </MenuItem>
         )}
       </Menu>

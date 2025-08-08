@@ -7,15 +7,20 @@ import { Box } from "@mui/material";
 import useLabTitle from "../../hooks/useLabTitle";
 
 import { useDispatch } from "react-redux";
-import { useLazyGetQuery } from "../../../slices/api";
+import { useDeleteMutation, useLazyGetQuery } from "../../../slices/api";
 import { setBacktestData } from "../../../slices/page/reducer";
 import { tagTypes } from "../../tagTypes";
 import { CSVLink } from "react-csv";
 
 const Backtest = () => {
   const [rows, setRows] = useState([]);
-  const dispatch = useDispatch();
+  const [seletedRows, setSeletedRows] = useState([]);
+  const [isMultideleteOpen, setIsMultideleteOpen] = useState(false);
+  const [isRowSelectionEnabled, setIsRowSelectionEnabled] = useState(false);
+
   const csvLink = useRef(null);
+  const dispatch = useDispatch();
+  const [deleteMultipleData] = useDeleteMutation();
 
   const [
     getBackTestData,
@@ -41,6 +46,24 @@ const Backtest = () => {
       dispatch(setBacktestData(response));
     } catch (error) {
       console.error("Failed to fetch backtest data:", error);
+    }
+  };
+
+  const confirmMultiDelete = async () => {
+    try {
+      await deleteMultipleData({
+        endpoint: "command/backtest/deletelist",
+        payload: seletedRows,
+        tags: [tagTypes.GET_DEPLOY],
+      }).unwrap();
+      setSeletedRows([]);
+      setIsMultideleteOpen(false);
+      setIsRowSelectionEnabled(false);
+      fetchAllData();
+    } catch (error) {
+      console.error("Delete failed:", error);
+      setIsMultideleteOpen(false);
+      setIsRowSelectionEnabled(false);
     }
   };
 
@@ -102,6 +125,8 @@ const Backtest = () => {
           className="my-[-30px]"
           fetchAllData={fetchAllData}
           handleCSVDownload={handleCSVDownload}
+          seletedRows={seletedRows}
+          handleBacktestDelete={() => setIsMultideleteOpen(true)}
         />
         {/* Applied -30px margin on top and bottom */}
         <Box>
@@ -109,6 +134,12 @@ const Backtest = () => {
             isLoading={isLoading}
             fetchAllData={fetchAllData}
             rows={rows}
+            seletedRows={seletedRows}
+            setSeletedRows={setSeletedRows}
+            confirmMultiDelete={confirmMultiDelete}
+            isMultideleteOpen={isMultideleteOpen}
+            isRowSelectionEnabled={isRowSelectionEnabled}
+            setIsRowSelectionEnabled={setIsRowSelectionEnabled}
           />
         </Box>
       </div>
