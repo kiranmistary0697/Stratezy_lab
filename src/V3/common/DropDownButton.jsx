@@ -149,23 +149,6 @@ const ActionMenu = ({
           </MenuItem>
         )}
 
-        {isDeleteButton && (
-          <MenuItem
-            sx={{
-              color: "#CD3D64",
-              fontSize: "14px",
-              padding: "8px 12px",
-              fontFamily: "Inter",
-            }}
-            onClick={() => {
-              handleClose();
-              if (handleDelete) handleDelete();
-            }}
-          >
-            Delete
-          </MenuItem>
-        )}
-
         {isDeleteMultipleButton && (
           <MenuItem
             sx={{
@@ -182,6 +165,23 @@ const ActionMenu = ({
             disabled={isRowSelectionEnabled}
           >
             Delete Multiple
+          </MenuItem>
+        )}
+
+        {isDeleteButton && (
+          <MenuItem
+            sx={{
+              color: "#CD3D64",
+              fontSize: "14px",
+              padding: "8px 12px",
+              fontFamily: "Inter",
+            }}
+            onClick={() => {
+              handleClose();
+              if (handleDelete) handleDelete();
+            }}
+          >
+            Delete
           </MenuItem>
         )}
       </Menu>

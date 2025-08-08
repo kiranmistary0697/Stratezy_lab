@@ -46,6 +46,7 @@ const BacktestTable = ({
   setSeletedRows = () => {},
   confirmMultiDelete = () => {},
   setIsRowSelectionEnabled = () => {},
+  setIsMultideleteOpen = () => {},
   isRowSelectionEnabled = false,
   isMultideleteOpen = false,
 }) => {
@@ -794,7 +795,7 @@ const BacktestTable = ({
       {isMultideleteOpen && (
         <DeleteModal
           isOpen={isMultideleteOpen}
-          handleClose={() => setIsRowSelectionEnabled(false)}
+          handleClose={() => setIsMultideleteOpen(false)}
           handleConfirm={confirmMultiDelete}
           title="Are you Sure?"
           description="This action is irreversible. Once deleted, the backtest and all its data cannot be recovered."

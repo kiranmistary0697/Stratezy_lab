@@ -11,71 +11,102 @@ const BacktestHeader = ({
 }) => {
   return (
     <Box
-      className="flex flex-col md:flex-row gap-6 md:gap-10 w-full max-w-screen max-md:max-w-full"
-      sx={{ alignItems: "center" }}
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: { xs: 2, md: 0 },
+        width: "100%",
+        maxWidth: { xs: "100%", md: "100vw" },
+      }}
     >
+      {/* LEFT SIDE: Header + Tooltip */}
       <Box
         sx={{
-          width: "100%",
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
+          gap: 2.5,
+          width: { xs: "100%", md: "auto" },
+          justifyContent: { xs: "flex-start", md: "flex-start" },
+          mb: { xs: 2, md: 0 },
         }}
       >
-        <Box className="flex gap-2.5 items-center text-center md:text-left">
-          <div className="font-semibold text-xl">Backtests</div>
-          <Tooltip
-            title={BACKTEST_HEADER_TOOLTIP}
-            componentsProps={{
-              tooltip: {
-                sx: {
-                  maxWidth: 450,
-                  padding: "16px",
-                  background: "#FFFFFF",
-                  color: "#666666",
-                  boxShadow: "0px 8px 16px 0px #7B7F8229",
-                  fontFamily: "Inter",
-                  fontWeight: 400,
-                  fontSize: "14px",
-                  lineHeight: "20px",
-                },
-              },
-            }}
-            placement="right-end"
-          >
-            <InfoOutlinedIcon
-              sx={{
+        <Box component="div" sx={{ fontWeight: 600, fontSize: "1.25rem" }}>
+          Backtests
+        </Box>
+        <Tooltip
+          title={BACKTEST_HEADER_TOOLTIP}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
                 color: "#666666",
-                width: "17px",
-                height: "17px",
-                cursor: "pointer",
-              }}
-            />
-          </Tooltip>
-        </Box>
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <InfoOutlinedIcon
+            sx={{
+              color: "#666666",
+              width: 17,
+              height: 17,
+              cursor: "pointer",
+            }}
+          />
+        </Tooltip>
+      </Box>
 
-        <Box sx={{ display: "flex", gap: "12px" }}>
+      {/* RIGHT SIDE: Buttons */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1.5,
+          width: { xs: "100%", md: "auto" },
+          justifyContent: { xs: "flex-start", md: "flex-end" }, // Buttons left aligned on xs, right aligned on md+
+          flexWrap: "wrap",
+        }}
+      >
+        {!!seletedRows.length && (
           <HeaderButton
-            variant="outlined"
-            onClick={handleCSVDownload}
-            className="w-full sm:w-auto"
+            variant="error"
+            onClick={handleBacktestDelete}
+            sx={{
+              width: { xs: "100%", sm: "auto" },
+              flexGrow: { xs: 1, sm: 0 },
+            }}
           >
-            Download CSV
+            Delete Selected
           </HeaderButton>
-          <HeaderButton variant="contained" onClick={fetchAllData}>
-            Refresh
-          </HeaderButton>
-
-          {!!seletedRows.length && (
-            <HeaderButton
-              variant="error"
-              onClick={handleBacktestDelete}
-              className="w-full sm:w-auto"
-            >
-              Delete Selected
-            </HeaderButton>
-          )}
-        </Box>
+        )}
+        <HeaderButton
+          variant="outlined"
+          onClick={handleCSVDownload}
+          sx={{
+            width: { xs: "100%", sm: "auto" },
+            flexGrow: { xs: 1, sm: 0 },
+          }}
+        >
+          Download CSV
+        </HeaderButton>
+        <HeaderButton
+          variant="contained"
+          onClick={fetchAllData}
+          sx={{
+            width: { xs: "100%", sm: "auto" },
+            flexGrow: { xs: 1, sm: 0 },
+          }}
+        >
+          Refresh
+        </HeaderButton>
       </Box>
     </Box>
   );

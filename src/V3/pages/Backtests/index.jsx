@@ -140,6 +140,7 @@ const Backtest = () => {
             isMultideleteOpen={isMultideleteOpen}
             isRowSelectionEnabled={isRowSelectionEnabled}
             setIsRowSelectionEnabled={setIsRowSelectionEnabled}
+            setIsMultideleteOpen={setIsMultideleteOpen}
           />
         </Box>
       </div>
