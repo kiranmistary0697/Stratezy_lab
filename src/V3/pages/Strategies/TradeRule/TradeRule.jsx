@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TradeHEader from "./TradeHEader";
 import {
@@ -30,6 +30,17 @@ import { useNavigate } from "react-router-dom";
 
 const LOCAL_STORAGE_KEY = "tradeRules.buyRule";
 
+// Deduplicate helper by shortFuncName
+const deduplicateTradeRules = (arr) => {
+  const seen = new Set();
+  return arr.filter((item) => {
+    const key = item?.shortFuncName || "";
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 const TradeRule = ({ formik, isView, id, setIsDirty }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,12 +53,13 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
   const { values, touched, errors, setFieldValue, setFieldTouched } = formik;
 
   const [tradeRuleOptions, setTradeRuleOptions] = useState([]);
+
   const [openConfig, setOpenConfig] = useState(false);
 
   useEffect(() => {
     (async () => {
       if (tradeRule?.length) {
-        setTradeRuleOptions(tradeRule);
+        setTradeRuleOptions(deduplicateTradeRules(tradeRule));
       } else {
         const { data: tradeRuleData } = await getTradeRule({
           endpoint: "stock-analysis-function/details",
@@ -56,8 +68,9 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
           },
         });
 
-        dispatch(setAllData({ data: tradeRuleData?.data, key: "tradeRule" }));
-        setTradeRuleOptions(tradeRuleData?.data);
+        const deduplicated = deduplicateTradeRules(tradeRuleData?.data || []);
+        dispatch(setAllData({ data: deduplicated, key: "tradeRule" }));
+        setTradeRuleOptions(deduplicated);
       }
     })();
   }, []);
@@ -121,6 +134,12 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
     },
   });
 
+  // Final deduplicated list before rendering
+  const deduplicatedOptions = useMemo(
+    () => deduplicateTradeRules(tradeRuleOptions),
+    [tradeRuleOptions]
+  );
+
   return (
     <>
       {openConfig && (
@@ -176,10 +195,10 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
             {/* <Box className="mt-2 w-full flex justify-between items-center gap-2"> */}
             <FormGroup>
               <Autocomplete
-                options={tradeRuleOptions}
+                options={deduplicatedOptions}
                 filterOptions={customFilterOptions}
                 value={
-                  tradeRuleOptions.find(
+                  deduplicatedOptions.find(
                     (opt) =>
                       opt?.shortFuncName === values.tradeRules.buyRule?.ruleName
                   ) || null
@@ -205,16 +224,16 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
                   outline: "none",
                 }}
                 isOptionEqualToValue={(option, value) =>
-                  option?.shortFuncName === (value?.shortFuncName || value)
+                  option?.shortFuncName === value?.shortFuncName
                 }
                 getOptionLabel={(option) => option?.func || ""}
                 renderInput={(params) => {
                   const selectedOption =
-                    tradeRuleOptions.find(
+                    deduplicatedOptions.find(
                       (opt) =>
                         opt.shortFuncName ===
                         values.tradeRules?.buyRule?.ruleName
-                    ) || {}; // {} when nothing selected
+                    ) || {};
 
                   return (
                     <Tooltip
@@ -265,7 +284,7 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
                 }}
                 renderOption={(props, option) => {
                   return (
-                    <li {...props} key={option?.func}>
+                    <li {...props} key={option?.shortFuncName}>
                       <Tooltip
                         title={
                           <Box>
