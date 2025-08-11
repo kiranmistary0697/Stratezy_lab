@@ -427,7 +427,7 @@ const StockBundleStep = ({ isView, formik = {}, setIsDirty }) => {
                       }}
                       renderOption={(props, option) => {
                         return (
-                          <li {...props} key={option?.func}>
+                          <li {...props} key={option?.shortFuncName}>
                             <Tooltip
                               title={
                                 <Box>

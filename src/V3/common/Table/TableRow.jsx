@@ -37,6 +37,7 @@ import {
   RUNBACKTEST_DISABLE_TOOLTIP,
 } from "../../../constants/CommonText";
 import CustomFilterPanel from "../../pages/Strategies/ViewStrategy/ViewModal/CustomFilterPanel";
+import { toast } from "react-toastify";
 
 const FavoriteCell = ({ params, onToggleFavorite }) => {
   return (
@@ -326,10 +327,11 @@ const TableRow = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteData({
+      const delResponse = await deleteData({
         endpoint: `strategystore/delete?name=${deleteRow.name}&version=${deleteRow.version}`,
         tags: [tagTypes.GET_STRATEGY],
       }).unwrap();
+      toast.success(delResponse);
     } catch (error) {
       console.error("Failed to delete:", error);
     } finally {

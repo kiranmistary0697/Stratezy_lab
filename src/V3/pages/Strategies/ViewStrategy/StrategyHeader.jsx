@@ -59,11 +59,10 @@ const StrategyHeader = ({
   setIsDirty = () => {},
   handleViewData = () => {},
   versionList = [],
+  tabIndex = 0,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedVersion, setSelectedVersion] = useState(
-    defaultVersion.toLowerCase()
-  ); // Default version
+  const [selectedVersion, setSelectedVersion] = useState(defaultVersion); // Default version
   const [isOpenBacktest, setIsOpenBacktest] = useState(false);
   const [isOpenDeploy, setIsOpenDeploy] = useState(false);
   const [isOpenSaveDraft, setIsOpenSaveDraft] = useState(false);
@@ -123,8 +122,8 @@ const StrategyHeader = ({
   }, [runBacktest]);
 
   useEffect(() => {
-    if (defaultVersion && defaultVersion.toLowerCase() !== selectedVersion) {
-      setSelectedVersion(defaultVersion.toLowerCase());
+    if (defaultVersion !== selectedVersion) {
+      setSelectedVersion(defaultVersion);
     }
   }, [defaultVersion]);
 
@@ -168,7 +167,7 @@ const StrategyHeader = ({
             setIsOpenBacktest(false), setSuccessModalOpen(false);
           }}
           title="Run Backtest"
-          // isNavigate
+          isNavigate={tabIndex === 0 ? true : false}
           status={status}
           // defaultVersion={defaultVersion}
           defaultVersion={selectedVersion}
@@ -232,12 +231,14 @@ const StrategyHeader = ({
           >
             {id ? "Update" : "Save as Draft"}
           </HeaderButton>
-          <HeaderButton
-            variant="primary"
-            onClick={() => setIsOpenBacktest(true)}
-          >
-            Run Backtest
-          </HeaderButton>
+          {selectedVersion !== "All Versions" && (
+            <HeaderButton
+              variant="primary"
+              onClick={() => setIsOpenBacktest(true)}
+            >
+              Run Backtest
+            </HeaderButton>
+          )}
           <Tooltip
             title={disableDeploy ? STRATEGY_DEPLOY_BTN_TOOLTIP : ""}
             disableHoverListener={!disableDeploy}

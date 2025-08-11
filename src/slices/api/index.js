@@ -191,11 +191,16 @@ export const api = createApi({
     delete: builder.mutation({
       query: ({ endpoint, payload = null, query = null }) => {
         const deleteEndpoint = generateEndPoint(endpoint, query);
-        return {
+        const request = {
           url: deleteEndpoint,
           method: "DELETE",
-          body: payload,
         };
+
+        if (payload) {
+          request.body = payload;
+        }
+
+        return request;
       },
       invalidatesTags: (_, __, { tags = [] }) => tags,
       onQueryStarted,

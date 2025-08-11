@@ -29,6 +29,7 @@ import ActionMenu from "../../common/DropDownButton";
 import { useLazyGetQuery } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
 import useDateTime from "../../hooks/useDateTime";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles({
   filterModal: {
@@ -254,10 +255,12 @@ const BacktestTable = ({
   };
   const confirmDelete = async () => {
     try {
-      await deleteData({
+      const { data } = await deleteData({
         endpoint: `command/backtest/delete/${rowToDelete}`,
         tags: [tagTypes.BACKTEST],
       }).unwrap();
+
+      toast.success(data?.message);
       setIsDelete(false);
       fetchAllData();
     } catch (error) {

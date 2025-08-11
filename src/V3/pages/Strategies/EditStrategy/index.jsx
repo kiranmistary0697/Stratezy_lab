@@ -633,6 +633,7 @@ const EditStrategy = () => {
               setIsDirty={setIsDirty}
               versionList={versionList}
               handleViewData={handleViewData}
+              tabIndex={tabIndex}
             />
           ) : (
             <>

@@ -11,6 +11,7 @@ import { useDeleteMutation, useLazyGetQuery } from "../../../slices/api";
 import { setBacktestData } from "../../../slices/page/reducer";
 import { tagTypes } from "../../tagTypes";
 import { CSVLink } from "react-csv";
+import { toast } from "react-toastify";
 
 const Backtest = () => {
   const [rows, setRows] = useState([]);
@@ -51,11 +52,13 @@ const Backtest = () => {
 
   const confirmMultiDelete = async () => {
     try {
-      await deleteMultipleData({
+      const multipleDelRes = await deleteMultipleData({
         endpoint: "command/backtest/deletelist",
         payload: seletedRows,
         tags: [tagTypes.GET_DEPLOY],
       }).unwrap();
+      
+      toast.success(multipleDelRes);
       setSeletedRows([]);
       setIsMultideleteOpen(false);
       setIsRowSelectionEnabled(false);

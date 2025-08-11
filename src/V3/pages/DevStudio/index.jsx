@@ -115,7 +115,19 @@ const CreateFunction = () => {
           }))
           .sort((a, b) => a.name.localeCompare(b.name));
 
-        setFunctionData(sanitisedData);
+        // ✅ Deduplicate by func + name to avoid duplicates in functionData
+        const cleanData = Array.isArray(sanitisedData)
+          ? sanitisedData.filter(
+              (item, idx, arr) =>
+                arr.findIndex(
+                  (k) =>
+                    (k.func || "") === (item.func || "") &&
+                    (k.name || "") === (item.name || "")
+                ) === idx
+            )
+          : [];
+
+        setFunctionData(cleanData);
       } catch (error) {
         console.error("Failed to fetch stock details:", error);
       }
@@ -151,7 +163,18 @@ const CreateFunction = () => {
           endpoint: `stock-analysis-function/keywords`,
           tags: [tagTypes.GET_KEYWORDS],
         }).unwrap();
-        setKeywordData(data);
+        const cleanData = Array.isArray(data)
+          ? data.filter(
+              (item, idx, arr) =>
+                arr.findIndex(
+                  (k) =>
+                    (k.func || "") === (item.func || "") &&
+                    (k.name || "") === (item.name || "")
+                ) === idx
+            )
+          : [];
+
+        setKeywordData(cleanData);
       } catch (error) {
         console.error("Failed to fetch keywords:", error);
       }

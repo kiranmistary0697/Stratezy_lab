@@ -15,10 +15,8 @@ const CreateFunctionHeader = ({
   isSaving,
   handleVerify = () => {},
   showButtons = true,
-  isShowSave = false
+  isShowSave = false,
 }) => {
-  const [isCancelStrategy, setIsCancelStrategy] = useState(false);
-
   return (
     <Box className="flex flex-col md:flex-row items-center justify-between w-full p-6 gap-4 md:gap-10">
       {/* Title Section */}
@@ -103,15 +101,15 @@ const CreateFunctionHeader = ({
           </HeaderButton>
         )} */}
         {isVerify && (
-          <HeaderButton variant="contained" onClick={handleVerify}>
+          <HeaderButton variant="contained" onClick={handleVerify} className="w-[150px]">
             {isSaving && (
               <CircularProgress color="inherit" size={18} thickness={4} />
             )}
             Verify
           </HeaderButton>
         )}
-        { showButtons && isShowSave && (
-          <HeaderButton variant="contained" onClick={handleChange}>
+        {showButtons && isShowSave && (
+          <HeaderButton variant="contained" onClick={handleChange} className="w-[150px]">
             {buttonText}
           </HeaderButton>
         )}

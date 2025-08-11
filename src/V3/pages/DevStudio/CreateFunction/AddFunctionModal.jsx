@@ -307,7 +307,7 @@ const AddFunctionModal = ({
             <TextField
               fullWidth
               name="identifier"
-              disabled={!isNewFunc}
+              disabled={!(isNewFunc || isDuplicate)}
               value={formik.values.identifier}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

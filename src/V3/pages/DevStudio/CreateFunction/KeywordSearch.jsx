@@ -92,11 +92,7 @@ const KeywordSearch = ({
         >
           {filteredKeywords.length > 0 ? (
             filteredKeywords.map((keyword, index) => (
-              <KeywordItem
-                key={keyword.func || keyword.name || index}
-                {...keyword}
-                isFunction={isFunction}
-              />
+              <KeywordItem key={index} {...keyword} isFunction={isFunction} />
             ))
           ) : (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>

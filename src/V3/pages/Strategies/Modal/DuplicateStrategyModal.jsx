@@ -76,6 +76,7 @@ const CustomizedDialogs = ({
   };
 
   const fetchStrategy = async () => {
+    if (version === "All Versions") return;
     let endpointApi = "";
 
     if (isDuplicate && demoStrategy) {
