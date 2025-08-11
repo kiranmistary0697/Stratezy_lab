@@ -132,6 +132,7 @@ const CreateStrategyHeader = ({
           <HeaderButton
             variant="primary"
             onClick={() => setIsCancelStrategy(true)}
+            className="w-[87px] h-[40px]"
           >
             Cancel
           </HeaderButton>
@@ -149,6 +150,7 @@ const CreateStrategyHeader = ({
             </HeaderButton>
           ) : (
             <HeaderButton
+              className="w-[128px] h-[40px]"
               variant="primary"
               onClick={() => {
                 setIsDirty(false);
@@ -163,6 +165,7 @@ const CreateStrategyHeader = ({
           {id ? (
             <HeaderButton
               variant="contained"
+              className="w-[72px] h-[40px]"
               onClick={() => {
                 setSaveActionType("create");
                 handleSaveStrategy();
@@ -200,7 +203,7 @@ const CreateStrategyHeader = ({
               <span>
                 <HeaderButton
                   variant="contained"
-                  className="!w-full"
+                  className={step === 5 ? "w-[147px] h-[40px]" : "w-[72px] h-[40px]"}
                   disabled={step === 5 && !hasAllValues(values)}
                   onClick={() => {
                     setIsDirty(false);
