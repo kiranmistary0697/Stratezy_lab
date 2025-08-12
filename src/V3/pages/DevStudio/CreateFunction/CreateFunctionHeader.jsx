@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Box, CircularProgress, Tooltip, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HeaderButton from "../../../common/Table/HeaderButton";
@@ -89,7 +88,7 @@ const CreateFunctionHeader = ({
 
       {/* Button Section */}
 
-      <nav className="flex flex-col md:flex-row gap-3 w-full md:w-auto md:ml-auto justify-end">
+      <nav className="flex gap-2 justify-end ">
         {/* {isFunction && showButtons && (
           <HeaderButton
             variant="primary"
@@ -101,7 +100,11 @@ const CreateFunctionHeader = ({
           </HeaderButton>
         )} */}
         {isVerify && (
-          <HeaderButton variant="contained" onClick={handleVerify} className="w-[150px]">
+          <HeaderButton
+            variant="contained"
+            onClick={handleVerify}
+            className="w-[150px]"
+          >
             {isSaving && (
               <CircularProgress color="inherit" size={18} thickness={4} />
             )}
@@ -109,7 +112,11 @@ const CreateFunctionHeader = ({
           </HeaderButton>
         )}
         {showButtons && isShowSave && (
-          <HeaderButton variant="contained" onClick={handleChange} className="w-[150px]">
+          <HeaderButton
+            variant="contained"
+            onClick={handleChange}
+            className="w-[150px]"
+          >
             {buttonText}
           </HeaderButton>
         )}

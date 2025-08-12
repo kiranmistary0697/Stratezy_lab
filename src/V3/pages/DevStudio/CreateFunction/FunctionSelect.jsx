@@ -450,7 +450,8 @@ const FunctionSelect = ({
                       ? () => {}
                       : (e) => handleSelectChange(key, e.target.value)
                   }
-                  className={`min-w-[160px] bg-white border border-gray-200 rounded-md ${
+                  // className={`min-w-[160px] bg-white border border-gray-200 rounded-md ${
+                  className={`min-w-[320px] sm:min-w-[160px] md:min-w-[200px] bg-white border border-gray-200 rounded-md ${
                     !isEnabled ? "opacity-50" : ""
                   }`}
                   renderValue={(selected) => (
