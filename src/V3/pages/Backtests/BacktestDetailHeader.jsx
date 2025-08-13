@@ -25,7 +25,7 @@ const BacktestDetailHeader = ({
   const combinedArrayWithId = csvData.flat().map((item, index) => ({
     id: index,
     ...item,
-  }));  
+  }));
   const csvLink = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenBacktest, setIsOpenBacktest] = useState(false);
@@ -41,7 +41,7 @@ const BacktestDetailHeader = ({
   };
 
   useEffect(() => {
-    const fetchInterval = setInterval(() => {      
+    const fetchInterval = setInterval(() => {
       if (requestData?.status === "PENDING") {
         handleRequestId();
       }
@@ -61,6 +61,7 @@ const BacktestDetailHeader = ({
           defaultVersion={data?.version}
           demoStrategy={data?.demo?.toString()}
           isNavigate
+          requestData={requestData}
         />
       )}
       {isOpen && (

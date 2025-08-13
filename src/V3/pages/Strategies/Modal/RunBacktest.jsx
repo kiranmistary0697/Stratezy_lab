@@ -25,6 +25,7 @@ const RunBacktest = ({
   demoStrategy,
   isNavigate = false,
   handleViewData = () => {},
+  requestData = {},
 }) => {
   const navigate = useNavigate();
   const [createBackTest] = usePostMutation();
@@ -136,9 +137,15 @@ const RunBacktest = ({
       <DialogContent className="space-y-4 !p-[30px]">
         <Formik
           initialValues={{
-            initialCapital: "",
-            startDate: oneMonth,
-            endDate: today,
+            initialCapital: requestData?.initialCapital
+              ? requestData.initialCapital
+              : "",
+            startDate: requestData?.startDate
+              ? moment(requestData?.endDate, "YYYY-MM-DD").format("DD/MM/YYYY")
+              : oneMonth,
+            endDate: requestData?.endDate
+              ? moment(requestData?.endDate, "YYYY-MM-DD").format("DD/MM/YYYY")
+              : today,
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
