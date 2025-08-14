@@ -141,7 +141,7 @@ const RunBacktest = ({
               ? requestData.initialCapital
               : "",
             startDate: requestData?.startDate
-              ? moment(requestData?.endDate, "YYYY-MM-DD").format("DD/MM/YYYY")
+              ? moment(requestData?.startDate, "YYYY-MM-DD").format("DD/MM/YYYY")
               : oneMonth,
             endDate: requestData?.endDate
               ? moment(requestData?.endDate, "YYYY-MM-DD").format("DD/MM/YYYY")
