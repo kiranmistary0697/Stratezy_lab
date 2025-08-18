@@ -96,7 +96,7 @@ const CreateDeploy = ({
           endpoint: `strategy/deploy`,
           payload: {
             requestId: deployStrategy?.reqId || values.selectedStock?.reqId,
-            version: deployStrategy?.version || values.selectedStock?.version,
+            version: version,
             exchangeId: exchange,
             initialCapital: Number(values.amount),
             startDate: moment(values.startDate, "DD/MM/YYYY").toISOString(),

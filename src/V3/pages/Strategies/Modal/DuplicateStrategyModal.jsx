@@ -108,7 +108,7 @@ const CustomizedDialogs = ({
   };
 
   useEffect(() => {
-    if (id) {
+    if (id && version) {
       fetchStrategy();
     }
   }, [id, demoStrategy, version]);

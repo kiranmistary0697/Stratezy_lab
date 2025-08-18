@@ -60,9 +60,9 @@ const StrategyHeader = ({
   handleViewData = () => {},
   versionList = [],
   tabIndex = 0,
+  selectedVersion = "",
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedVersion, setSelectedVersion] = useState(defaultVersion); // Default version
   const [isOpenBacktest, setIsOpenBacktest] = useState(false);
   const [isOpenDeploy, setIsOpenDeploy] = useState(false);
   const [isOpenSaveDraft, setIsOpenSaveDraft] = useState(false);
@@ -110,7 +110,6 @@ const StrategyHeader = ({
   };
 
   const handleSelectVersion = (version) => {
-    setSelectedVersion(version);
     setAnchorEl(null);
     onVersionChange(version); // Notify parent component
   };
@@ -120,12 +119,6 @@ const StrategyHeader = ({
       setIsOpenBacktest(true);
     }
   }, [runBacktest]);
-
-  useEffect(() => {
-    if (defaultVersion !== selectedVersion) {
-      setSelectedVersion(defaultVersion);
-    }
-  }, [defaultVersion]);
 
   return (
     <>

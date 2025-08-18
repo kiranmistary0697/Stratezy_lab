@@ -66,6 +66,9 @@ const EditStrategy = () => {
     desc: {},
   });
 
+  // NEW: track config param loaded
+  const [isConfigLoaded, setIsConfigLoaded] = useState(false);
+
   const transformConfig = (input) => {
     const booleanParams = Object.keys(input.configBoolParm || {});
     const textParams = Object.keys(input.configTextParm || {});
@@ -105,6 +108,7 @@ const EditStrategy = () => {
         const transformedData = transformConfig(data);
 
         setAdvancePortfolioSizeConfig(transformedData);
+        setIsConfigLoaded(true); // flag as loaded
       })();
     } catch (error) {
       console.error(error);
@@ -124,6 +128,10 @@ const EditStrategy = () => {
   useLabTitle(title);
 
   const handleLocation = async (version) => {
+    if (version === "All Versions") {
+      setSelectedVersion("All Versions");
+      return;
+    }
     const endpointApi =
       demoStrategy === "true"
         ? `strategystore/get/name/${strategyName}?demo=true&version=${defaultVersion}`
@@ -135,7 +143,7 @@ const EditStrategy = () => {
       }).unwrap();
 
       setFilterData(data);
-      setSelectedVersion(data);
+      setSelectedVersion(data?.version);
     } catch (error) {
       console.error(error);
     }
@@ -184,27 +192,27 @@ const EditStrategy = () => {
     }
   };
 
+  // FIX: Make strategy/version fetches wait for config param
   useEffect(() => {
-    if (defaultVersion) {
-      handleVersionData(defaultVersion);
-      if (tabIndex === 1) {
-        handleViewData(defaultVersion);
-      }
-      handleLocation(defaultVersion);
+    if (!isConfigLoaded || !defaultVersion) return;
+    handleVersionData(defaultVersion);
+    if (tabIndex === 1) {
+      handleViewData(defaultVersion);
     }
-  }, [defaultVersion, tabIndex]);
+    handleLocation(defaultVersion);
+  }, [isConfigLoaded, defaultVersion, tabIndex]);
 
   useEffect(() => {
-    if (strategyName && !selectedVersion) {
+    if (strategyName && !selectedVersion && isConfigLoaded) {
       handleLocation(defaultVersion);
     }
-  }, [strategyName, demoStrategy, tabIndex]);
+  }, [strategyName, demoStrategy, tabIndex, isConfigLoaded]);
 
   useEffect(() => {
-    if (view && tabIndex === 1) {
+    if (view && tabIndex === 1 && isConfigLoaded) {
       handleViewData();
     }
-  }, [view, tabIndex]);
+  }, [view, tabIndex, isConfigLoaded]);
 
   const handleTabChange = (event, newIndex) => {
     if (selectedVersion === "All Versions" && newIndex === 0) return;
@@ -230,6 +238,7 @@ const EditStrategy = () => {
         tags: [tagTypes.GET_STRATEGY, tagTypes.GET_VERSION],
       }).unwrap();
     } catch (error) {
+      console.error(error);
     } finally {
       handleVersionData(defaultVersion), setIsDeleteCase(false);
     }
@@ -634,6 +643,7 @@ const EditStrategy = () => {
               versionList={versionList}
               handleViewData={handleViewData}
               tabIndex={tabIndex}
+              selectedVersion={selectedVersion}
             />
           ) : (
             <>
