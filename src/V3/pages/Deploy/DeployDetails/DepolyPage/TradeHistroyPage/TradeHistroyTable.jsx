@@ -53,8 +53,8 @@ const TradeHistroyTable = forwardRef((props, ref) => {
   const [getTradeHistroy] = useLazyGetQuery();
 
   const [hiddenColumns, setHiddenColumns] = useState([
-    "sellTime",
-    "sellPrice",
+    //  "sellTime",
+    //  "sellPrice",
     "risk1R",
     "principal",
     "duration",

@@ -176,6 +176,40 @@ const TradeToDoTable = forwardRef((props, ref) => {
         </Tooltip>
       ),
     },
+    // Sanjay ------------
+    {
+      field: "companyName",
+      headerName: "Company",
+      // minWidth: 100,
+      flex: 1,
+      renderCell: (params) => (
+        <Tooltip
+          title={YET_TO_DO_MSG}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: 450,
+                padding: "16px",
+                background: "#FFFFFF",
+                color: "#666666",
+                boxShadow: "0px 8px 16px 0px #7B7F8229",
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                visibility: params?.row?.yetToDo ? "visible" : "hidden",
+              },
+            },
+          }}
+          placement="right-end"
+        >
+          <Typography sx={{ ...tableTextSx }}>
+            {params?.row?.companyName}
+          </Typography>
+        </Tooltip>
+      ),
+    },
+    // ---- Sanjay
     {
       field: "number",
       headerName: "Number",
@@ -396,7 +430,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
         );
       },
     },
-    {
+    /*     {
       field: "profit",
       headerName: "Profit",
       // minWidth: 100,
@@ -471,7 +505,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
           </Tooltip>
         );
       },
-    },
+    }, */
     {
       field: "buyTime",
       headerName: "Buy Time",
@@ -606,7 +640,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
         );
       },
     },
-    {
+    /* {
       field: "prf1R",
       headerName: "Prf1R",
       // minWidth: 100,
@@ -643,7 +677,7 @@ const TradeToDoTable = forwardRef((props, ref) => {
           </Tooltip>
         );
       },
-    },
+    }, */
     {
       field: "closeReason",
       headerName: "Close Reason",
