@@ -163,7 +163,7 @@ const StrategyHeader = ({
           isNavigate={tabIndex === 0 ? true : false}
           status={status}
           // defaultVersion={defaultVersion}
-          defaultVersion={selectedVersion}
+          defaultVersion={selectedVersion ?? defaultVersion}
           demoStrategy={demoStrategy}
           handleViewData={handleViewData}
         />
