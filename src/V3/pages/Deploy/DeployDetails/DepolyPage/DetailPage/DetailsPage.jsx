@@ -6,10 +6,10 @@ import moment from "moment";
 import { tagTypes } from "../../../../../tagTypes";
 import AddCapital from "../CapitalPage/AddCapital";
 
-const DetailsPage = ({ data = {} }) => {
+const DetailsPage = ({ data = {}, fetchDeployData = () => {} }) => {
   const [openCapital, setOpenCapital] = useState(false);
 
-  const { name, exchange, brokerage } = data;
+  const { name, exchange, brokerage, version } = data;
 
   const [addCapital] = useLazyGetQuery();
 
@@ -23,14 +23,16 @@ const DetailsPage = ({ data = {} }) => {
     setLoading(true);
     try {
       await addCapital({
-        endpoint: `deploy/strategy/addcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&type=${selectedType}&capitalValue=${amount}&date=${formattedDate}&months=`,
+        endpoint: `deploy/strategy/addcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&type=${selectedType}&capitalValue=${amount}&version=${version}&date=${formattedDate}&months=`,
         tags: [tagTypes.ADDCAPITAL, tagTypes.GET_CAPITAL],
       }).unwrap();
+      setAmount("");
     } catch (error) {
       console.log(error);
     } finally {
       setOpenCapital(false);
       setLoading(false);
+      fetchDeployData();
     }
   };
 

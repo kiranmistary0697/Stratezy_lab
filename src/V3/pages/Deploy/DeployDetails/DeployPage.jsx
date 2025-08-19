@@ -32,20 +32,20 @@ const DeployPage = () => {
   const [deploy, setDeploy] = useState([]);
   const deployFilterData = deploy.find(({ reqId }) => reqId === id);
 
-  useEffect(() => {
-    const fetchDeployData = async () => {
-      if (!id) return;
-      try {
-        const { data } = await getDeployData({
-          endpoint: "deploy/strategy/findall",
-          tags: [tagTypes.GET_DEPLOY],
-        }).unwrap();
-        setDeploy(data);
-      } catch (error) {
-        console.error("Failed to fetch deploy data:", error);
-      }
-    };
+  const fetchDeployData = async () => {
+    if (!id) return;
+    try {
+      const { data } = await getDeployData({
+        endpoint: "deploy/strategy/findall",
+        tags: [tagTypes.GET_DEPLOY],
+      }).unwrap();
+      setDeploy(data);
+    } catch (error) {
+      console.error("Failed to fetch deploy data:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchDeployData();
   }, [id]);
 
@@ -84,7 +84,10 @@ const DeployPage = () => {
               lg: 8,
             }}
           >
-            <TabComponent data={deployFilterData} />
+            <TabComponent
+              data={deployFilterData}
+              fetchDeployData={fetchDeployData}
+            />
           </Grid>
         </div>
         {/* </div> */}

@@ -97,9 +97,10 @@ const CapitalHeader = ({ data = {} }) => {
     setLoading(true);
     try {
       const { error } = await addCapital({
-        endpoint: `deploy/strategy/addcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&type=${selectedType}&capitalValue=${amount}&date=${formattedDate}&months=`,
+        endpoint: `deploy/strategy/addcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&type=${selectedType}&capitalValue=${amount}&version=${version}&date=${formattedDate}&months=`,
         tags: [tagTypes.ADDCAPITAL, tagTypes.GET_CAPITAL],
       }).unwrap();
+      setAmount("");
 
       if (!error) fetchAllData();
     } catch (error) {

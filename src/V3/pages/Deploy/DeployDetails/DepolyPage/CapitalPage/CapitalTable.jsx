@@ -163,9 +163,10 @@ const CapitalTable = ({ data }) => {
     setLoading(true);
     try {
       await addCapital({
-        endpoint: `deploy/strategy/addcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&type=${selectedType}&capitalValue=${amount}&date=${formattedDate}&months=`,
+        endpoint: `deploy/strategy/addcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&type=${selectedType}&capitalValue=${amount}&version=${version}&date=${formattedDate}&months=`,
         tags: [tagTypes.ADDCAPITAL, tagTypes.GET_CAPITAL],
       }).unwrap();
+      setAmount("");
     } catch (error) {
       console.log("Add capital error:", error);
     } finally {
