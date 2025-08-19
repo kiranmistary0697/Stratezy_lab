@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Box,
   Checkbox,
@@ -15,15 +15,15 @@ import {
 } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
+import { toast } from "react-toastify";
 import moment from "moment";
-
 import { useLazyGetQuery } from "../../../../../../slices/api";
 import { tagTypes } from "../../../../../tagTypes";
 
-import AddCapital from "./AddCapital";
-
 import ActionButton from "../../../../../common/ActionButton";
 import ActionMenu from "../../../../../common/DropDownButton";
+import AddCapital from "./AddCapital";
+import DeleteModal from "../../../../../common/DeleteModal";
 import Badge from "../../../../../common/Badge";
 
 const tableTextSx = {
@@ -52,93 +52,34 @@ const useStyles = makeStyles({
   },
 });
 
-const CapitalTable = ({ data }) => {
+const CapitalTable = ({
+  data = {},
+  rows = [],
+  loading,
+  fetchAllData,
+  fetchDeployData,
+}) => {
   const classes = useStyles();
-  const [getCapital] = useLazyGetQuery();
+  const [deleteCapital] = useLazyGetQuery();
   const [addCapital] = useLazyGetQuery();
 
-  const {
-    name,
-    exchange,
-    brokerage,
-    currentCapital,
-    deployedDate,
-    initialCapital,
-    version,
-  } = data;
+  const { name, exchange, brokerage, version } = data;
 
-  const [rows, setRows] = useState([]);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [openCapital, setOpenCapital] = useState(false);
-  const [capitalData, setCapitalData] = useState(false);
+  const [capitalData, setCapitalData] = useState(null);
   const [amount, setAmount] = useState("");
-  const [loading, setLoading] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
-
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
 
   const [selectedType, setSelectedType] = useState("ONETIME");
   const [startDate, setStartDate] = useState(
-    moment(capitalData.date, "YYYY-MM-DD").format("DD/MM/YYYY")
-  ); // init as string
-  const formattedDate = moment(startDate, "DD/MM/YYYY").format("YYYY-MM-DD");
+    moment(capitalData?.date || new Date()).format("DD/MM/YYYY")
+  );
+  const [saving, setSaving] = useState(false);
 
-  const fetchAllData = async () => {
-    setLoading(true);
-    try {
-      const { data } = await getCapital({
-        endpoint: `deploy/strategy/viewcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&version=${version}`,
-        tags: [tagTypes.GET_CAPITAL],
-      }).unwrap();
-
-      const formattedRows = [];
-
-      formattedRows.push({
-        id: `${deployedDate}-planned`,
-        Date: deployedDate,
-        Amount: `₹${initialCapital.toLocaleString("en-IN")}`,
-        status: "Completed",
-        Type: "One Time",
-        Schedule: "1/1",
-      });
-
-      if (data.applied) {
-        for (const [date, amount] of Object.entries(data.applied)) {
-          formattedRows.push({
-            id: `${date}-applied`,
-            Date: date,
-            Amount: `₹${amount.toLocaleString("en-IN")}`,
-            status: "Completed",
-            Type: "One Time",
-            Schedule: "1/1",
-          });
-        }
-      }
-
-      if (data.planned) {
-        for (const [date, amount] of Object.entries(data.planned)) {
-          formattedRows.push({
-            id: `${date}-planned`,
-            Date: date,
-            Amount: `₹${amount.toLocaleString("en-IN")}`,
-            status: "Planned",
-            Type: "One Time",
-            Schedule: "1/1",
-          });
-        }
-      }
-
-      setRows(formattedRows);
-    } catch (error) {
-      console.error("Failed to fetch capital data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllData();
-  }, []);
+  const [rowToDelete, setRowToDelete] = useState(null);
 
   const handlePopoverOpen = (event, type) => {
     event.stopPropagation();
@@ -151,6 +92,38 @@ const CapitalTable = ({ data }) => {
     setActiveFilter(null);
   };
 
+  const handleConfirmDelete = async () => {
+    if (!rowToDelete) return;
+
+    try {
+      const params = new URLSearchParams({
+        name,
+        exchange,
+        version,
+        brokerage,
+      }).toString();
+
+      const { data } = await deleteCapital({
+        endpoint: `/deploy/strategy/clearcapital?${params}`,
+        tags: [tagTypes.ADDCAPITAL, tagTypes.GET_CAPITAL],
+      }).unwrap();
+
+      toast.success(data?.message);
+      await fetchAllData();
+      await fetchDeployData();
+    } catch (error) {
+      console.error("Failed to delete capital:", error);
+    } finally {
+      setIsDeleteOpen(false);
+      setRowToDelete(null);
+    }
+  };
+
+  const handleDeleteClick = (row) => {
+    setRowToDelete(row);
+    setIsDeleteOpen(true);
+  };
+
   const handleColumnToggle = (field) => {
     setHiddenColumns((prev) =>
       prev.includes(field)
@@ -160,85 +133,25 @@ const CapitalTable = ({ data }) => {
   };
 
   const handleSaveCapital = async () => {
-    setLoading(true);
+    if (!amount) return;
+    setSaving(true);
     try {
       await addCapital({
-        endpoint: `deploy/strategy/addcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&type=${selectedType}&capitalValue=${amount}&version=${version}&date=${formattedDate}&months=`,
+        endpoint: `deploy/strategy/addcapital?name=${name}&exchange=${exchange}&brokerage=${brokerage}&type=${selectedType}&capitalValue=${amount}&version=${version}&date=${moment(
+          startDate,
+          "DD/MM/YYYY"
+        ).format("YYYY-MM-DD")}&months=`,
         tags: [tagTypes.ADDCAPITAL, tagTypes.GET_CAPITAL],
       }).unwrap();
+
       setAmount("");
-    } catch (error) {
-      console.log("Add capital error:", error);
-    } finally {
-      // Ensures it's always called
-      fetchAllData();
+      await fetchAllData();
+      await fetchDeployData();
       setOpenCapital(false);
-      setLoading(false);
-    }
-  };
-
-  const popoverContent = () => {
-    if (!activeFilter) return null;
-
-    switch (activeFilter) {
-      case "column":
-        return (
-          <FormGroup sx={{ padding: 2 }}>
-            <Typography
-              sx={{
-                fontFamily: "Inter",
-                fontWeight: 500,
-                fontSize: "14px",
-                lineHeight: "120%",
-                letterSpacing: "0%",
-                color: "#0A0A0A",
-              }}
-            >
-              Select Column
-            </Typography>
-            {columns
-              .filter(
-                ({ field }) =>
-                  ![
-                    "requestId",
-                    "name",
-                    "version",
-                    "createdAt",
-                    "status",
-                    "moreaction",
-                  ].includes(field)
-              )
-              .map((col) => (
-                <FormControlLabel
-                  key={col.field}
-                  control={
-                    <Checkbox
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxIcon />}
-                      checked={!hiddenColumns.includes(col.field)}
-                      onChange={() => handleColumnToggle(col.field)}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        fontFamily: "Inter",
-                        fontWeight: 500,
-                        fontSize: "14px",
-                        lineHeight: "120%",
-                        letterSpacing: "0%",
-                        color: "#0A0A0A",
-                      }}
-                    >
-                      {col.headerName}
-                    </Typography>
-                  }
-                />
-              ))}
-          </FormGroup>
-        );
-      default:
-        return null;
+    } catch (error) {
+      console.error("Add capital error:", error);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -247,9 +160,8 @@ const CapitalTable = ({ data }) => {
       {
         field: "Date",
         headerName: "Date",
-        // minWidth: 100,
         flex: 1,
-        valueGetter: (_, row) => moment(row?.Date).format("DD MMM YYYY"),
+        valueGetter: (params) => moment(params.row?.Date).format("DD MMM YYYY"),
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>
             {moment(params.row?.Date).format("DD MMM YYYY")}
@@ -259,7 +171,6 @@ const CapitalTable = ({ data }) => {
       {
         field: "status",
         headerName: "Status",
-        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Badge variant={params.row.status?.toLowerCase()}>
@@ -270,7 +181,6 @@ const CapitalTable = ({ data }) => {
       {
         field: "Amount",
         headerName: "Amount",
-        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>{params.row?.Amount}</Typography>
@@ -279,7 +189,6 @@ const CapitalTable = ({ data }) => {
       {
         field: "Type",
         headerName: "Type",
-        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Badge variant="version">{params.row?.Type}</Badge>
@@ -288,7 +197,6 @@ const CapitalTable = ({ data }) => {
       {
         field: "Schedule",
         headerName: "Schedule",
-        // minWidth: 100,
         flex: 1,
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>
@@ -299,36 +207,39 @@ const CapitalTable = ({ data }) => {
       {
         field: "manage",
         headerName: "Action",
-        // minWidth: 100,
         flex: 1,
-        renderCell: (params) => {
-          return (
-            <Box className="flex gap-8 items-center h-full">
-              <ActionButton
-                action="Backtest"
-                onClick={(e) => {
-                  setOpenCapital(true);
-                  setCapitalData({
-                    date: params.row.Date,
-                    initialAmount: params.row.Amount,
-                    type: params.row.Type,
-                  });
-                }}
-                label={params.row.status === "Completed" ? "NA" : "Manage"}
-                textColor={
-                  params.row.status === "Completed" ? "#666666" : "#3D69D3"
-                }
-                iconClass="ri-play-line"
-              />
-            </Box>
-          );
-        },
+        renderCell: (params) => (
+          <Box className="flex gap-8 items-center h-full">
+            <ActionButton
+              action="Backtest"
+              onClick={() => {
+                setOpenCapital(true);
+
+                setCapitalData({
+                  date: params.row.Date,
+                  initialAmount: params.row.Amount,
+                  type: params.row.Type,
+                });
+
+                setAmount(params.row.Amount);
+                setSelectedType(
+                  params.row?.Type?.replace(/\s+/g, "").toUpperCase()
+                );
+                setStartDate(params.row.Date);
+              }}
+              label={params.row.status === "Completed" ? "NA" : "Manage"}
+              textColor={
+                params.row.status === "Completed" ? "#666666" : "#3D69D3"
+              }
+              iconClass="ri-play-line"
+            />
+          </Box>
+        ),
       },
       {
         field: "moreaction",
         headerName: "",
         align: "center",
-        // minWidth: 50,
         maxWidth: 60,
         sortable: false,
         disableColumnMenu: true,
@@ -340,16 +251,93 @@ const CapitalTable = ({ data }) => {
             <SettingsIcon fontSize="small" />
           </IconButton>
         ),
-        renderCell: () => <ActionMenu isDeleteButton />,
+        renderCell: (params) => (
+          <ActionMenu
+            isDeleteButton
+            handleDelete={() => handleDeleteClick(params.row)}
+          />
+        ),
       },
     ],
-    [rows, hiddenColumns]
+    [hiddenColumns]
   );
+
   const visibleColumns = columns.filter(
     (col) => !hiddenColumns.includes(col.field)
   );
+
+  const popoverContent = () => {
+    if (activeFilter !== "column") return null;
+    return (
+      <FormGroup sx={{ padding: 2 }}>
+        <Typography
+          sx={{
+            fontFamily: "Inter",
+            fontWeight: 500,
+            fontSize: "14px",
+            lineHeight: "120%",
+            letterSpacing: "0%",
+            color: "#0A0A0A",
+          }}
+        >
+          Select Column
+        </Typography>
+        {columns
+          .filter(
+            ({ field }) =>
+              ![
+                "requestId",
+                "name",
+                "version",
+                "createdAt",
+                "status",
+                "moreaction",
+              ].includes(field)
+          )
+          .map((col) => (
+            <FormControlLabel
+              key={col.field}
+              control={
+                <Checkbox
+                  icon={<CheckBoxOutlinedIcon />}
+                  checkedIcon={<CheckBoxIcon />}
+                  checked={!hiddenColumns.includes(col.field)}
+                  onChange={() => handleColumnToggle(col.field)}
+                />
+              }
+              label={
+                <Typography
+                  sx={{
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    lineHeight: "120%",
+                    letterSpacing: "0%",
+                    color: "#0A0A0A",
+                  }}
+                >
+                  {col.headerName}
+                </Typography>
+              }
+            />
+          ))}
+      </FormGroup>
+    );
+  };
+
   return (
     <>
+      {isDeleteOpen && (
+        <DeleteModal
+          isOpen={isDeleteOpen}
+          handleClose={() => setIsDeleteOpen(false)}
+          handleConfirm={handleConfirmDelete}
+          isLoading={loading}
+          title="Are you Sure?"
+          description="All planned capital will be cleared."
+        />
+      )}
+
       {openCapital && (
         <AddCapital
           title="Add Capital"
@@ -362,10 +350,11 @@ const CapitalTable = ({ data }) => {
           amount={amount}
           selectedType={selectedType}
           startDate={startDate}
-          loading={loading}
+          loading={saving}
           onSave={handleSaveCapital}
         />
       )}
+
       <Popover
         open={Boolean(popoverAnchor)}
         anchorEl={popoverAnchor}
@@ -378,12 +367,12 @@ const CapitalTable = ({ data }) => {
             overflowX: "hidden",
           },
         }}
-        // transformOrigin={{ vertical: "top", horizontal: "left" }}
       >
         {popoverContent()}
       </Popover>
+
       <Box
-        className={`${classes.filterModal} flex`}
+        className={classes.filterModal + " flex"}
         sx={{
           borderRadius: 2,
           border: "1px solid #E0E0E0",
@@ -397,13 +386,7 @@ const CapitalTable = ({ data }) => {
           disableColumnSelector
           rows={rows}
           columns={visibleColumns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
-            },
-          }}
+          initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
           loading={loading}
           slotProps={{
             loadingOverlay: {
