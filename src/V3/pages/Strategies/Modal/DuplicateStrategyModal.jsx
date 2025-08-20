@@ -396,7 +396,7 @@ const CustomizedDialogs = ({
 
       setTimeout(() => {
         handleClose();
-        // setSuccessModalOpen(false);
+        setSuccessModalOpen(false);
         navigate("/Strategies");
       }, 2000);
     } catch (error) {
