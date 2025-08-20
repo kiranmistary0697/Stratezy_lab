@@ -367,26 +367,6 @@ const CustomizedDialogs = ({
 
     try {
       setIsDirty(false);
-      // if (defaultVersion !== versionName) {
-      //   await createStock({
-      //     endpoint: `strategystore/save`,
-      //     payload: isDuplicate ? duplicateStrategy : newEntry,
-      //     tags: [tagTypes.STRATEGY],
-      //   }).unwrap();
-      // } else if (id && !isDuplicate) {
-      //   await editStock({
-      //     endpoint: `strategystore/update`,
-      //     payload: newEntry,
-      //     tags: [tagTypes.STRATEGY],
-      //   }).unwrap();
-      // } else {
-      //   await createStock({
-      //     endpoint: `strategystore/save`,
-      //     payload: isDuplicate ? duplicateStrategy : newEntry,
-      //     tags: [tagTypes.STRATEGY],
-      //   }).unwrap();
-      // }
-
       if (id && !isDuplicate) {
         await editStock({
           endpoint: `strategystore/update`,
@@ -416,6 +396,7 @@ const CustomizedDialogs = ({
 
       setTimeout(() => {
         handleClose();
+        // setSuccessModalOpen(false);
         navigate("/Strategies");
       }, 2000);
     } catch (error) {
@@ -433,18 +414,11 @@ const CustomizedDialogs = ({
       await setFieldTouched("name", true, true);
       await setFieldTouched("description", true, true);
 
-      // ✅ If demo or duplicate, skip rest and save
-      // if (demoStrategy || isDuplicate) {
-      //   await handleSave();
-      //   return;
-      // }
       if (canSave) {
         await handleSave();
       }
-      // await handleSave(); // Save if both required fields are non-empty
     } catch (error) {
       console.error("Error in handleButtonClick:", error);
-      // Optional: show user-friendly error (toast/snackbar)
     }
   };
 
