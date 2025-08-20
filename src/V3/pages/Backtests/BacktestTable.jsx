@@ -31,6 +31,10 @@ import { tagTypes } from "../../tagTypes";
 import useDateTime from "../../hooks/useDateTime";
 import { toast } from "react-toastify";
 
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import BacktestCard from "../../common/Cards/BacktestCard";
+
 const useStyles = makeStyles({
   filterModal: {
     "& .MuiDataGrid-filterPanel": {
@@ -53,6 +57,9 @@ const BacktestTable = ({
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [deleteData] = useLazyGetQuery();
   const localSelectedStatus = localStorage.getItem(
@@ -600,7 +607,7 @@ const BacktestTable = ({
         // minWidth: 140,
         flex: 1,
         valueGetter: (_, row) =>
-          row?.maxDrawdown ? parseFloat(row.maxAccountValue) : 0,
+          row?.maxAccountValue ? parseFloat(row.maxAccountValue) : 0,
         renderCell: (params) => {
           const value = params?.row?.maxAccountValue;
           const num = Number(value);
@@ -820,48 +827,94 @@ const BacktestTable = ({
       >
         {popoverContent()}
       </Popover>
-
-      <Box
-        className={classes.filterModal}
-        sx={{
-          borderRadius: 2,
-          border: "1px solid #E0E0E0",
-          backgroundColor: "white",
-        }}
-      >
-        <DataGrid
-          checkboxSelection={isRowSelectionEnabled}
-          selectionModel={seletedRows}
-          onRowSelectionModelChange={(newSelection) => {
-            setSeletedRows(newSelection);
-          }}
-          rows={filteredRows}
-          columns={visibleColumns}
-          onRowClick={handleRowClick}
-          filterModel={filterModel}
-          onFilterModelChange={setFilterModel}
-          disableColumnSelector
-          initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
-          loading={isLoading}
-          slotProps={{
-            loadingOverlay: {
-              variant: "circular-progress",
-              noRowsVariant: "circular-progress",
-            },
-          }}
-          pageSizeOptions={[10]}
+      {isMobile ? (
+        <Box
           sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            },
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
           }}
-        />
-      </Box>
+        >
+          {rowsWithId.map((row, index) => (
+            <BacktestCard
+              key={index}
+              row={row}
+              handleRowClick={handleRowClick}
+              handleStrategyRowClick={handleStrategyRowClick}
+              onStrategyClick={handleStrategyRowClick}
+              onDelete={() => {
+                setIsDelete(true);
+                setRowToDelete(row?.requestId);
+              }}
+              onDeploy={() => {
+                console.log("bhjhj");
+                
+                setIsDeployCreate(true);
+                setDeployName({
+                  name: row?.name,
+                  reqId: row?.requestId,
+                  version: row?.version,
+                });
+              }}
+              onBacktestClick={(row) => {
+                if (row.summary.includes("still running")) {
+                  navigate(
+                    `/Backtest/backtest-detail?id=${row.requestId}&name=${row.name}`
+                  );
+                } else if (row.summary.includes("Backtest summary for")) {
+                  navigate(
+                    `/Backtest/backtest-output?id=${row.requestId}&name=${row.name}`
+                  );
+                }
+              }}
+              extractErrorList={extractErrorList}
+              extractSummaryMetrics={extractSummaryMetrics}
+            />
+          ))}
+        </Box>
+      ) : (
+        <Box
+          className={classes.filterModal}
+          sx={{
+            borderRadius: 2,
+            border: "1px solid #E0E0E0",
+            backgroundColor: "white",
+          }}
+        >
+          <DataGrid
+            checkboxSelection={isRowSelectionEnabled}
+            selectionModel={seletedRows}
+            onRowSelectionModelChange={(newSelection) => {
+              setSeletedRows(newSelection);
+            }}
+            rows={filteredRows}
+            columns={visibleColumns}
+            onRowClick={handleRowClick}
+            filterModel={filterModel}
+            onFilterModelChange={setFilterModel}
+            disableColumnSelector
+            initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+            loading={isLoading}
+            slotProps={{
+              loadingOverlay: {
+                variant: "circular-progress",
+                noRowsVariant: "circular-progress",
+              },
+            }}
+            pageSizeOptions={[10]}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 };

@@ -39,6 +39,10 @@ import {
 import CustomFilterPanel from "../../pages/Strategies/ViewStrategy/ViewModal/CustomFilterPanel";
 import { toast } from "react-toastify";
 
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import StrategyCard from "../Cards/StrategyCard";
+
 const FavoriteCell = ({ params, onToggleFavorite }) => {
   return (
     <IconButton
@@ -85,6 +89,9 @@ const TableRow = () => {
 
   const navigate = useNavigate();
   const localSelectedStatus = localStorage.getItem("selectedStatusTableRow");
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleStrategyNavigation = (
     action,
@@ -745,7 +752,7 @@ const TableRow = () => {
           backgroundColor: "white",
         }}
       >
-        <DataGrid
+        {/* <DataGrid
           disableColumnSelector
           rows={filteredRows}
           // columns={columns}
@@ -782,8 +789,75 @@ const TableRow = () => {
               color: "#666666",
             },
           }}
-        />
+        /> */}
       </Box>
+
+      {isMobile ? (
+        // Render cards for mobile view
+        <Box display="flex" flexDirection="column" gap={2}>
+          {rows.map((row) => (
+            <StrategyCard
+              key={`${row.version}-${row.id}`}
+              row={row}
+              onToggleFavorite={handleToggleFavorite}
+              onEdit={handleEditStrategy}
+              onDeploy={handleDeployStrategy}
+              onBacktest={(row) =>
+                handleStrategyNavigation(
+                  "view",
+                  row.id,
+                  row.strategy.name,
+                  true,
+                  row.version,
+                  row.demo
+                )
+              }
+              onDelete={(row) => {
+                setDeleteRow({ name: row.name, version: row.version });
+                setIsDeleteCase(true);
+              }}
+            />
+          ))}
+        </Box>
+      ) : (
+        // Render DataGrid for desktop/larger screens
+        <Box
+          className="flex"
+          sx={{
+            borderTopWidth: 1,
+            borderRightWidth: 1,
+            borderLeftWidth: 1,
+            borderRadius: 2,
+            borderStyle: "solid",
+            borderColor: "#E0E0E0",
+            overflow: "hidden",
+            backgroundColor: "white",
+          }}
+        >
+          <DataGrid
+            rows={filteredRows}
+            columns={visibleColumns}
+            disableSelectionOnClick
+            getRowId={(row) => `${row.version}-${row.id}`}
+            onRowClick={handleRowClick}
+            filterModel={filterModel}
+            onFilterModelChange={setFilterModel}
+            loading={isLoading}
+            pageSizeOptions={[10]}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
+
       <Popover
         open={Boolean(popoverAnchor)}
         anchorEl={popoverAnchor}
