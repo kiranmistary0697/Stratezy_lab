@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   IconButton,
-  Tooltip,
   Card,
   CardContent,
   CardActions,
@@ -13,12 +12,25 @@ import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 
 import ActionButton from "../ActionButton";
 import ActionMenu from "../DropDownButton";
-import StrategyTimeline from "../../pages/Strategies/TimeLine/StrategyTimeline";
 import Badge from "../Badge";
+import useDateTime from "../../hooks/useDateTime";
+
+const Row = ({ label, value }) => (
+  <div
+    className="flex gap-2 items-start"
+    style={{ fontFamily: "Inter, sans-serif" }}
+  >
+    <span className="font-semibold text-gray-900 whitespace-nowrap">
+      {label}
+    </span>
+    <span className="text-[#666666] break-words">{value ?? "-"}</span>
+  </div>
+);
 
 const StrategyCard = ({
   row,
   onToggleFavorite,
+  onCardClick,
   onEdit,
   onDeploy,
   onBacktest,
@@ -27,7 +39,7 @@ const StrategyCard = ({
   const {
     id,
     name,
-    version,
+    version = "v1",
     timestamp,
     complete,
     demo,
@@ -35,17 +47,6 @@ const StrategyCard = ({
     strategy = {},
     backtestSummaryRes,
   } = row;
-
-  const date = timestamp ? new Date(timestamp) : "";
-  const formattedDate = date.toLocaleString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  });
 
   const isDraft = !complete;
   const isDeployDisabled = !complete || !backtestSummaryRes;
@@ -65,11 +66,21 @@ const StrategyCard = ({
       <CardContent>
         {/* Header Section */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" fontWeight="600">
+          <Typography
+            variant="h6"
+            fontWeight={600}
+            sx={{ cursor: "pointer" }}
+            onClick={() => onCardClick({ row })}
+            title={strategy?.name || name}
+          >
             {strategy?.name || name}
           </Typography>
           {!demo && (
-            <IconButton onClick={() => onToggleFavorite(id)} size="small">
+            <IconButton
+              onClick={() => onToggleFavorite(id)}
+              size="small"
+              aria-label="Toggle favorite"
+            >
               {favorite ? (
                 <StarIcon sx={{ color: "#FFD34E" }} />
               ) : (
@@ -81,43 +92,21 @@ const StrategyCard = ({
 
         {/* Meta info */}
         <Box display="flex" gap={1} mt={1} flexWrap="wrap">
-          <Badge variant="version">{version || "v1"}</Badge>
+          <Badge variant="version">{version}</Badge>
           {demo && <Badge variant="demo">Demo</Badge>}
           <Badge variant={complete ? "complete" : "draft"}>
             {complete ? "Complete" : "Draft"}
           </Badge>
         </Box>
 
-        {/* Date */}
-        <Typography variant="body2" color="textSecondary" mt={1}>
-          Created On: {formattedDate}
-        </Typography>
-
-        {/* Description with Timeline Popup */}
-        <Tooltip
-          title={<StrategyTimeline strategy={row} />}
-          placement="top"
-          componentsProps={{
-            tooltip: {
-              sx: {
-                bgcolor: "white",
-                color: "#000",
-                borderRadius: 1,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              },
-            },
-          }}
-        >
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            mt={1}
-            noWrap
-            sx={{ cursor: "pointer" }}
-          >
-            Summary: {strategy?.description || "No description available"}
-          </Typography>
-        </Tooltip>
+        {/* Details */}
+        <Box className="space-y-4 p-3 sm:p-4 overflow-auto">
+          <Row label="Created On:" value={useDateTime(timestamp)} />
+          <Row
+            label="Summary:"
+            value={strategy?.description || "No description available"}
+          />
+        </Box>
       </CardContent>
 
       {/* Actions Section */}
@@ -125,28 +114,31 @@ const StrategyCard = ({
         sx={{ display: "flex", justifyContent: "space-between", px: 2 }}
       >
         <Box display="flex" gap={1}>
-          {/* Backtest Button */}
           <ActionButton
             action="Backtest"
             label="Run Backtest"
             disabled={isDraft}
             iconClass="ri-play-line"
             textColor="#3D69D3"
-            onClick={() => onBacktest(row)}
+            onClick={(e) => {
+              e.preventDefault();
+              onBacktest();
+            }}
           />
 
-          {/* Deploy Button */}
           <ActionButton
             action="Deploy"
             label="Deploy"
             disabled={isDeployDisabled}
             iconClass="ri-rocket-line"
             textColor="#3D69D3"
-            onClick={() => onDeploy(row)}
+            onClick={(e) => {
+              e.preventDefault();
+              onDeploy();
+            }}
           />
         </Box>
 
-        {/* More Actions Menu */}
         <ActionMenu
           formik={row}
           id={name}

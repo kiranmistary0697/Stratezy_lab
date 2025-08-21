@@ -9,8 +9,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
-  Menu,
-  MenuItem,
+  Pagination,
   Popover,
   Tooltip,
   Typography,
@@ -31,6 +30,10 @@ import { tagTypes } from "../../tagTypes";
 
 import GlobalFunctionActionMenu from "./GlobalFunctionActionMenu";
 import { toast } from "react-toastify";
+
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import FunctionCard from "../../common/Cards/FunctionCard";
 
 const useStyles = makeStyles({
   // This targets the column and operator dropdowns in the filter modal
@@ -74,6 +77,12 @@ const FunctionTable = ({ query }) => {
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
 
   const hiddenColumnsFromLocalStorage = localStorage.getItem(
     "hiddenColumnsFunctionTable"
@@ -826,6 +835,16 @@ const FunctionTable = ({ query }) => {
     (col) => !hiddenColumns.includes(col.field)
   );
 
+  const pageCount = Math.ceil(filteredRows.length / cardsPerPage);
+  const paginatedRows = filteredRows.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <>
       {openDuplicateModal && (
@@ -860,45 +879,99 @@ const FunctionTable = ({ query }) => {
       >
         {popoverContent()}
       </Popover>
-      <Box
-        className={`${classes.filterModal} flex`}
-        sx={{
-          borderRadius: 2,
-          border: "1px solid #E0E0E0",
-          backgroundColor: "white",
-          width: "100%",
-          height: "auto",
-          overflow: "auto",
-        }}
-      >
-        <DataGrid
-          disableColumnSelector
-          rows={filteredRows}
-          loading={isLoading}
-          columns={visibleColumns}
-          filterModel={filterModel}
-          onRowClick={handleRowClick}
-          onFilterModelChange={setFilterModel}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
-            },
-          }}
-          pageSizeOptions={[10]}
+      {isMobile ? (
+        <>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            {paginatedRows.map((row, i) => (
+              <FunctionCard
+                key={i}
+                row={row}
+                onCardClick={() => {
+                  handleRowClick({ row });
+                }}
+                onEdit={() => {
+                  if (row.userDefined) {
+                    navigate(
+                      `/Devstudio/edit-function?name=${row.shortFuncName}`
+                    );
+                  }
+                }}
+                onDelete={() => {
+                  if (row.userDefined) {
+                    setDeleteRow({ name: row.shortFuncName });
+                    setIsDelete(true);
+                  }
+                }}
+                onDuplicate={() => {
+                  navigate(
+                    `/Devstudio/edit-function?name=${row.shortFuncName}&duplicate=true`
+                  );
+                }}
+              />
+            ))}
+          </Box>
+
+          {/* Pagination Control */}
+          {pageCount > 1 ? (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+              <Pagination
+                count={pageCount}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </Box>
+          ) : (
+            "No Data to show.."
+          )}
+        </>
+      ) : (
+        <Box
+          className={`${classes.filterModal} flex`}
           sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            },
+            borderRadius: 2,
+            border: "1px solid #E0E0E0",
+            backgroundColor: "white",
+            width: "100%",
+            height: "auto",
+            overflow: "auto",
           }}
-        />
-      </Box>
+        >
+          <DataGrid
+            disableColumnSelector
+            rows={filteredRows}
+            loading={isLoading}
+            columns={visibleColumns}
+            filterModel={filterModel}
+            onRowClick={handleRowClick}
+            onFilterModelChange={setFilterModel}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            pageSizeOptions={[10]}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 };

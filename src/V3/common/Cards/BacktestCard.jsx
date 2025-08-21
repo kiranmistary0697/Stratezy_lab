@@ -1,16 +1,30 @@
 /* eslint-disable react/prop-types */
 import { Box, Typography, Card, CardContent, CardActions } from "@mui/material";
-import ActionMenu from "../../common/DropDownButton";
 import Badge from "../../common/Badge";
 import useDateTime from "../../hooks/useDateTime";
+import ActionButton from "../ActionButton";
+
+const Row = ({ label, value }) => {
+  return (
+    <div
+      className="flex gap-2 items-start"
+      style={{ fontFamily: "Inter, sans-serif" }}
+    >
+      <span className="font-semibold text-gray-900 whitespace-nowrap">
+        {label}
+      </span>
+      <span className="text-[#666666] break-words">{value ?? "-"}</span>
+    </div>
+  );
+};
 
 const BacktestCard = ({
   row,
-  handleRowClick,
   onDeploy,
   onDelete,
   extractSummaryMetrics,
   handleStrategyRowClick,
+  onBacktestClick,
 }) => {
   const summary = row?.summary || "";
   const status = summary.includes("still running")
@@ -37,23 +51,14 @@ const BacktestCard = ({
         backgroundColor: "#fff",
         display: "flex",
         flexDirection: "column",
-        cursor: "pointer",
       }}
-      onClick={() => handleRowClick(row)}
     >
-      <CardContent sx={{ pb: 1 }}>
+      <CardContent>
         {/* Header: Strategy Name and Version */}
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography
             variant="h6"
             fontWeight="600"
-            sx={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              cursor: "pointer",
-              color: "#3D69D3",
-            }}
             onClick={onNameClick}
             title={row.name}
           >
@@ -62,102 +67,113 @@ const BacktestCard = ({
           <Badge variant="version">{row.version || "v1"}</Badge>
         </Box>
 
-        <Typography variant="body2" color="textSecondary" mt={1}>
-          Requested ID: {row?.requestId}
-        </Typography>
-
-        <Typography variant="body2" color="textSecondary" mt={1}>
-          Created At: {useDateTime(row?.executionTime)}
-        </Typography>
-
         <Box
-          sx={{ mt: 1, display: "inline-flex", alignItems: "center", gap: 1 }}
-        >
-          <Typography variant="body2" color="textSecondary" mt={1}>
-            Status:
-          </Typography>
-          <Badge variant={status.toLowerCase()} isSquare>
-            <Typography
-              sx={{
-                fontFamily: "Inter",
-                letterSpacing: "0%",
-                color: status === "Failed" ? "red" : "inherit",
-              }}
-            >
-              {status}
-            </Typography>
-          </Badge>
-        </Box>
-
-        {/* Backtest Key Metrics */}
-        <Box
-          sx={{
-            mt: 1,
-            fontFamily: "Inter",
-            fontSize: "12px",
-            color: "#666666",
+          className="space-y-4 p-3 sm:p-4 overflow-auto"
+          onClick={(e) => {
+            e.preventDefault();
+            onBacktestClick(row);
           }}
         >
-          <Typography noWrap>
-            Time Frame: {row.startDate} to {row.endDate}
-          </Typography>
-          <Typography noWrap>Initial Capital: {row.initialCapital}</Typography>
-          <Typography noWrap>
-            Net Profit: {row.netProfit ? Number(row.netProfit).toFixed(2) : 0}
-          </Typography>
-          <Typography noWrap>
-            Max Drawdown:{" "}
-            {row?.maxDrawdown ? Number(row.maxDrawdown).toFixed(2) : 0}
-          </Typography>
-          <Typography noWrap>
-            Max Account Value:{" "}
-            {row?.maxAccountValue ? Number(row.maxAccountValue).toFixed(2) : 0}
-          </Typography>
-          <Typography noWrap>
-            Average profit/trade:{" "}
-            {row?.avgProfitPerTrade
-              ? Number(row.avgProfitPerTrade).toFixed(2)
-              : 0}
-          </Typography>
-          <Typography noWrap>
-            Expectancy:{" "}
-            {row?.expectancy ? Number(row.expectancy).toFixed(2) : 0}
-          </Typography>
-          <Typography noWrap>
-            Sharpe Ratio:{" "}
-            {row.sharpeRatio ? Number(row.sharpeRatio).toFixed(2) : "0"}
-          </Typography>
-          <Typography noWrap>
-            SQN: {row.sqn ? Number(row.sqn).toFixed(2) : "0"}
-          </Typography>
-          <Typography noWrap>
-            Avg Annual Profit:{" "}
-            {row.avgAnnualProfit ? Number(row.avgAnnualProfit).toFixed(2) : "0"}
-          </Typography>
-          <Typography noWrap>
-            Total Trades: {backtestSummary["Total number of trades"] || "0"}
-          </Typography>
+          <Box className="flex flex-col gap-1 text-sm text-gray-900">
+            <Row label="Requested ID:" value={row?.requestId} />
+            <Row label="Created At:" value={useDateTime(row?.executionTime)} />
+            <Row
+              label="Status:"
+              value={
+                <Typography
+                  sx={{
+                    fontFamily: "Inter",
+                    letterSpacing: "0%",
+                    color: status === "Failed" ? "red" : "green",
+                  }}
+                >
+                  {status}
+                </Typography>
+              }
+            />
+            <Row
+              label="Time Frame:"
+              value={`${row.startDate} to ${row.endDate}`}
+            />
+            <Row label="Initial Capital:" value={row.initialCapital} />
+            <Row
+              label="Net Profit:"
+              value={row.netProfit ? Number(row.netProfit).toFixed(2) : 0}
+            />
+            <Row
+              label="Max Drawdown:"
+              value={row?.maxDrawdown ? Number(row.maxDrawdown).toFixed(2) : 0}
+            />
+            <Row
+              label="Max Account Value:"
+              value={
+                row?.maxAccountValue
+                  ? Number(row.maxAccountValue).toFixed(2)
+                  : 0
+              }
+            />
+            <Row
+              label="Average profit/trade:"
+              value={
+                row?.avgProfitPerTrade
+                  ? Number(row.avgProfitPerTrade).toFixed(2)
+                  : 0
+              }
+            />
+            <Row
+              label="Expectancy:"
+              value={row?.expectancy ? Number(row.expectancy).toFixed(2) : 0}
+            />
+            <Row
+              label="Sharpe Ratio:"
+              value={row.sharpeRatio ? Number(row.sharpeRatio).toFixed(2) : "0"}
+            />
+            <Row
+              label="SQN:"
+              value={row.sqn ? Number(row.sqn).toFixed(2) : "0"}
+            />
+            <Row
+              label="Avg Annual Profit:"
+              value={
+                row.avgAnnualProfit
+                  ? Number(row.avgAnnualProfit).toFixed(2)
+                  : "0"
+              }
+            />
+            <Row
+              label="Total Trades:"
+              value={backtestSummary["Total number of trades"] || "0"}
+            />
+          </Box>
         </Box>
       </CardContent>
 
       {/* Card Actions - 3 dot menu */}
-      <CardActions sx={{ justifyContent: "flex-end", px: 2, pt: 0, pb: 1 }}>
-        <Box
-          onClick={(e) => e.stopPropagation()} // Prevent card click navigation on menu click
-          sx={{ display: "flex", alignItems: "center" }}
-        >
-          <ActionMenu
-            formik={row}
-            id={row.name}
-            name={row.name}
-            isDeleteButton
-            isDuplicateButton
-            isDeployStrategy={status === "Complete"}
-            handleDelete={onDelete}
-            handleEdit={() => {
-              // You can provide your edit handler here or pass as prop and call it
+      <CardActions
+        sx={{ display: "flex", justifyContent: "space-between", px: 2 }}
+      >
+        <Box sx={{ display: "flex", gap: 1, marginBottom: 2, marginLeft: 1 }}>
+          <ActionButton
+            action="Deploy"
+            label="Deploy"
+            disabled={status === "Failed"}
+            iconClass="ri-rocket-line"
+            textColor="#3D69D3"
+            onClick={(e) => {
+              e.preventDefault();
+              onDeploy();
             }}
-            handleDeploy={onDeploy}
+          />
+          <ActionButton
+            action="Delete"
+            label="Delete"
+            disabled={false}
+            iconClass="ri-rocket-line"
+            textColor="red"
+            onClick={(e) => {
+              e.preventDefault();
+              onDelete();
+            }}
           />
         </Box>
       </CardActions>

@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  Pagination,
   Popover,
   Typography,
 } from "@mui/material";
@@ -15,6 +16,10 @@ import {
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxOutlinedIcon,
 } from "@mui/icons-material";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import TradeCard from "../../../common/Cards/TradeCard";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -43,6 +48,11 @@ const Tradetable = (props) => {
 
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const combinedArrayWithId = rows.flat().map((item, index) => ({
     id: index,
@@ -385,6 +395,18 @@ const Tradetable = (props) => {
     (col) => !hiddenColumns.includes(col.field)
   );
 
+  const pageCount = Math.ceil(combinedArrayWithId.length / cardsPerPage);
+
+  const paginatedRows = combinedArrayWithId.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <>
       <Popover
@@ -404,44 +426,64 @@ const Tradetable = (props) => {
         {popoverContent()}
       </Popover>
 
-      <Box
-        className="flex h-full overflow-auto"
-        sx={{
-          borderTopWidth: 1,
-          borderRightWidth: 1,
-          borderLeftWidth: 1,
-          borderRadius: 2,
-          borderStyle: "solid",
-          borderColor: "#E0E0E0",
-          overflow: "hidden",
-          backgroundColor: "white",
-        }}
-      >
-        <DataGrid
-          disableColumnSelector
-          rows={combinedArrayWithId}
-          columns={visibleColumns}
-          className="h-full"
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
-            },
-          }}
-          pageSizeOptions={[10]}
+      {isMobile ? (
+        <>
+          <Box display="flex" flexDirection="column" gap={2}>
+            {paginatedRows.map((data, i) => (
+              <TradeCard key={i} row={data} />
+            ))}
+          </Box>
+          {pageCount > 1 && (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+              <Pagination
+                count={pageCount}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </Box>
+          )}
+        </>
+      ) : (
+        <Box
+          className="flex h-full overflow-auto"
           sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            },
+            borderTopWidth: 1,
+            borderRightWidth: 1,
+            borderLeftWidth: 1,
+            borderRadius: 2,
+            borderStyle: "solid",
+            borderColor: "#E0E0E0",
+            overflow: "hidden",
+            backgroundColor: "white",
           }}
-        />
-      </Box>
+        >
+          <DataGrid
+            disableColumnSelector
+            rows={combinedArrayWithId}
+            columns={visibleColumns}
+            className="h-full"
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            pageSizeOptions={[10]}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 };

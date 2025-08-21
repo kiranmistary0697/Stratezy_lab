@@ -8,6 +8,7 @@ import {
   Popover,
   FormGroup,
   Link,
+  Pagination,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
@@ -27,6 +28,10 @@ import SuccessModal from "../../common/SuccessModal";
 
 import { useLazyGetQuery, usePostMutation } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
+
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import DeployCard from "../../common/Cards/DeployCard";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -80,6 +85,12 @@ const DeployTable = ({
   const [rowToDelete, setRowToDelete] = useState(null);
 
   const classes = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
+
   const hiddenColumnsFromLocalStorage = localStorage.getItem(
     "hiddenColumnsDeploy"
   );
@@ -519,6 +530,18 @@ const DeployTable = ({
     (col) => !hiddenColumns.includes(col.field)
   );
 
+  const pageCount = Math.ceil(filterRow.length / cardsPerPage);
+
+  const paginatedRows = filterRow.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
+  };
+
   return (
     <>
       {/* Delete Modal */}
@@ -587,31 +610,86 @@ const DeployTable = ({
       </Popover>
 
       {/* Data Grid */}
-      <Box
-        className={`${classes.filterModal}`}
-        sx={{ border: "1px solid #E0E0E0", borderRadius: 2 }}
-      >
-        <DataGrid
-          disableColumnSelector
-          rows={filterRow}
-          getRowId={(row) => `${row.version}-${row.id}`}
-          columns={visibleColumns}
-          disableSelectionOnClick
-          onRowClick={handleRowClick}
-          loading={loading}
-          pageSizeOptions={[10]}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: 600,
-              fontSize: "12px",
-              color: "#666666",
-            },
-          }}
-        />
-      </Box>
+      {isMobile ? (
+        <>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            {paginatedRows.map((row, i) => (
+              <DeployCard
+                key={i}
+                row={row}
+                onBacktest={() => {}}
+                handleActivate={() => {
+                  setActionType(
+                    row.active === "Yes" ? "De-activate" : "Activate"
+                  );
+                  setIsActiveStrategy(true);
+                  setSelectedId({
+                    strategyName: row.name,
+                    exchange: row.exchange,
+                    brokerage: row.brokerage,
+                    version: row.version,
+                  });
+                }}
+                handleDelete={() => {
+                  setIsDelete(true);
+                  setRowToDelete({
+                    name: row.name,
+                    exchange: row.exchange,
+                    brokerage: row.brokerage,
+                    version: row.version,
+                  });
+                }}
+                onCardClick={() => handleRowClick({ row })}
+                onNameClick={() => {
+                  handleStrategyRowClick({ row });
+                }}
+              />
+            ))}
+          </Box>
+          {pageCount > 1 && (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+              <Pagination
+                count={pageCount}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </Box>
+          )}
+        </>
+      ) : (
+        <Box
+          className={`${classes.filterModal}`}
+          sx={{ border: "1px solid #E0E0E0", borderRadius: 2 }}
+        >
+          <DataGrid
+            disableColumnSelector
+            rows={filterRow}
+            getRowId={(row) => `${row.version}-${row.id}`}
+            columns={visibleColumns}
+            disableSelectionOnClick
+            onRowClick={handleRowClick}
+            loading={loading}
+            pageSizeOptions={[10]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 10 } },
+            }}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: 600,
+                fontSize: "12px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 };

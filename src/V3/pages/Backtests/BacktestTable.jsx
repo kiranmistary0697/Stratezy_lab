@@ -7,6 +7,7 @@ import {
   FormGroup,
   IconButton,
   Link,
+  Pagination,
   Popover,
   Tooltip,
   Typography,
@@ -85,6 +86,9 @@ const BacktestTable = ({
   const [rowToDelete, setRowToDelete] = useState(null);
   const [isDeployCreate, setIsDeployCreate] = useState(false);
   const [deployName, setDeployName] = useState({});
+
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
 
   useEffect(() => {
     if (localSelectedStatus) {
@@ -782,6 +786,18 @@ const BacktestTable = ({
     }
   }, []);
 
+  const pageCount = Math.ceil(rowsWithId.length / cardsPerPage);
+
+  const paginatedRows = rowsWithId.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
+  };
+
   return (
     <>
       {isDeployCreate && (
@@ -828,48 +844,52 @@ const BacktestTable = ({
         {popoverContent()}
       </Popover>
       {isMobile ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          {rowsWithId.map((row, index) => (
-            <BacktestCard
-              key={index}
-              row={row}
-              handleRowClick={handleRowClick}
-              handleStrategyRowClick={handleStrategyRowClick}
-              onStrategyClick={handleStrategyRowClick}
-              onDelete={() => {
-                setIsDelete(true);
-                setRowToDelete(row?.requestId);
-              }}
-              onDeploy={() => {
-                setIsDeployCreate(true);
-                setDeployName({
-                  name: row?.name,
-                  reqId: row?.requestId,
-                  version: row?.version,
-                });
-              }}
-              onBacktestClick={(row) => {
-                if (row.summary.includes("still running")) {
-                  navigate(
-                    `/Backtest/backtest-detail?id=${row.requestId}&name=${row.name}`
-                  );
-                } else if (row.summary.includes("Backtest summary for")) {
-                  navigate(
-                    `/Backtest/backtest-output?id=${row.requestId}&name=${row.name}`
-                  );
-                }
-              }}
-              extractErrorList={extractErrorList}
-              extractSummaryMetrics={extractSummaryMetrics}
-            />
-          ))}
-        </Box>
+        <>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {paginatedRows.map((row, index) => (
+              <BacktestCard
+                key={index}
+                row={row}
+                onDeploy={() => {
+                  setIsDeployCreate(true);
+                  setDeployName({
+                    name: row?.name,
+                    reqId: row?.requestId,
+                    version: row?.version,
+                  });
+                }}
+                onDelete={() => {
+                  setIsDelete(true);
+                  setRowToDelete(row?.requestId);
+                }}
+                extractSummaryMetrics={extractSummaryMetrics}
+                handleStrategyRowClick={handleStrategyRowClick}
+                onBacktestClick={(row) => {
+                  if (row.summary.includes("still running")) {
+                    navigate(
+                      `/Backtest/backtest-detail?id=${row.requestId}&name=${row.name}`
+                    );
+                  } else if (row.summary.includes("Backtest summary for")) {
+                    navigate(
+                      `/Backtest/backtest-output?id=${row.requestId}&name=${row.name}`
+                    );
+                  }
+                }}
+              />
+            ))}
+          </Box>
+
+          {pageCount > 1 && (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+              <Pagination
+                count={pageCount}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </Box>
+          )}
+        </>
       ) : (
         <Box
           className={classes.filterModal}

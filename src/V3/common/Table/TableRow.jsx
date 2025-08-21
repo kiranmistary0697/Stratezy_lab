@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  Pagination,
   Popover,
   Tooltip,
   Typography,
@@ -86,6 +87,9 @@ const TableRow = () => {
   const [isDeleteCase, setIsDeleteCase] = useState(false);
   const [deleteRow, setDeleteRow] = useState({});
   // const { authToken } = useAuth();
+
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
 
   const navigate = useNavigate();
   const localSelectedStatus = localStorage.getItem("selectedStatusTableRow");
@@ -727,6 +731,18 @@ const TableRow = () => {
     [columns, hiddenColumns]
   );
 
+  const pageCount = Math.ceil(rows.length / cardsPerPage);
+
+  const paginatedRows = rows.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
+  };
+
   return (
     <>
       {isDeleteCase && (
@@ -793,34 +809,54 @@ const TableRow = () => {
       </Box>
 
       {isMobile ? (
-        // Render cards for mobile view
-        <Box display="flex" flexDirection="column" gap={2}>
-          {rows.map((row) => (
-            <StrategyCard
-              key={`${row.version}-${row.id}`}
-              row={row}
-              onToggleFavorite={handleToggleFavorite}
-              onEdit={handleEditStrategy}
-              onDeploy={handleDeployStrategy}
-              onBacktest={(row) =>
-                handleStrategyNavigation(
-                  "view",
-                  row.id,
-                  row.strategy.name,
-                  true,
-                  row.version,
-                  row.demo
-                )
-              }
-              onDelete={(row) => {
-                setDeleteRow({ name: row.name, version: row.version });
-                setIsDeleteCase(true);
-              }}
-            />
-          ))}
-        </Box>
+        <>
+          <Box display="flex" flexDirection="column" gap={2}>
+            {paginatedRows.map((row) => (
+              <StrategyCard
+                key={`${row.version}-${row.id}`}
+                row={row}
+                onCardClick={handleRowClick}
+                onToggleFavorite={handleToggleFavorite}
+                onEdit={handleEditStrategy}
+                onDeploy={() => {
+                  handleDeployStrategy(
+                    row.id,
+                    row.strategy.name,
+                    true,
+                    row?.backtestSummaryRes?.requestId,
+                    row?.version
+                  );
+                }}
+                onBacktest={() =>
+                  handleStrategyNavigation(
+                    "view",
+                    row.id,
+                    row.strategy.name,
+                    true,
+                    row.version,
+                    row.demo
+                  )
+                }
+                onDelete={(row) => {
+                  setDeleteRow({ name: row.name, version: row.version });
+                  setIsDeleteCase(true);
+                }}
+              />
+            ))}
+          </Box>
+
+          {pageCount > 1 && (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+              <Pagination
+                count={pageCount}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </Box>
+          )}
+        </>
       ) : (
-        // Render DataGrid for desktop/larger screens
         <Box
           className="flex"
           sx={{
