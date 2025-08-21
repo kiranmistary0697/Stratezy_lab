@@ -25,7 +25,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Performance = ({ data = {} }) => {
+const CompareIndex = ({ data = {} }) => {
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down("sm")); // <600px
   const isSmDown = useMediaQuery(theme.breakpoints.down("md")); // <900px
@@ -58,7 +58,7 @@ const Performance = ({ data = {} }) => {
         const res = await triggerGetChart({
           endpoint: `command/backtest/chart?symbol=&stage=trade&id=${
             reqId ?? ""
-          }&substage=capital`,
+          }&substage=comparewithindex`,
           tags: [tagTypes.GET_CHART],
         }).unwrap();
         const payload = res?.data ?? res;
@@ -364,4 +364,4 @@ const Performance = ({ data = {} }) => {
   );
 };
 
-export default Performance;
+export default CompareIndex;

@@ -33,7 +33,7 @@ const CapitalPage = ({ data = {}, fetchDeployData = () => {} }) => {
         formattedRows.push({
           id: `${deployedDate}-planned`,
           Date: deployedDate,
-          Amount: `₹${initialCapital.toLocaleString("en-IN")}`,
+          Amount: `${initialCapital.toLocaleString("en-IN")}`,
           status: "Completed",
           Type: "One Time",
           Schedule: "1/1",
@@ -45,7 +45,7 @@ const CapitalPage = ({ data = {}, fetchDeployData = () => {} }) => {
           formattedRows.push({
             id: `${date}-applied`,
             Date: date,
-            Amount: `₹${amount.toLocaleString("en-IN")}`,
+            Amount: `${amount.toLocaleString("en-IN")}`,
             status: "Completed",
             Type: "One Time",
             Schedule: "1/1",
@@ -58,7 +58,7 @@ const CapitalPage = ({ data = {}, fetchDeployData = () => {} }) => {
           formattedRows.push({
             id: `${date}-planned`,
             Date: date,
-            Amount: `₹${amount.toLocaleString("en-IN")}`,
+            Amount: `${amount.toLocaleString("en-IN")}`,
             status: "Planned",
             Type: "One Time",
             Schedule: "1/1",
@@ -69,27 +69,12 @@ const CapitalPage = ({ data = {}, fetchDeployData = () => {} }) => {
       setRows(formattedRows);
 
       // Calculate total invested capital (sum of all amounts)
-      // const totalAmount = formattedRows.reduce((sum, item) => {
-      //   const cleanAmount = item.Amount.replace(/[₹,]/g, "");
-      //   return sum + parseFloat(cleanAmount);
-      // }, 0);
+      const totalAmount = formattedRows.reduce((sum, item) => {
+        const cleanAmount = item.Amount.replace(/[?,]/g, "");
+        return sum + parseFloat(cleanAmount);
+      }, 0);
 
-      // setCapitalAmount(totalAmount);
-
-      // Calculate only planned + initial capital
-      let totalAmount = 0;
-
-      if (initialCapital !== undefined) {
-        totalAmount += initialCapital;
-      }
-
-      if (capitalData.planned) {
-        for (const amount of Object.values(capitalData.planned)) {
-          totalAmount += amount;
-        }
-      }
-
-      setCapitalAmount(Number(totalAmount).toFixed(2));
+      setCapitalAmount(totalAmount);
     } catch (error) {
       console.error("Failed to fetch capital data:", error);
     } finally {

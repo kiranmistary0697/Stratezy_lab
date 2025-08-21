@@ -847,8 +847,6 @@ const BacktestTable = ({
                 setRowToDelete(row?.requestId);
               }}
               onDeploy={() => {
-                console.log("bhjhj");
-                
                 setIsDeployCreate(true);
                 setDeployName({
                   name: row?.name,

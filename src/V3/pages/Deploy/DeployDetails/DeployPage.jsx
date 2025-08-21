@@ -9,6 +9,7 @@ import Holdings from "./DepolyPage/HoldingsPage/Holdings";
 import TradeToDo from "./DepolyPage/TradeToDoPage/TradeToDo";
 import TradeHistory from "./DepolyPage/TradeHistroyPage/TradeHistory";
 import Performance from "./DepolyPage/Performance";
+import CompareIndex from "./DepolyPage/CompareIndex";
 import DetailsPage from "./DepolyPage/DetailPage/DetailsPage";
 import { useLazyGetQuery } from "../../../../slices/api";
 import { tagTypes } from "../../../tagTypes";
@@ -20,6 +21,7 @@ const tabComponents = [
   TradeToDo,
   TradeHistory,
   Performance,
+  CompareIndex
 ];
 
 const DeployPage = () => {
@@ -69,6 +71,7 @@ const DeployPage = () => {
               "Trade To-do",
               "Trade History",
               "Performance",
+              "CompareIndex"
             ]}
             value={tabIndex}
             onChange={handleTabChange}

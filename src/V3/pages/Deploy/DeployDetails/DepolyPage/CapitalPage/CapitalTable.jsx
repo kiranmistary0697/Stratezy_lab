@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   Box,
   Checkbox,
@@ -40,15 +40,9 @@ const tableTextSx = {
 
 const useStyles = makeStyles({
   filterModal: {
-    "& .MuiDataGrid-filterPanel": {
-      display: "none",
-    },
-    "& .MuiDataGrid-filterPanelColumn": {
-      display: "none",
-    },
-    "& .MuiDataGrid-filterPanelOperator": {
-      display: "none",
-    },
+    "& .MuiDataGrid-filterPanel": { display: "none" },
+    "& .MuiDataGrid-filterPanelColumn": { display: "none" },
+    "& .MuiDataGrid-filterPanelOperator": { display: "none" },
   },
 });
 
@@ -155,6 +149,50 @@ const CapitalTable = ({
     }
   };
 
+  // ---------- Currency formatting (prevents ₹NaN) ----------
+  const currencyFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2, // set 0 if you don't want decimals
+      }),
+    []
+  );
+
+  // Robust parser: handles plain numbers, "₹3,00,00,000.00", "3E7", "+3e+7", "-1.2e-3"
+  const parseToNumber = useCallback((raw) => {
+    if (raw === 0) return 0;
+    if (raw == null || raw === "") return null;
+
+    if (typeof raw === "number") return Number.isFinite(raw) ? raw : null;
+
+    // Clean out currency/commas & weird spaces, keep digits, dot, sign, and exponent marker
+    const s = String(raw)
+      .replace(/[\u00A0\u202F]/g, "")   // NBSP, thin space
+      .replace(/,/g, "")                // commas
+      .replace(/₹/g, "")                // rupee symbol
+      .trim();
+
+    // Try a strict scientific/decimal match to avoid picking up stray text
+    const m = s.match(/^[+-]?\d*\.?\d+(?:[eE][+-]?\d+)?$/);
+    const candidate = m ? m[0] : s; // if it doesn't strictly match, still try Number(s)
+
+    const n = Number(candidate);
+    return Number.isFinite(n) ? n : null;
+  }, []);
+
+  const formatINR = useCallback(
+    (raw) => {
+      const n = parseToNumber(raw);
+      return n == null ? "₹0" : currencyFormatter.format(n);
+    },
+    [currencyFormatter, parseToNumber]
+  );
+
+
+  // --------------------------------------------------------
+
   const columns = useMemo(
     () => [
       {
@@ -182,8 +220,12 @@ const CapitalTable = ({
         field: "Amount",
         headerName: "Amount",
         flex: 1,
+        minWidth: 180, // so big values like ₹3,00,00,000.00 don't get cut to "₹3"
+        valueGetter: (params) => parseToNumber(params.row?.Amount) ?? 0,
         renderCell: (params) => (
-          <Typography sx={{ ...tableTextSx }}>{params.row?.Amount}</Typography>
+          <Typography sx={{ ...tableTextSx, whiteSpace: "nowrap" }}>
+            {formatINR(params.row?.Amount)}
+          </Typography>
         ),
       },
       {
@@ -259,7 +301,7 @@ const CapitalTable = ({
         ),
       },
     ],
-    [hiddenColumns]
+    [hiddenColumns, formatINR, parseToNumber]
   );
 
   const visibleColumns = columns.filter(
