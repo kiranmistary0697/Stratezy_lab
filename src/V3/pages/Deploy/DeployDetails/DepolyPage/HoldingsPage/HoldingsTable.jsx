@@ -1,17 +1,13 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import {
   Box,
   Checkbox,
   FormControlLabel,
   FormGroup,
   IconButton,
+  Pagination,
   Popover,
   Typography,
 } from "@mui/material";
@@ -20,6 +16,10 @@ import CheckBoxOutlinedIcon from "@mui/icons-material/CheckBoxOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import CommonCard from "../../../../../common/Cards/CommonCard";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -54,6 +54,9 @@ const HoldingsTable = forwardRef((props, ref) => {
   // { ref, data = {}, query }
   const classes = useStyles();
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [hiddenColumns, setHiddenColumns] = useState([
     "sellTime",
     "sellPrice",
@@ -66,6 +69,9 @@ const HoldingsTable = forwardRef((props, ref) => {
   const [activeFilter, setActiveFilter] = useState(null);
 
   const [filterModel, setFilterModel] = useState({ items: [] });
+
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
 
   const handlePopoverOpen = (event, type) => {
     event.stopPropagation();
@@ -398,6 +404,40 @@ const HoldingsTable = forwardRef((props, ref) => {
       wrapColumnChar: '"',
     }),
   }));
+
+  const pageCount = Math.ceil(rowsWithId.length / cardsPerPage);
+
+  const paginatedRows = rowsWithId.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const mapRowToDisplay = (row) => ({
+    Symbol: row.symbol,
+    "Buy Price": row.buyPrice,
+    Number: row.number,
+    "Sell Price": row.sellPrice,
+    "Sell Time": row.sellTime,
+    Investment: row.investment,
+    Principal: row.principal,
+    "Net Profit": row.netProfit,
+    "Profit %": row.profit,
+    "Annual %": row.anPrf,
+    "Buy Time": row.buyTime,
+    Prf1R: row.prf1R,
+    Risk1R: row.risk1R,
+    "Duration Time": row.duration,
+    "Close Reason": row.closeReason,
+    "Open Reason": row.openReason,
+    Action: row.closed ? "EXIT" : "ENTER",
+    "Yet To Do": row.yetToDo ? "True" : "False",
+  });
+
   return (
     <>
       <Popover
@@ -417,50 +457,78 @@ const HoldingsTable = forwardRef((props, ref) => {
         {popoverContent()}
       </Popover>
 
-      <Box
-        className={`${classes.filterModal} flex`}
-        sx={{
-          borderRadius: 2,
-          border: "1px solid #E0E0E0",
-          backgroundColor: "white",
-          minWidth: "100%",
-          height: "500px", // Set a max height for scrolling
-          overflow: "auto", // Enable scrolling when content overflows
-        }}
-      >
-        <DataGrid
-          disableColumnSelector
-          rows={rowsWithId}
-          columns={visibleColumns}
-          filterModel={filterModel}
-          onFilterModelChange={setFilterModel}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
-            },
-          }}
-          loading={isLoading}
-          slotProps={{
-            loadingOverlay: {
-              variant: "circular-progress",
-              noRowsVariant: "circular-progress",
-            },
-          }}
-          pageSizeOptions={[10]}
+      {isMobile ? (
+        <>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {rowsWithId.length ? (
+              paginatedRows.map((data, i) => (
+                <CommonCard key={i} rows={mapRowToDisplay(data)} />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
+            <Box />
+
+            <Box display="flex" flexDirection="column" gap={2}>
+              {pageCount > 1 && (
+                <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                  <Pagination
+                    count={pageCount}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                  />
+                </Box>
+              )}
+            </Box>
+          </Box>
+        </>
+      ) : (
+        <Box
+          className={`${classes.filterModal} flex`}
           sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            },
+            borderRadius: 2,
+            border: "1px solid #E0E0E0",
+            backgroundColor: "white",
+            minWidth: "100%",
+            height: "500px", // Set a max height for scrolling
+            overflow: "auto", // Enable scrolling when content overflows
           }}
-        />
-      </Box>
+        >
+          <DataGrid
+            disableColumnSelector
+            rows={rowsWithId}
+            columns={visibleColumns}
+            filterModel={filterModel}
+            onFilterModelChange={setFilterModel}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            loading={isLoading}
+            slotProps={{
+              loadingOverlay: {
+                variant: "circular-progress",
+                noRowsVariant: "circular-progress",
+              },
+            }}
+            pageSizeOptions={[10]}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 });

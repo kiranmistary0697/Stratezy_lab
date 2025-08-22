@@ -19,18 +19,18 @@ const Holdings = ({ data }) => {
   const { name, exchange, brokerage, version } = data;
   const [getHoldingsData] = useLazyGetQuery();
   const [csvData, setCsvData] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  // const [isOpen, setIsOpen] = useState(false);
+  // const [anchorEl, setAnchorEl] = useState(null);
   const [query, setQuery] = useState("");
   const [holdData, setHoldData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const open = Boolean(anchorEl);
+  // const open = Boolean(anchorEl);
   const csvLink = useRef(null);
   const tradeTableRef = useRef(null);
 
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  // const handleClick = (event) => setAnchorEl(event.currentTarget);
+  // const handleClose = () => setAnchorEl(null);
 
   useEffect(() => {
     const fetchDeployData = async () => {
@@ -81,7 +81,7 @@ const Holdings = ({ data }) => {
         {/* Controls */}
         <Box className="flex flex-col sm:flex-row w-full sm:w-auto gap-3 sm:items-center">
           {/* Icon + Menu */}
-          <Box className="flex items-center justify-between sm:justify-start gap-2">
+          {/* <Box className="flex items-center justify-between sm:justify-start gap-2">
             <IconButton
               sx={{ "&:focus": { outline: "none" } }}
               onClick={handleClick}
@@ -99,7 +99,7 @@ const Holdings = ({ data }) => {
                 Export
               </MenuItem>
             </Menu>
-          </Box>
+          </Box> */}
 
           {/* Search */}
           <TextField

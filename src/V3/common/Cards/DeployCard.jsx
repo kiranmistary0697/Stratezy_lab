@@ -79,7 +79,14 @@ const DeployCard = ({
           <Row label="Strategy Name:" value={name} />
           <Row label="Deployed On:" value={deployedDate} />
           <Row label="Date:" value={dataDate} />
-          <Row label="Status:" value={state} />
+          <Row
+            label="Status:"
+            value={
+              <Badge variant={state?.toLowerCase() || "default"}>
+                {state || "-"}
+              </Badge>
+            }
+          />
           <Row label="Brokerage:" value={brokerage} />
           <Row label="Initial Capital:" value={initialCapital} />
           <Row label="Current Capital:" value={currentCapital} />

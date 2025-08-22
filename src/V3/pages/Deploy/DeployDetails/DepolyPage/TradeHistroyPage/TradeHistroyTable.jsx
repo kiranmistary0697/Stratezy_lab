@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  Pagination,
   Popover,
   Typography,
 } from "@mui/material";
@@ -17,6 +18,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
 import { tagTypes } from "../../../../../tagTypes";
 import { useLazyGetQuery } from "../../../../../../slices/api";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import CommonCard from "../../../../../common/Cards/CommonCard";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -67,6 +72,12 @@ const TradeHistroyTable = forwardRef((props, ref) => {
   const [filterModel, setFilterModel] = useState({ items: [] });
   const [tradeData, setTradeData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handlePopoverOpen = (event, type) => {
     event.stopPropagation();
@@ -476,6 +487,37 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       wrapColumnChar: '"',
     }),
   }));
+
+  const pageCount = Math.ceil(rowsWithId.length / cardsPerPage);
+
+  const paginatedRows = rowsWithId.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const mapRowToDisplay = (row) => ({
+    Symbol: row.symbol,
+    "Buy Time": row.buyTime,
+    "Buy Price": row.buyPrice,
+    "Sell Time": row.sellTime,
+    "Sell Price": row.sellPrice,
+    Number: row.number,
+    Investment: row.investment,
+    Risk1R: row.risk1R,
+    Principal: row.principal,
+    Duration: row.duration,
+    "Annual Profit": row.annualPrf,
+    "Net Profit": row.netProfit,
+    "Profit %": row.profit,
+    "Max Profit": row.maxPrf,
+    "Close Reason": row.closeReason,
+  });
+
   return (
     <>
       <Popover
@@ -495,51 +537,79 @@ const TradeHistroyTable = forwardRef((props, ref) => {
         {popoverContent()}
       </Popover>
 
-      <Box
-        className={`${classes.filterModal} flex`}
-        sx={{
-          borderRadius: 2,
-          border: "1px solid #E0E0E0",
-          backgroundColor: "white",
-          width: "100%",
-          height: "500px", // Set a max height for scrolling
-          overflow: "auto", // Enable scrolling when content overflows
-        }}
-      >
-        <DataGrid
-          disableColumnSelector
-          rows={rowsWithId}
-          columns={visibleColumns}
-          // hideFooter
-          filterModel={filterModel}
-          onFilterModelChange={setFilterModel}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
-            },
-          }}
-          loading={loading}
-          slotProps={{
-            loadingOverlay: {
-              variant: "circular-progress",
-              noRowsVariant: "circular-progress",
-            },
-          }}
-          pageSizeOptions={[10]}
+      {isMobile ? (
+        <>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {rowsWithId.length ? (
+              paginatedRows.map((data, i) => (
+                <CommonCard key={i} rows={mapRowToDisplay(data)} />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
+            <Box />
+
+            <Box display="flex" flexDirection="column" gap={2}>
+              {pageCount > 1 && (
+                <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                  <Pagination
+                    count={pageCount}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                  />
+                </Box>
+              )}
+            </Box>
+          </Box>
+        </>
+      ) : (
+        <Box
+          className={`${classes.filterModal} flex`}
           sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            },
+            borderRadius: 2,
+            border: "1px solid #E0E0E0",
+            backgroundColor: "white",
+            width: "100%",
+            height: "500px", // Set a max height for scrolling
+            overflow: "auto", // Enable scrolling when content overflows
           }}
-        />
-      </Box>
+        >
+          <DataGrid
+            disableColumnSelector
+            rows={rowsWithId}
+            columns={visibleColumns}
+            // hideFooter
+            filterModel={filterModel}
+            onFilterModelChange={setFilterModel}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            loading={loading}
+            slotProps={{
+              loadingOverlay: {
+                variant: "circular-progress",
+                noRowsVariant: "circular-progress",
+              },
+            }}
+            pageSizeOptions={[10]}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 });

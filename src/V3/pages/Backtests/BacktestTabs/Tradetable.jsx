@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
@@ -19,7 +20,7 @@ import {
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import TradeCard from "../../../common/Cards/TradeCard";
+import CommonCard from "../../../common/Cards/CommonCard";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -407,6 +408,19 @@ const Tradetable = (props) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const mapRowToDisplay = (row) => ({
+    Symbol: row.symbol,
+    "Buy Time": row.buyTime,
+    "Buy Price": row.buyPrice,
+    "Sell Time": row.sellTime,
+    "Sell Price": row.sellPrice,
+    Quantity: row.number,
+    Investment: row.investment,
+    "Net Profit": row.netProfit,
+    "Profit (%)": row.profit,
+    "Close Reason": row.closeReason,
+  });
+
   return (
     <>
       <Popover
@@ -428,21 +442,28 @@ const Tradetable = (props) => {
 
       {isMobile ? (
         <>
-          <Box display="flex" flexDirection="column" gap={2}>
-            {paginatedRows.map((data, i) => (
-              <TradeCard key={i} row={data} />
-            ))}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {combinedArrayWithId.length ? (
+              paginatedRows.map((data, i) => (
+                <CommonCard key={i} rows={mapRowToDisplay(data)} />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
           </Box>
-          {pageCount > 1 && (
-            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-              <Pagination
-                count={pageCount}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-              />
-            </Box>
-          )}
+
+          <Box display="flex" flexDirection="column" gap={2}>
+            {pageCount > 1 && (
+              <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                <Pagination
+                  count={pageCount}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                />
+              </Box>
+            )}
+          </Box>
         </>
       ) : (
         <Box

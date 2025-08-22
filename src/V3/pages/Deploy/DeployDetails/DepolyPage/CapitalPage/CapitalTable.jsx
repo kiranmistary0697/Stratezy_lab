@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  Pagination,
   Popover,
   Typography,
 } from "@mui/material";
@@ -25,6 +26,10 @@ import ActionMenu from "../../../../../common/DropDownButton";
 import AddCapital from "./AddCapital";
 import DeleteModal from "../../../../../common/DeleteModal";
 import Badge from "../../../../../common/Badge";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import CapitalCard from "../../../../../common/Cards/CapitalCard";
 
 const tableTextSx = {
   fontFamily: "Inter",
@@ -74,6 +79,11 @@ const CapitalTable = ({
   const [saving, setSaving] = useState(false);
 
   const [rowToDelete, setRowToDelete] = useState(null);
+
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handlePopoverOpen = (event, type) => {
     event.stopPropagation();
@@ -169,9 +179,9 @@ const CapitalTable = ({
 
     // Clean out currency/commas & weird spaces, keep digits, dot, sign, and exponent marker
     const s = String(raw)
-      .replace(/[\u00A0\u202F]/g, "")   // NBSP, thin space
-      .replace(/,/g, "")                // commas
-      .replace(/₹/g, "")                // rupee symbol
+      .replace(/[\u00A0\u202F]/g, "") // NBSP, thin space
+      .replace(/,/g, "") // commas
+      .replace(/₹/g, "") // rupee symbol
       .trim();
 
     // Try a strict scientific/decimal match to avoid picking up stray text
@@ -189,7 +199,6 @@ const CapitalTable = ({
     },
     [currencyFormatter, parseToNumber]
   );
-
 
   // --------------------------------------------------------
 
@@ -367,6 +376,18 @@ const CapitalTable = ({
     );
   };
 
+  const pageCount = Math.ceil(rows.length / cardsPerPage);
+
+  const paginatedRows = rows.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <>
       {isDeleteOpen && (
@@ -413,43 +434,75 @@ const CapitalTable = ({
         {popoverContent()}
       </Popover>
 
-      <Box
-        className={classes.filterModal + " flex"}
-        sx={{
-          borderRadius: 2,
-          border: "1px solid #E0E0E0",
-          backgroundColor: "white",
-          width: "100%",
-          height: "450px",
-          overflow: "auto",
-        }}
-      >
-        <DataGrid
-          disableColumnSelector
-          rows={rows}
-          columns={visibleColumns}
-          initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
-          loading={loading}
-          slotProps={{
-            loadingOverlay: {
-              variant: "circular-progress",
-              noRowsVariant: "circular-progress",
-            },
-          }}
-          pageSizeOptions={[10]}
-          disableRowSelectionOnClick
+      {isMobile ? (
+        <>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {rows.length ? (
+              paginatedRows.map((data, i) => (
+                <CapitalCard
+                  key={i}
+                  row={data}
+                  handleDelete={() => handleDeleteClick(data)}
+                />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
+            <Box />
+
+            <Box display="flex" flexDirection="column" gap={2}>
+              {pageCount > 1 && (
+                <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                  <Pagination
+                    count={pageCount}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                  />
+                </Box>
+              )}
+            </Box>
+          </Box>
+        </>
+      ) : (
+        <Box
+          className={classes.filterModal + " flex"}
           sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            },
+            borderRadius: 2,
+            border: "1px solid #E0E0E0",
+            backgroundColor: "white",
+            width: "100%",
+            height: "450px",
+            overflow: "auto",
           }}
-        />
-      </Box>
+        >
+          <DataGrid
+            disableColumnSelector
+            rows={rows}
+            columns={visibleColumns}
+            initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+            loading={loading}
+            slotProps={{
+              loadingOverlay: {
+                variant: "circular-progress",
+                noRowsVariant: "circular-progress",
+              },
+            }}
+            pageSizeOptions={[10]}
+            disableRowSelectionOnClick
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 };

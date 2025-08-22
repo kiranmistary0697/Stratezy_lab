@@ -530,9 +530,9 @@ const DeployTable = ({
     (col) => !hiddenColumns.includes(col.field)
   );
 
-  const pageCount = Math.ceil(filterRow.length / cardsPerPage);
+  const pageCount = Math.ceil(rows.length / cardsPerPage);
 
-  const paginatedRows = filterRow.slice(
+  const paginatedRows = rows.slice(
     (page - 1) * cardsPerPage,
     page * cardsPerPage
   );
@@ -619,38 +619,42 @@ const DeployTable = ({
               gap: 2,
             }}
           >
-            {paginatedRows.map((row, i) => (
-              <DeployCard
-                key={i}
-                row={row}
-                onBacktest={() => {}}
-                handleActivate={() => {
-                  setActionType(
-                    row.active === "Yes" ? "De-activate" : "Activate"
-                  );
-                  setIsActiveStrategy(true);
-                  setSelectedId({
-                    strategyName: row.name,
-                    exchange: row.exchange,
-                    brokerage: row.brokerage,
-                    version: row.version,
-                  });
-                }}
-                handleDelete={() => {
-                  setIsDelete(true);
-                  setRowToDelete({
-                    name: row.name,
-                    exchange: row.exchange,
-                    brokerage: row.brokerage,
-                    version: row.version,
-                  });
-                }}
-                onCardClick={() => handleRowClick({ row })}
-                onNameClick={() => {
-                  handleStrategyRowClick({ row });
-                }}
-              />
-            ))}
+            {rows.length ? (
+              paginatedRows.map((row, i) => (
+                <DeployCard
+                  key={i}
+                  row={row}
+                  onBacktest={() => {}}
+                  handleActivate={() => {
+                    setActionType(
+                      row.active === "Yes" ? "De-activate" : "Activate"
+                    );
+                    setIsActiveStrategy(true);
+                    setSelectedId({
+                      strategyName: row.name,
+                      exchange: row.exchange,
+                      brokerage: row.brokerage,
+                      version: row.version,
+                    });
+                  }}
+                  handleDelete={() => {
+                    setIsDelete(true);
+                    setRowToDelete({
+                      name: row.name,
+                      exchange: row.exchange,
+                      brokerage: row.brokerage,
+                      version: row.version,
+                    });
+                  }}
+                  onCardClick={() => handleRowClick({ row })}
+                  onNameClick={() => {
+                    handleStrategyRowClick({ row });
+                  }}
+                />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
           </Box>
           {pageCount > 1 && (
             <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>

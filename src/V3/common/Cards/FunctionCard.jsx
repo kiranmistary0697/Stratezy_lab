@@ -120,7 +120,23 @@ const FunctionCard = ({
           />
           <Row label="Created On:" value={formattedCreatedOn} />
           <Row label="Created By:" value={userDefined ? "User" : "System"} />
-          <Row label="Description:" value={desc || "-"} />
+          <Row
+            label="Description:"
+            value={
+              <Typography
+                sx={{
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  letterSpacing: "0px",
+                  color: "#666666",
+                }}
+              >
+                {desc}
+              </Typography>
+            }
+          />
         </Box>
       </CardContent>
 

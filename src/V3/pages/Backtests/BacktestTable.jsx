@@ -846,37 +846,41 @@ const BacktestTable = ({
       {isMobile ? (
         <>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {paginatedRows.map((row, index) => (
-              <BacktestCard
-                key={index}
-                row={row}
-                onDeploy={() => {
-                  setIsDeployCreate(true);
-                  setDeployName({
-                    name: row?.name,
-                    reqId: row?.requestId,
-                    version: row?.version,
-                  });
-                }}
-                onDelete={() => {
-                  setIsDelete(true);
-                  setRowToDelete(row?.requestId);
-                }}
-                extractSummaryMetrics={extractSummaryMetrics}
-                handleStrategyRowClick={handleStrategyRowClick}
-                onBacktestClick={(row) => {
-                  if (row.summary.includes("still running")) {
-                    navigate(
-                      `/Backtest/backtest-detail?id=${row.requestId}&name=${row.name}`
-                    );
-                  } else if (row.summary.includes("Backtest summary for")) {
-                    navigate(
-                      `/Backtest/backtest-output?id=${row.requestId}&name=${row.name}`
-                    );
-                  }
-                }}
-              />
-            ))}
+            {rowsWithId.length ? (
+              paginatedRows.map((row, index) => (
+                <BacktestCard
+                  key={index}
+                  row={row}
+                  onDeploy={() => {
+                    setIsDeployCreate(true);
+                    setDeployName({
+                      name: row?.name,
+                      reqId: row?.requestId,
+                      version: row?.version,
+                    });
+                  }}
+                  onDelete={() => {
+                    setIsDelete(true);
+                    setRowToDelete(row?.requestId);
+                  }}
+                  extractSummaryMetrics={extractSummaryMetrics}
+                  handleStrategyRowClick={handleStrategyRowClick}
+                  onBacktestClick={(row) => {
+                    if (row.summary.includes("still running")) {
+                      navigate(
+                        `/Backtest/backtest-detail?id=${row.requestId}&name=${row.name}`
+                      );
+                    } else if (row.summary.includes("Backtest summary for")) {
+                      navigate(
+                        `/Backtest/backtest-output?id=${row.requestId}&name=${row.name}`
+                      );
+                    }
+                  }}
+                />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
           </Box>
 
           {pageCount > 1 && (

@@ -835,8 +835,8 @@ const FunctionTable = ({ query }) => {
     (col) => !hiddenColumns.includes(col.field)
   );
 
-  const pageCount = Math.ceil(filteredRows.length / cardsPerPage);
-  const paginatedRows = filteredRows.slice(
+  const pageCount = Math.ceil(searchedRows.length / cardsPerPage);
+  const paginatedRows = searchedRows.slice(
     (page - 1) * cardsPerPage,
     page * cardsPerPage
   );
@@ -888,37 +888,41 @@ const FunctionTable = ({ query }) => {
               gap: 2,
             }}
           >
-            {paginatedRows.map((row, i) => (
-              <FunctionCard
-                key={i}
-                row={row}
-                onCardClick={() => {
-                  handleRowClick({ row });
-                }}
-                onEdit={() => {
-                  if (row.userDefined) {
+            {searchedRows.length ? (
+              paginatedRows.map((row, i) => (
+                <FunctionCard
+                  key={i}
+                  row={row}
+                  onCardClick={() => {
+                    handleRowClick({ row });
+                  }}
+                  onEdit={() => {
+                    if (row.userDefined) {
+                      navigate(
+                        `/Devstudio/edit-function?name=${row.shortFuncName}`
+                      );
+                    }
+                  }}
+                  onDelete={() => {
+                    if (row.userDefined) {
+                      setDeleteRow({ name: row.shortFuncName });
+                      setIsDelete(true);
+                    }
+                  }}
+                  onDuplicate={() => {
                     navigate(
-                      `/Devstudio/edit-function?name=${row.shortFuncName}`
+                      `/Devstudio/edit-function?name=${row.shortFuncName}&duplicate=true`
                     );
-                  }
-                }}
-                onDelete={() => {
-                  if (row.userDefined) {
-                    setDeleteRow({ name: row.shortFuncName });
-                    setIsDelete(true);
-                  }
-                }}
-                onDuplicate={() => {
-                  navigate(
-                    `/Devstudio/edit-function?name=${row.shortFuncName}&duplicate=true`
-                  );
-                }}
-              />
-            ))}
+                  }}
+                />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
           </Box>
 
           {/* Pagination Control */}
-          {pageCount > 1 ? (
+          {pageCount > 1 && (
             <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
               <Pagination
                 count={pageCount}
@@ -927,8 +931,6 @@ const FunctionTable = ({ query }) => {
                 color="primary"
               />
             </Box>
-          ) : (
-            "No Data to show.."
           )}
         </>
       ) : (

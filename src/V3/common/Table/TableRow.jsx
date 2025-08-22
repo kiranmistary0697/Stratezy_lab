@@ -811,38 +811,45 @@ const TableRow = () => {
       {isMobile ? (
         <>
           <Box display="flex" flexDirection="column" gap={2}>
-            {paginatedRows.map((row) => (
-              <StrategyCard
-                key={`${row.version}-${row.id}`}
-                row={row}
-                onCardClick={handleRowClick}
-                onToggleFavorite={handleToggleFavorite}
-                onEdit={handleEditStrategy}
-                onDeploy={() => {
-                  handleDeployStrategy(
-                    row.id,
-                    row.strategy.name,
-                    true,
-                    row?.backtestSummaryRes?.requestId,
-                    row?.version
-                  );
-                }}
-                onBacktest={() =>
-                  handleStrategyNavigation(
-                    "view",
-                    row.id,
-                    row.strategy.name,
-                    true,
-                    row.version,
-                    row.demo
-                  )
-                }
-                onDelete={(row) => {
-                  setDeleteRow({ name: row.name, version: row.version });
-                  setIsDeleteCase(true);
-                }}
-              />
-            ))}
+            {filteredRows.length ? (
+              paginatedRows.map((row) => (
+                <StrategyCard
+                  key={`${row.version}-${row.id}`}
+                  row={row}
+                  onCardClick={handleRowClick}
+                  onToggleFavorite={handleToggleFavorite}
+                  onEdit={handleEditStrategy}
+                  onDeploy={() => {
+                    handleDeployStrategy(
+                      row.id,
+                      row.strategy.name,
+                      true,
+                      row?.backtestSummaryRes?.requestId,
+                      row?.version
+                    );
+                  }}
+                  onBacktest={() =>
+                    handleStrategyNavigation(
+                      "view",
+                      row.id,
+                      row.strategy.name,
+                      true,
+                      row.version,
+                      row.demo
+                    )
+                  }
+                  onDelete={() => {
+                    setDeleteRow({
+                      name: row.name,
+                      version: row.version,
+                    });
+                    setIsDeleteCase(true);
+                  }}
+                />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
           </Box>
 
           {pageCount > 1 && (

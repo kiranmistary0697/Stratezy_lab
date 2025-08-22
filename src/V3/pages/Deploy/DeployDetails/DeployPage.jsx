@@ -79,7 +79,7 @@ const DeployPage = () => {
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
         </div>
         {/* <div className="flex-grow overflow-auto"> */}
-        <div className="p-8 space-y-4 flex-grow overflow-auto">
+        <div className="p-3 space-y-4 flex-grow overflow-auto">
           <Grid
             size={{
               xs: 12,
