@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
@@ -78,6 +78,16 @@ const FunctionTable = ({ query }) => {
   const [activeFilter, setActiveFilter] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("functionTableColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -141,6 +151,19 @@ const FunctionTable = ({ query }) => {
 
       return updatedColumns;
     });
+  };
+
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
+
+    setColumnWidths(newWidths);
+    localStorage.setItem(
+      "functionTableColumnWidths",
+      JSON.stringify(newWidths)
+    );
   };
 
   const handleRowClick = ({ row }) => {
@@ -215,6 +238,21 @@ const FunctionTable = ({ query }) => {
     if (localSelectedCreatedBy) {
       setSelectedCreatedBy(JSON.parse(localSelectedCreatedBy));
     }
+  }, []);
+
+  useEffect(() => {
+    const syncColumnWidths = () => {
+      try {
+        const storedWidths = localStorage.getItem("functionTableColumnWidths");
+        if (storedWidths) {
+          setColumnWidths(JSON.parse(storedWidths));
+        }
+      } catch (error) {
+        console.error("Error syncing column widths:", error);
+      }
+    };
+
+    syncColumnWidths();
   }, []);
 
   const popoverContent = () => {
@@ -392,444 +430,448 @@ const FunctionTable = ({ query }) => {
     }
   }, []);
 
-  const columns = [
-    {
-      field: "func",
-      headerName: "Function Name",
-      // minWidth: 280,
-      flex: 1,
-      renderCell: (params) => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "5px",
-            cursor: "pointer",
-          }}
-        >
-          <span>{params.row.func}</span>
-        </div>
-      ),
-    },
-    {
-      field: "type",
-      headerName: "Type",
-      // minWidth: 150,
-      flex: 1,
-      renderHeader: () => (
-        <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <span
+  const columns = useMemo(
+    () => [
+      {
+        field: "func",
+        headerName: "Function Name",
+        width: columnWidths.func || 350,
+        renderCell: (params) => (
+          <div
             style={{
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            }}
-          >
-            Type
-          </span>
-          <IconButton
-            size="small"
-            onClick={handleTypeFilterOpen}
-            sx={{ backgroundColor: selectedStatuses.length ? "#D0E7FF" : "" }}
-          >
-            <FilterListIcon
-              fontSize="small"
-              color={selectedStatuses.length ? "primary" : ""}
-            />
-          </IconButton>
-
-          <Popover
-            open={Boolean(typeAnchorEl)}
-            anchorEl={typeAnchorEl}
-            onClose={handleTypeFilterClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "left" }}
-            PaperProps={{
-              sx: {
-                maxHeight: 300,
-                overflowY: "auto",
-                overflowX: "hidden",
-              },
-            }}
-          >
-            <CustomFilterPanel
-              data={[
-                { status: "Stock Filter" },
-                { status: "Trade Rule" },
-                { status: "Stock Entry & Exit" },
-                { status: "Global Entry & Exit" },
-                { status: "Trade Sequence" },
-                { status: "Portfolio Sizing" },
-                { status: "Utility" },
-              ]}
-              fieldName="status"
-              applyValue={handleStatusFilterChange}
-              title="Select Type"
-              dataKey="status"
-              selectedValues={selectedStatuses}
-            />
-          </Popover>
-        </Box>
-      ),
-      valueGetter: (_, row) => {
-        const badges = [];
-
-        if (row.filter) badges.push("Stock Filter");
-        if (row.buysell) badges.push("Trade Rule");
-        if (row.entry || row.exit) badges.push("Stock Entry & Exit");
-        if (row.gentry || row.gexit) badges.push("Global Entry & Exit");
-        if (row.sort) badges.push("Trade Sequence");
-        if (row.psizing) badges.push("Portfolio Sizing");
-        if (row.utility) badges.push("Utility");
-
-        return badges.length > 0 ? badges.join(", ") : "NA";
-      },
-      renderCell: ({ row }) => {
-        const badges = [];
-
-        if (row.filter) badges.push("Stock Filter");
-        if (row.buysell) badges.push("Trade Rule");
-        if (row.entry || row.exit) badges.push("Stock Entry & Exit");
-        if (row.gentry || row.gexit) badges.push("Global Entry & Exit");
-        if (row.sort) badges.push("Trade Sequence");
-        if (row.psizing) badges.push("Portfolio Sizing");
-        if (row.utility) badges.push("Utility");
-
-        return (
-          <Box
-            sx={{
               display: "flex",
-              gap: "5px",
-              flexDirection: "row",
               alignItems: "center",
-              height: "100%",
-            }}
-          >
-            {badges.length > 0 ? (
-              badges.map((label, idx) => (
-                <Badge key={idx} variant="version">
-                  <span>{label}</span>
-                </Badge>
-              ))
-            ) : (
-              <div>-</div>
-            )}
-          </Box>
-        );
-      },
-    },
-    {
-      field: "subType",
-      headerName: "Sub Type",
-      // minWidth: 150,
-      flex: 1,
-      renderHeader: () => (
-        <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <span
-            style={{
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            }}
-          >
-            Sub Type
-          </span>
-          <IconButton
-            size="small"
-            onClick={handleSubTypeFilterOpen}
-            sx={{
-              backgroundColor: selectedSubStatuses.length ? "#D0E7FF" : "",
-            }}
-          >
-            <FilterListIcon
-              fontSize="small"
-              color={selectedSubStatuses.length ? "primary" : ""}
-            />
-          </IconButton>
-          <Popover
-            open={Boolean(subTypeAnchorEl)}
-            anchorEl={subTypeAnchorEl}
-            onClose={handleSubTypeFilterClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "left" }}
-            PaperProps={{
-              sx: {
-                maxHeight: 300,
-                overflowY: "auto",
-                overflowX: "hidden",
-              },
-            }}
-          >
-            <CustomFilterPanel
-              data={[
-                { status: "Static" },
-                { status: "Dynamic" },
-                { status: "Buy" },
-                { status: "Sell" },
-                { status: "Global Entry" },
-                { status: "Global Exit" },
-                { status: "Stock Entry" },
-                { status: "Stock Exit" },
-                { status: "Account" },
-              ]}
-              fieldName="status"
-              applyValue={handleSubTypeFilterChange}
-              title="Select Sub Type"
-              dataKey="status"
-              selectedValues={selectedSubStatuses}
-            />
-          </Popover>
-        </Box>
-      ),
-      valueGetter: (_, row) => {
-        const badges = [];
-
-        if (row.filter && row.stockList) {
-          badges.push("Static");
-        } else {
-          badges.push("Dynamic");
-        }
-
-        if (row.buysell) badges.push("Buy", "Sell");
-        if (row.accountRule) badges.push("Account");
-        if (row.gentry) badges.push("Global Entry");
-        if (row.gexit) badges.push("Global Exit");
-        if (row.entry) badges.push("Stock Entry");
-        if (row.exit) badges.push("Stock Exit");
-
-        return badges.length > 0 ? badges.join(", ") : "NA";
-      },
-      renderCell: ({ row }) => {
-        const badges = [];
-
-        if (row.filter && row.stockList) {
-          badges.push("Static");
-        } else if (row.filter && !row.stockList) {
-          badges.push("Dynamic");
-        }
-        if (row.buysell) {
-          badges.push("Buy");
-          badges.push("Sell");
-        }
-        if (row.accountRule) badges.push("Account");
-        if (row.gentry) badges.push("Global Entry");
-        if (row.gexit) badges.push("Global Exit");
-        if (row.entry) badges.push("Stock Entry");
-        if (row.exit) badges.push("Stock Exit");
-
-        return (
-          <Box
-            sx={{
-              display: "flex",
               gap: "5px",
-              flexDirection: "row",
-              alignItems: "center",
-              height: "100%",
+              cursor: "pointer",
             }}
           >
-            {badges.length > 0 ? (
-              badges.map((label, idx) => (
-                <Badge key={idx} variant="version">
-                  <span>{label}</span>
-                </Badge>
-              ))
-            ) : (
-              <span>-</span>
-            )}
-          </Box>
-        );
+            <span>{params.row.func}</span>
+          </div>
+        ),
       },
-    },
-    {
-      field: "timestamp",
-      headerName: "Created On",
-      flex: 1,
-      valueGetter: (_, row) => {
-        const createdOn = row?.createdOn;
-        return createdOn ? new Date(createdOn) : null;
-      },
-      renderCell: (params) => {
-        const timestamp = params?.row?.createdOn;
-        if (!timestamp) {
-          return <div className="text-[#666666]">-</div>;
-        }
-
-        const date = new Date(timestamp);
-        const formatted = date.toLocaleString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        });
-
-        return <div className="text-[#666666]">{formatted}</div>;
-      },
-      // minWidth: 150,
-    },
-    {
-      field: "userDefined",
-      headerName: "Created By",
-      // minWidth: 150,
-      flex: 1,
-      renderHeader: () => (
-        <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <span
-            style={{
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            }}
-          >
-            Created By
-          </span>
-          <IconButton
-            size="small"
-            onClick={handleCreatedByFilterOpen}
-            sx={{
-              backgroundColor: selectedCreatedBy.length ? "#D0E7FF" : "",
-            }}
-          >
-            <FilterListIcon
-              fontSize="small"
-              color={selectedCreatedBy.length ? "primary" : ""}
-            />
-          </IconButton>
-          <Popover
-            open={Boolean(createdByAnchor)}
-            anchorEl={createdByAnchor}
-            onClose={handleCreatedByFilterClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "left" }}
-            PaperProps={{
-              sx: {
-                maxHeight: 300,
-                overflowY: "auto",
-                overflowX: "hidden",
-              },
-            }}
-          >
-            <CustomFilterPanel
-              data={[{ status: "System" }, { status: "User" }]}
-              fieldName="status"
-              applyValue={handleCreatedByFilterChange}
-              title="Select Created By"
-              dataKey="status"
-              selectedValues={selectedCreatedBy}
-            />
-          </Popover>
-        </Box>
-      ),
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            fontFamily: "Inter",
-            fontWeight: 400,
-            fontSize: "14px",
-            lineHeight: "20px",
-            letterSpacing: "0%",
-            color: "#666666",
-            display: "flex",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          {params?.row?.userDefined ? "User" : "System"}
-        </Typography>
-      ),
-    },
-    {
-      field: "desc",
-      headerName: "Description",
-      // minWidth: 150,
-      flex: 1,
-      renderCell: (params) => {
-        const description = params?.row?.desc || "";
-        const maxLength = 30;
-        const isTruncated = description.length > maxLength;
-        const displayText = isTruncated
-          ? `${description.slice(0, maxLength)}...`
-          : description;
-
-        return (
-          <Tooltip title={description} placement="top" arrow>
-            <Typography
-              sx={{
+      {
+        field: "type",
+        headerName: "Type",
+        width: columnWidths.type || 200,
+        renderHeader: () => (
+          <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <span
+              style={{
                 fontFamily: "Inter",
-                fontWeight: 400,
-                fontSize: "14px",
-                lineHeight: "20px",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
                 color: "#666666",
-                display: "flex",
-                alignItems: "center",
-                height: "100%",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: "100%",
-                cursor: isTruncated ? "pointer" : "default",
               }}
             >
-              {displayText}
-            </Typography>
-          </Tooltip>
-        );
+              Type
+            </span>
+            <IconButton
+              size="small"
+              onClick={handleTypeFilterOpen}
+              sx={{ backgroundColor: selectedStatuses.length ? "#D0E7FF" : "" }}
+            >
+              <FilterListIcon
+                fontSize="small"
+                color={selectedStatuses.length ? "primary" : ""}
+              />
+            </IconButton>
+
+            <Popover
+              open={Boolean(typeAnchorEl)}
+              anchorEl={typeAnchorEl}
+              onClose={handleTypeFilterClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
+              PaperProps={{
+                sx: {
+                  maxHeight: 300,
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                },
+              }}
+            >
+              <CustomFilterPanel
+                data={[
+                  { status: "Stock Filter" },
+                  { status: "Trade Rule" },
+                  { status: "Stock Entry & Exit" },
+                  { status: "Global Entry & Exit" },
+                  { status: "Trade Sequence" },
+                  { status: "Portfolio Sizing" },
+                  { status: "Utility" },
+                ]}
+                fieldName="status"
+                applyValue={handleStatusFilterChange}
+                title="Select Type"
+                dataKey="status"
+                selectedValues={selectedStatuses}
+              />
+            </Popover>
+          </Box>
+        ),
+        valueGetter: (_, row) => {
+          const badges = [];
+
+          if (row.filter) badges.push("Stock Filter");
+          if (row.buysell) badges.push("Trade Rule");
+          if (row.entry || row.exit) badges.push("Stock Entry & Exit");
+          if (row.gentry || row.gexit) badges.push("Global Entry & Exit");
+          if (row.sort) badges.push("Trade Sequence");
+          if (row.psizing) badges.push("Portfolio Sizing");
+          if (row.utility) badges.push("Utility");
+
+          return badges.length > 0 ? badges.join(", ") : "NA";
+        },
+        renderCell: ({ row }) => {
+          const badges = [];
+
+          if (row.filter) badges.push("Stock Filter");
+          if (row.buysell) badges.push("Trade Rule");
+          if (row.entry || row.exit) badges.push("Stock Entry & Exit");
+          if (row.gentry || row.gexit) badges.push("Global Entry & Exit");
+          if (row.sort) badges.push("Trade Sequence");
+          if (row.psizing) badges.push("Portfolio Sizing");
+          if (row.utility) badges.push("Utility");
+
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                gap: "5px",
+                flexDirection: "row",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              {badges.length > 0 ? (
+                badges.map((label, idx) => (
+                  <Badge key={idx} variant="version">
+                    <span>{label}</span>
+                  </Badge>
+                ))
+              ) : (
+                <div>-</div>
+              )}
+            </Box>
+          );
+        },
       },
-    },
-    {
-      field: "moreActions",
-      headerName: "",
-      resizable: false,
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      headerClassName: "no-resize-header", // for CSS override
-      renderHeader: () => (
-        <IconButton
-          size="small"
-          onClick={(e) => handlePopoverOpen(e, "column")}
-        >
-          <SettingsIcon
-            fontSize="small"
-            color={hiddenColumns.length ? "primary" : ""}
-          />
-        </IconButton>
-      ),
-      renderCell: ({ row }) => {
-        const isRemove = row?.userDefined;
-        return (
-          <GlobalFunctionActionMenu
-            isDeleteButton={isRemove}
-            isDuplicateButton
-            isEditButton={isRemove}
-            handleDelete={(event) => {
-              setDeleteRow({ name: row.shortFuncName });
-              setIsDelete(true);
+      {
+        field: "subType",
+        headerName: "Sub Type",
+        width: columnWidths.subType || 200,
+        renderHeader: () => (
+          <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <span
+              style={{
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              }}
+            >
+              Sub Type
+            </span>
+            <IconButton
+              size="small"
+              onClick={handleSubTypeFilterOpen}
+              sx={{
+                backgroundColor: selectedSubStatuses.length ? "#D0E7FF" : "",
+              }}
+            >
+              <FilterListIcon
+                fontSize="small"
+                color={selectedSubStatuses.length ? "primary" : ""}
+              />
+            </IconButton>
+            <Popover
+              open={Boolean(subTypeAnchorEl)}
+              anchorEl={subTypeAnchorEl}
+              onClose={handleSubTypeFilterClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
+              PaperProps={{
+                sx: {
+                  maxHeight: 300,
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                },
+              }}
+            >
+              <CustomFilterPanel
+                data={[
+                  { status: "Static" },
+                  { status: "Dynamic" },
+                  { status: "Buy" },
+                  { status: "Sell" },
+                  { status: "Global Entry" },
+                  { status: "Global Exit" },
+                  { status: "Stock Entry" },
+                  { status: "Stock Exit" },
+                  { status: "Account" },
+                ]}
+                fieldName="status"
+                applyValue={handleSubTypeFilterChange}
+                title="Select Sub Type"
+                dataKey="status"
+                selectedValues={selectedSubStatuses}
+              />
+            </Popover>
+          </Box>
+        ),
+        valueGetter: (_, row) => {
+          const badges = [];
+
+          if (row.filter && row.stockList) {
+            badges.push("Static");
+          } else {
+            badges.push("Dynamic");
+          }
+
+          if (row.buysell) badges.push("Buy", "Sell");
+          if (row.accountRule) badges.push("Account");
+          if (row.gentry) badges.push("Global Entry");
+          if (row.gexit) badges.push("Global Exit");
+          if (row.entry) badges.push("Stock Entry");
+          if (row.exit) badges.push("Stock Exit");
+
+          return badges.length > 0 ? badges.join(", ") : "NA";
+        },
+        renderCell: ({ row }) => {
+          const badges = [];
+
+          if (row.filter && row.stockList) {
+            badges.push("Static");
+          } else if (row.filter && !row.stockList) {
+            badges.push("Dynamic");
+          }
+          if (row.buysell) {
+            badges.push("Buy");
+            badges.push("Sell");
+          }
+          if (row.accountRule) badges.push("Account");
+          if (row.gentry) badges.push("Global Entry");
+          if (row.gexit) badges.push("Global Exit");
+          if (row.entry) badges.push("Stock Entry");
+          if (row.exit) badges.push("Stock Exit");
+
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                gap: "5px",
+                flexDirection: "row",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              {badges.length > 0 ? (
+                badges.map((label, idx) => (
+                  <Badge key={idx} variant="version">
+                    <span>{label}</span>
+                  </Badge>
+                ))
+              ) : (
+                <span>-</span>
+              )}
+            </Box>
+          );
+        },
+      },
+      {
+        field: "timestamp",
+        headerName: "Created On",
+        width: columnWidths.timestamp || 180,
+        valueGetter: (_, row) => {
+          const createdOn = row?.createdOn;
+          return createdOn ? new Date(createdOn) : null;
+        },
+        renderCell: (params) => {
+          const timestamp = params?.row?.createdOn;
+          if (!timestamp) {
+            return <div className="text-[#666666]">-</div>;
+          }
+
+          const date = new Date(timestamp);
+          const formatted = date.toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+          });
+
+          return <div className="text-[#666666]">{formatted}</div>;
+        },
+      },
+      {
+        field: "userDefined",
+        headerName: "Created By",
+        width: columnWidths.userDefined || 150,
+        renderHeader: () => (
+          <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <span
+              style={{
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              }}
+            >
+              Created By
+            </span>
+            <IconButton
+              size="small"
+              onClick={handleCreatedByFilterOpen}
+              sx={{
+                backgroundColor: selectedCreatedBy.length ? "#D0E7FF" : "",
+              }}
+            >
+              <FilterListIcon
+                fontSize="small"
+                color={selectedCreatedBy.length ? "primary" : ""}
+              />
+            </IconButton>
+            <Popover
+              open={Boolean(createdByAnchor)}
+              anchorEl={createdByAnchor}
+              onClose={handleCreatedByFilterClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
+              PaperProps={{
+                sx: {
+                  maxHeight: 300,
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                },
+              }}
+            >
+              <CustomFilterPanel
+                data={[{ status: "System" }, { status: "User" }]}
+                fieldName="status"
+                applyValue={handleCreatedByFilterChange}
+                title="Select Created By"
+                dataKey="status"
+                selectedValues={selectedCreatedBy}
+              />
+            </Popover>
+          </Box>
+        ),
+        renderCell: (params) => (
+          <Typography
+            sx={{
+              fontFamily: "Inter",
+              fontWeight: 400,
+              fontSize: "14px",
+              lineHeight: "20px",
+              letterSpacing: "0%",
+              color: "#666666",
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
             }}
-            handleEdit={() =>
-              navigate(`/Devstudio/edit-function?name=${row.shortFuncName}`)
-            }
-            handleDuplicate={() =>
-              navigate(
-                `/Devstudio/edit-function?name=${row.shortFuncName}&duplicate=true`
-              )
-            }
-          />
-        );
+          >
+            {params?.row?.userDefined ? "User" : "System"}
+          </Typography>
+        ),
       },
-    },
-  ];
+      {
+        field: "desc",
+        headerName: "Description",
+        width: columnWidths.desc || 450,
+        renderCell: (params) => {
+          const description = params?.row?.desc || "";
+          const maxLength = 60;
+          const isTruncated = description.length > maxLength;
+          const displayText = isTruncated
+            ? `${description.slice(0, maxLength)}...`
+            : description;
+
+          return (
+            <Tooltip title={description} placement="top" arrow>
+              <Typography
+                sx={{
+                  fontFamily: "Inter",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  color: "#666666",
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  maxWidth: "100%",
+                  cursor: isTruncated ? "pointer" : "default",
+                }}
+              >
+                {displayText}
+              </Typography>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        field: "moreActions",
+        headerName: "",
+        width: 80,
+        resizable: false,
+        sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
+        headerClassName: "no-resize-header", // for CSS override
+        renderHeader: () => (
+          <IconButton
+            size="small"
+            onClick={(e) => handlePopoverOpen(e, "column")}
+          >
+            <SettingsIcon
+              fontSize="small"
+              color={hiddenColumns.length ? "primary" : ""}
+            />
+          </IconButton>
+        ),
+        renderCell: ({ row }) => {
+          const isRemove = row?.userDefined;
+          return (
+            <GlobalFunctionActionMenu
+              isDeleteButton={isRemove}
+              isDuplicateButton
+              isEditButton={isRemove}
+              handleDelete={(event) => {
+                setDeleteRow({ name: row.shortFuncName });
+                setIsDelete(true);
+              }}
+              handleEdit={() =>
+                navigate(`/Devstudio/edit-function?name=${row.shortFuncName}`)
+              }
+              handleDuplicate={() =>
+                navigate(
+                  `/Devstudio/edit-function?name=${row.shortFuncName}&duplicate=true`
+                )
+              }
+            />
+          );
+        },
+      },
+    ],
+    [
+      selectedStatuses,
+      selectedSubStatuses,
+      selectedCreatedBy,
+      hiddenColumns,
+      columnWidths,
+    ]
+  );
 
   const visibleColumns = columns.filter(
     (col) => !hiddenColumns.includes(col.field)
@@ -952,6 +994,7 @@ const FunctionTable = ({ query }) => {
             columns={visibleColumns}
             filterModel={filterModel}
             onRowClick={handleRowClick}
+            onColumnResize={handleColumnResize}
             onFilterModelChange={setFilterModel}
             initialState={{
               pagination: {

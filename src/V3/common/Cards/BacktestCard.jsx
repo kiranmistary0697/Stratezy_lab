@@ -80,15 +80,9 @@ const BacktestCard = ({
             <Row
               label="Status:"
               value={
-                <Typography
-                  sx={{
-                    fontFamily: "Inter",
-                    letterSpacing: "0%",
-                    color: status === "Failed" ? "red" : "green",
-                  }}
-                >
-                  {status}
-                </Typography>
+                <Badge variant={status?.toLowerCase() || "default"}>
+                  {status || "-"}
+                </Badge>
               }
             />
             <Row

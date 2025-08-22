@@ -76,6 +76,16 @@ const DeployTable = ({
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
 
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("deployTableColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
+
   const [isDelete, setIsDelete] = useState(false);
   const [isActiveStrategy, setIsActiveStrategy] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
@@ -143,6 +153,16 @@ const DeployTable = ({
     });
   };
 
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
+
+    setColumnWidths(newWidths);
+    localStorage.setItem("deployTableColumnWidths", JSON.stringify(newWidths));
+  };
+
   const handleStrategyNavigation = (
     action,
     id,
@@ -195,6 +215,21 @@ const DeployTable = ({
     if (hiddenColumnsFromLocalStorage) {
       setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
     }
+  }, []);
+
+  useEffect(() => {
+    const syncColumnWidths = () => {
+      try {
+        const storedWidths = localStorage.getItem("deployTableColumnWidths");
+        if (storedWidths) {
+          setColumnWidths(JSON.parse(storedWidths));
+        }
+      } catch (error) {
+        console.error("Error syncing column widths:", error);
+      }
+    };
+
+    syncColumnWidths();
   }, []);
 
   const filterRow = rows.map((deploy, index) => ({
@@ -262,8 +297,7 @@ const DeployTable = ({
       {
         field: "name",
         headerName: "Strategy Name",
-        // minWidth: 200,
-        flex: 1,
+        width: columnWidths.name || 150,
         renderCell: (params) => (
           <Link
             component="button"
@@ -281,8 +315,7 @@ const DeployTable = ({
       {
         field: "version",
         headerName: "Version",
-        // minWidth: 100,
-        flex: 1,
+        width: columnWidths.version || 80,
         renderCell: (params) => (
           <Badge variant="version">{params.row.version || "v1"}</Badge>
         ),
@@ -290,8 +323,7 @@ const DeployTable = ({
       {
         field: "deployedDate",
         headerName: "Deployed On",
-        flex: 1,
-        // minWidth: 170,
+        width: columnWidths.deployedDate || 130,
         valueGetter: (_, row) =>
           moment(row.deployedDate, "YYYY/MM/DD").format("Do MMM YYYY"),
         renderCell: (params) => (
@@ -305,8 +337,7 @@ const DeployTable = ({
       {
         field: "dataDate",
         headerName: "Date",
-        flex: 1,
-        // minWidth: 170,
+        width: columnWidths.dataDate || 120,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>{params.row.dataDate || "-"}</Typography>
         ),
@@ -314,8 +345,7 @@ const DeployTable = ({
       {
         field: "state",
         headerName: "Status",
-        // minWidth: 150,
-        flex: 1,
+        width: columnWidths.state || 130,
         renderCell: (params) => (
           <Badge variant={params.row.state?.toLowerCase() || "default"}>
             {params.row.state || "-"}
@@ -325,8 +355,7 @@ const DeployTable = ({
       {
         field: "brokerage",
         headerName: "Brokerage",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.brokerage || 120,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>
             {params.row.brokerage || "-"}
@@ -336,8 +365,7 @@ const DeployTable = ({
       {
         field: "initialCapital",
         headerName: "Initial Capital",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.initialCapital || 150,
         valueGetter: (_, row) =>
           row.initialCapital ? parseFloat(row.initialCapital) : 0,
         renderCell: (params) => {
@@ -353,8 +381,7 @@ const DeployTable = ({
       {
         field: "currentCapital",
         headerName: "Current Capital",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.currentCapital || 150,
         valueGetter: (_, row) =>
           row.currentCapital && row.currentCapital !== "N/A"
             ? parseFloat(row.currentCapital)
@@ -373,8 +400,7 @@ const DeployTable = ({
       {
         field: "avgAnProfit",
         headerName: "Avg Annual Profit",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.avgAnProfit || 130,
         valueGetter: (_, row) =>
           row.avgAnProfit ? parseFloat(row.avgAnProfit) : 0,
         renderCell: (params) => {
@@ -390,8 +416,7 @@ const DeployTable = ({
       {
         field: "avgProfitPerTrade",
         headerName: "Average Profit Per Trade",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.avgProfitPerTrade || 130,
         valueGetter: (_, row) =>
           row.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
         renderCell: (params) => {
@@ -407,8 +432,7 @@ const DeployTable = ({
       {
         field: "maxDrawdown",
         headerName: "Max Drawdown",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.maxDrawdown || 120,
         valueGetter: (_, row) =>
           row.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
         renderCell: (params) => {
@@ -424,8 +448,7 @@ const DeployTable = ({
       {
         field: "netProfit",
         headerName: "Net Profit",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.netProfit || 130,
         valueGetter: (_, row) =>
           row.netProfit ? parseFloat(row.netProfit) : 0,
         renderCell: (params) => {
@@ -441,8 +464,7 @@ const DeployTable = ({
       {
         field: "exchange",
         headerName: "Exchange",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.exchange || 80,
         renderCell: (params) => (
           <Typography sx={tableTextSx}>{params.row.exchange || "-"}</Typography>
         ),
@@ -450,8 +472,7 @@ const DeployTable = ({
       {
         field: "action",
         headerName: "Action",
-        // minWidth: 170,
-        flex: 1,
+        width: columnWidths.action || 100,
         valueGetter: (_, row) => (row.active === "Yes" ? 1 : 0),
         renderCell: (params) => {
           const isColor = params.row.active === "Yes" ? "#CD3D64" : "#3D69D3";
@@ -489,7 +510,7 @@ const DeployTable = ({
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
-        flex: 1,
+        width: 80,
         renderHeader: () => (
           <IconButton
             size="small"
@@ -523,7 +544,7 @@ const DeployTable = ({
         ),
       },
     ],
-    [rows, hiddenColumns]
+    [rows, hiddenColumns, columnWidths]
   );
 
   const visibleColumns = columns.filter(
@@ -679,6 +700,7 @@ const DeployTable = ({
             columns={visibleColumns}
             disableSelectionOnClick
             onRowClick={handleRowClick}
+            onColumnResize={handleColumnResize}
             loading={loading}
             pageSizeOptions={[10]}
             initialState={{

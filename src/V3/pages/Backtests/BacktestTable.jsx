@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -79,6 +80,16 @@ const BacktestTable = ({
   const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [hiddenColumns, setHiddenColumns] = useState([]);
 
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("backtestTableColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
+
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
 
@@ -97,6 +108,21 @@ const BacktestTable = ({
     if (localSelectedStrategies) {
       setSelectedStrategies(JSON.parse(localSelectedStrategies));
     }
+  }, []);
+
+  useEffect(() => {
+    const syncColumnWidths = () => {
+      try {
+        const storedWidths = localStorage.getItem("backtestTableColumnWidths");
+        if (storedWidths) {
+          setColumnWidths(JSON.parse(storedWidths));
+        }
+      } catch (error) {
+        console.error("Error syncing column widths:", error);
+      }
+    };
+
+    syncColumnWidths();
   }, []);
 
   const extractErrorList = (logString) => {
@@ -167,6 +193,19 @@ const BacktestTable = ({
         ?.reverse(),
     [rowsWithId, selectedStrategies, selectedStatuses, seletedRows]
   );
+
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
+
+    setColumnWidths(newWidths);
+    localStorage.setItem(
+      "backtestTableColumnWidths",
+      JSON.stringify(newWidths)
+    );
+  };
 
   const handlePopoverOpen = (event, type) => {
     event.stopPropagation();
@@ -377,14 +416,12 @@ const BacktestTable = ({
       {
         field: "requestId",
         headerName: "Request ID",
-        // minWidth: 100,
-        flex: 1,
+        width: columnWidths.requestId || 120,
       },
       {
         field: "name",
         headerName: "Strategy Name",
-        // minWidth: 220,
-        flex: 1.2,
+        width: columnWidths.name || 180,
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
             <span
@@ -433,7 +470,7 @@ const BacktestTable = ({
       {
         field: "version",
         headerName: "Version",
-        // minWidth: 138,
+        width: columnWidths.version || 80,
         renderCell: (params) => (
           <Badge variant="version">{params.row.version || "v1"}</Badge>
         ),
@@ -441,8 +478,7 @@ const BacktestTable = ({
       {
         field: "executionTime",
         headerName: "Created At",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.executionTime || 160,
         renderCell: (params) => (
           <span className="text-[#666666]">
             {useDateTime(params.row?.executionTime) || "-"}
@@ -452,6 +488,7 @@ const BacktestTable = ({
       {
         field: "status",
         headerName: "Status",
+        width: columnWidths.status || 100,
         valueGetter: (_, row) => {
           const summary = row.summary || "";
           if (summary.includes("still running")) return "In Progress";
@@ -489,7 +526,6 @@ const BacktestTable = ({
             </IconButton>
           </Box>
         ),
-        flex: 1,
         renderCell: (params) => {
           const summary = params.row.summary || "";
           const status = summary.includes("still running")
@@ -567,8 +603,7 @@ const BacktestTable = ({
       {
         field: "timeFrame",
         headerName: "Time Frame",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.timeFrame || 160,
         valueGetter: (_, row) => `${row.startDate} to ${row.endDate}`,
         renderCell: (params) => (
           <span className="text-[#666666]">{`${params.row.startDate} to ${params.row.endDate}`}</span>
@@ -577,8 +612,7 @@ const BacktestTable = ({
       {
         field: "initialCapital",
         headerName: "Initial Capital",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.initialCapital || 90,
         renderCell: (params) => (
           <span className="text-[#666666]">{params.row.initialCapital}</span>
         ),
@@ -586,8 +620,7 @@ const BacktestTable = ({
       {
         field: "netProfit",
         headerName: "Net Profit",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.netProfit || 90,
         valueGetter: (_, row) =>
           row.netProfit ? parseFloat(row.netProfit) : 0,
         renderCell: (params) => (
@@ -597,8 +630,7 @@ const BacktestTable = ({
       {
         field: "maxDrawdown",
         headerName: "Max Drawdown",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.maxDrawdown || 100,
         valueGetter: (_, row) =>
           row?.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
         renderCell: (params) => (
@@ -608,8 +640,7 @@ const BacktestTable = ({
       {
         field: "maxAccountValue",
         headerName: "Max Account Value",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.maxAccountValue || 100,
         valueGetter: (_, row) =>
           row?.maxAccountValue ? parseFloat(row.maxAccountValue) : 0,
         renderCell: (params) => {
@@ -626,8 +657,7 @@ const BacktestTable = ({
       {
         field: "avgProfitPerTrade",
         headerName: "Average profit/trade",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.avgProfitPerTrade || 100,
         valueGetter: (_, row) =>
           row?.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
         renderCell: (params) => (
@@ -637,8 +667,7 @@ const BacktestTable = ({
       {
         field: "expectancy",
         headerName: "Expectancy",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.expectancy || 100,
         valueGetter: (_, row) =>
           row?.expectancy ? parseFloat(row.expectancy) : 0,
         renderCell: (params) => {
@@ -655,8 +684,7 @@ const BacktestTable = ({
       {
         field: "sharpeRatio",
         headerName: "Sharpe ratio",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.sharpeRatio || 100,
         valueGetter: (_, row) =>
           row?.sharpeRatio ? parseFloat(row.sharpeRatio) : 0,
         renderCell: (params) => {
@@ -673,8 +701,7 @@ const BacktestTable = ({
       {
         field: "sqn",
         headerName: "SQN",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.sqn || 100,
         valueGetter: (_, row) => (row?.sqn ? parseFloat(row.sqn) : 0),
         renderCell: (params) => {
           const value = params?.row?.sqn;
@@ -690,8 +717,7 @@ const BacktestTable = ({
       {
         field: "avgAnnualProfit",
         headerName: "Avg Annual Profit",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.avgAnnualProfit || 100,
         valueGetter: (_, row) =>
           row.avgAnnualProfit ? parseFloat(row.avgAnnualProfit) : 0,
         renderCell: (params) => (
@@ -703,8 +729,7 @@ const BacktestTable = ({
       {
         field: "totalTrades",
         headerName: "Total Trades",
-        // minWidth: 140,
-        flex: 1,
+        width: columnWidths.totalTrades || 90,
         valueGetter: (_, row) =>
           row.backtestSummary?.["Total number of trades"]
             ? parseFloat(row.backtestSummary["Total number of trades"])
@@ -718,8 +743,8 @@ const BacktestTable = ({
       {
         field: "moreaction",
         headerName: "",
-        // minWidth: 50,
-        maxWidth: 60,
+        width: 80,
+        maxWidth: 80,
         flex: 0, // prevent it from growing or shrinking
         sortable: false,
         disableColumnMenu: true,
@@ -773,6 +798,7 @@ const BacktestTable = ({
       seletedRows,
       isRowSelectionEnabled,
       isMultideleteOpen,
+      columnWidths,
     ]
   );
 
@@ -912,6 +938,7 @@ const BacktestTable = ({
             rows={filteredRows}
             columns={visibleColumns}
             onRowClick={handleRowClick}
+            onColumnResize={handleColumnResize}
             filterModel={filterModel}
             onFilterModelChange={setFilterModel}
             disableColumnSelector

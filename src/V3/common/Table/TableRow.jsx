@@ -88,6 +88,16 @@ const TableRow = () => {
   const [deleteRow, setDeleteRow] = useState({});
   // const { authToken } = useAuth();
 
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("tableRowColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
+
   const [page, setPage] = useState(1);
   const cardsPerPage = 10;
 
@@ -167,6 +177,16 @@ const TableRow = () => {
 
       return updatedColumns;
     });
+  };
+
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
+
+    setColumnWidths(newWidths);
+    localStorage.setItem("tableRowColumnWidths", JSON.stringify(newWidths));
   };
 
   const handleEditStrategy = (id, name, version) => {
@@ -368,6 +388,21 @@ const TableRow = () => {
   }, []);
 
   useEffect(() => {
+    const syncColumnWidths = () => {
+      try {
+        const storedWidths = localStorage.getItem("tableRowColumnWidths");
+        if (storedWidths) {
+          setColumnWidths(JSON.parse(storedWidths));
+        }
+      } catch (error) {
+        console.error("Error syncing column widths:", error);
+      }
+    };
+
+    syncColumnWidths();
+  }, []);
+
+  useEffect(() => {
     if (strategyData.length) {
       setRows(strategyData);
     }
@@ -378,9 +413,8 @@ const TableRow = () => {
       {
         field: "favorite",
         headerName: "",
-        // minWidth: 30,
+        width: columnWidths.favorite || 60,
         disableColumnMenu: true,
-        flex: 1,
         renderCell: (params) =>
           !params.row.demo && (
             <FavoriteCell
@@ -392,8 +426,7 @@ const TableRow = () => {
       {
         field: "name",
         headerName: "Name",
-        // minWidth: 180,
-        flex: 1,
+        width: columnWidths.name || 200,
         renderCell: (params) => (
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -406,8 +439,7 @@ const TableRow = () => {
       {
         field: "version",
         headerName: "Version",
-        // minWidth: 138,
-        flex: 1,
+        width: columnWidths.version || 120,
         renderCell: (params) => (
           <Badge variant="version">{params?.row?.version || "v1"}</Badge>
         ),
@@ -415,7 +447,7 @@ const TableRow = () => {
       {
         field: "timestamp",
         headerName: "Created On",
-        flex: 1,
+        width: columnWidths.timestamp || 180,
         renderCell: (params) => {
           const timestamp = params.row?.timestamp;
           const date = timestamp ? new Date(timestamp) : new Date();
@@ -431,13 +463,11 @@ const TableRow = () => {
           });
           return <div className="text-[#666666]">{formatted}</div>;
         },
-        // minWidth: 150,
       },
       {
         field: "statusSort",
         headerName: "Status",
-        // minWidth: 150,
-        flex: 1,
+        width: columnWidths.statusSort || 150,
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
             <span
@@ -479,7 +509,7 @@ const TableRow = () => {
       {
         field: "description",
         headerName: "Summary",
-        flex: 1,
+        width: columnWidths.description || 250,
         renderCell: (params) => (
           <div className="text-[#666666]">
             <Tooltip
@@ -519,8 +549,7 @@ const TableRow = () => {
       {
         field: "Backtests",
         headerName: "Backtests",
-        // minWidth: 150,
-        flex: 1,
+        width: columnWidths.Backtests || 150,
         sortable: false,
         disableColumnMenu: true,
         renderCell: (params) => {
@@ -582,8 +611,7 @@ const TableRow = () => {
       {
         field: "Deploy",
         headerName: "Deploy",
-        // minWidth: 150,
-        flex: 1,
+        width: columnWidths.Deploy || 150,
         disableColumnMenu: true,
         sortable: false,
         renderCell: (params) => {
@@ -652,7 +680,7 @@ const TableRow = () => {
       {
         field: "moreActions",
         headerName: "",
-        flex: 1,
+        width: 80,
         renderHeader: () => (
           <IconButton
             size="small"
@@ -723,7 +751,7 @@ const TableRow = () => {
         headerClassName: "no-resize-header", // for CSS override
       },
     ],
-    [rows, selectedStatuses, hiddenColumns]
+    [rows, selectedStatuses, hiddenColumns, columnWidths]
   );
 
   const visibleColumns = useMemo(
@@ -883,6 +911,7 @@ const TableRow = () => {
             disableSelectionOnClick
             getRowId={(row) => `${row.version}-${row.id}`}
             onRowClick={handleRowClick}
+            onColumnResize={handleColumnResize}
             filterModel={filterModel}
             onFilterModelChange={setFilterModel}
             loading={isLoading}
