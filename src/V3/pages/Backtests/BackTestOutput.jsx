@@ -18,7 +18,7 @@ const BackTestOutput = () => {
   const [getTradeTable] = useLazyGetQuery();
   const [getRequestId] = useLazyGetQuery();
 
-  const { search, state } = useLocation();
+  const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const id = queryParams.get("id");
 
@@ -34,8 +34,7 @@ const BackTestOutput = () => {
         tags: [tagTypes.GET_TRADETABLE],
       }).unwrap();
       setTradeTableData(data);
-      const symbolData = data?.map(({ symbol }) => symbol);
-      setTradeTableSymbol(symbolData);
+      setTradeTableSymbol(data?.map(({ symbol }) => symbol) ?? []);
     } catch (error) {
       console.error("Failed to fetch backtest data:", error);
     }
@@ -47,7 +46,6 @@ const BackTestOutput = () => {
         endpoint: `command/backtest/status/${id}`,
         tags: [tagTypes.GET_BACKTESTREQUEST],
       }).unwrap();
-
       setRequestData(data);
     } catch (error) {
       console.error(error);
@@ -55,20 +53,14 @@ const BackTestOutput = () => {
   };
 
   useEffect(() => {
-    if (id) {
-      handleRequestId();
-    }
+    if (id) handleRequestId();
   }, [id]);
 
   useEffect(() => {
-    if (id) {
-      fetchAllData();
-    }
+    if (id) fetchAllData();
   }, [id]);
 
-  const handleTabChange = (event, newIndex) => {
-    setTabIndex(newIndex);
-  };
+  const handleTabChange = (_e, newIndex) => setTabIndex(newIndex);
 
   const backTestIdData = backTestData?.data?.find(
     ({ requestId }) => requestId === id
@@ -80,9 +72,8 @@ const BackTestOutput = () => {
       if (line.includes(":")) {
         const [key, value] = line.split(":");
         const cleanedValue = value?.trim();
-
         if (
-          cleanedValue && // not undefined or empty
+          cleanedValue &&
           cleanedValue.toLowerCase() !== "null" &&
           cleanedValue.toLowerCase() !== "null %" &&
           cleanedValue.toLowerCase() !== "null days"
@@ -97,19 +88,24 @@ const BackTestOutput = () => {
   const summaryData = extractSummaryMetrics(requestData?.summary);
 
   return (
+    // Outer layout holder: give height, but no scrolling here
     <div
       className="
         px-2 sm:px-4 md:px-8
         py-2 sm:py-4 md:py-8
-        h-[calc(100vh-60px)]
+        h-[calc(100svh-60px)]
+        overflow-hidden
         min-h-0 min-w-0
-        overflow-auto
-        "
+      "
       style={{ boxSizing: "border-box" }}
     >
-      <div className="bg-white flex flex-col border border-[#E0E1E4] h-full min-h-0 min-w-0">
-        {/* header */}
-        <div>
+      {/* Make the CARD the single scroll container */}
+      <div
+        className="bg-white flex flex-col border border-[#E0E1E4] h-full min-h-0 min-w-0 overflow-y-auto rounded-lg"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        {/* Header block should not collapse; keep it out of the scroll height calc issues */}
+        <div className="shrink-0">
           <BacktestDetailHeader
             tab={tabIndex}
             csvData={tradeTableData}
@@ -126,36 +122,29 @@ const BackTestOutput = () => {
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
         </div>
 
-        {/* components */}
-        <div className="flex-grow overflow-auto min-h-0 min-w-0">
+        {/* Scrollable content area — avoid nested scrolling here */}
+        <div className="flex-1 min-h-0 min-w-0">
           {tabIndex === 0 && (
             <div className="px-1 py-2 sm:p-4 md:p-8 space-y-4">
-              <Grid
-                size={{
-                  xs: 12,
-                  md: 6,
-                  lg: 8,
-                }}
-                style={{ width: "100%" }}
-              >
-                <Output summary={summaryData} data={requestData} />
+              {/* MUI Grid tip: use container/item API, not 'size' prop */}
+              <Grid container>
+                <Grid item xs={12} md={6} lg={8} style={{ width: "100%" }}>
+                  <Output summary={summaryData} data={requestData} />
+                </Grid>
               </Grid>
             </div>
           )}
+
           {tabIndex === 1 && (
             <div className="px-1 py-2 sm:p-4 md:p-8 space-y-4">
-              <Grid
-                size={{
-                  xs: 12,
-                  md: 6,
-                  lg: 8,
-                }}
-                style={{ width: "100%" }}
-              >
-                <Visualisation id={id} tradeTableSymbol={tradeTableSymbol} />
+              <Grid container>
+                <Grid item xs={12} md={6} lg={8} style={{ width: "100%" }}>
+                  <Visualisation id={id} tradeTableSymbol={tradeTableSymbol} />
+                </Grid>
               </Grid>
             </div>
           )}
+
           {tabIndex === 2 && (
             <div className="px-0 py-2 sm:p-4 md:p-7">
               <Tradetable rows={tradeTableData} />

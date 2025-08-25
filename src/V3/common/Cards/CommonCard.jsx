@@ -15,6 +15,7 @@ const Row = ({ label, value }) => (
 
 const CommonCard = ({ rows = {} }) => {
   return (
+    <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-x-3 gap-y-1 sm:gap-y-2 text-sm text-gray-900">
     <Card
       sx={{
         border: "1px solid #E0E0E0",
@@ -34,6 +35,7 @@ const CommonCard = ({ rows = {} }) => {
         </Box>
       </CardContent>
     </Card>
+    </div>
   );
 };
 

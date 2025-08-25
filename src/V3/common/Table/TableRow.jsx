@@ -63,8 +63,6 @@ const FavoriteCell = ({ params, onToggleFavorite }) => {
 };
 
 const TableRow = () => {
-  // const [cachedGet, { data: { data: tableData } = {}, isLoading, isFetching }] =
-  //   useLazyCachedGetQuery();
   const [
     getStrategyData,
     { data: { data: strategyData = [] } = {}, isLoading },
@@ -86,7 +84,6 @@ const TableRow = () => {
 
   const [isDeleteCase, setIsDeleteCase] = useState(false);
   const [deleteRow, setDeleteRow] = useState({});
-  // const { authToken } = useAuth();
 
   const [columnWidths, setColumnWidths] = useState(() => {
     try {
@@ -116,10 +113,6 @@ const TableRow = () => {
     demo
   ) => {
     const basePath = "/Strategies/edit-strategies";
-    // action === "edit"
-    //   ? "/Strategies/edit-strategies"
-    // : "/Strategies/view-strategies";
-
     const query = new URLSearchParams({
       id,
       name,
@@ -136,16 +129,7 @@ const TableRow = () => {
     localStorage.removeItem("stockBundle-saved");
   };
 
-  const handleRowClick = (params) => {
-    // Called when user clicks a row to view the strategy
-    handleStrategyNavigation(
-      "view",
-      params.row.id,
-      params.row.name,
-      false,
-      params.row.version,
-      params.row.demo
-    );
+  const clearLocalStrategyContext = () => {
     localStorage.removeItem("stockFilters");
     localStorage.removeItem("marketEntryExit.entry");
     localStorage.removeItem("marketEntryExit.exit");
@@ -154,6 +138,18 @@ const TableRow = () => {
     localStorage.removeItem("stockExit");
     localStorage.removeItem("tradeSequence");
     localStorage.removeItem("portfolioSizing-saved");
+  };
+
+  const handleRowClick = (params) => {
+    handleStrategyNavigation(
+      "view",
+      params.row.id,
+      params.row.name,
+      false,
+      params.row.version,
+      params.row.demo
+    );
+    clearLocalStrategyContext();
   };
 
   const handleStatusFilter = (data) => {
@@ -190,7 +186,6 @@ const TableRow = () => {
   };
 
   const handleEditStrategy = (id, name, version) => {
-    // Called when user clicks an Edit button
     handleStrategyNavigation("edit", id, name, false, version);
   };
 
@@ -309,7 +304,7 @@ const TableRow = () => {
       }).unwrap();
 
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Normalize to start of day
+      today.setHours(0, 0, 0, 0);
 
       const isToday = (timestampStr) => {
         const date = new Date(timestampStr);
@@ -317,7 +312,6 @@ const TableRow = () => {
         return date.getTime() === today.getTime();
       };
 
-      // Combine both
       const combinedData = [...demoDataResponse.data, ...allDataResponse.data];
 
       const sortedRows = combinedData.sort((a, b) => {
@@ -517,21 +511,19 @@ const TableRow = () => {
                 modifiers: [
                   {
                     name: "preventOverflow",
-                    options: {
-                      boundary: "window",
-                    },
+                    options: { boundary: "window" },
                   },
                 ],
               }}
               componentsProps={{
                 tooltip: {
                   sx: {
-                    maxWidth: "500px", // Ensure maxWidth matches width
-                    height: "auto", // Allow height to adjust to content
+                    maxWidth: "500px",
+                    height: "auto",
                     backgroundColor: "white",
                     color: "#000000",
                     fontSize: "14px",
-                    overflow: "auto", // Enable scrolling if content exceeds maxHeight
+                    overflow: "auto",
                     borderRadius: "4px",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                   },
@@ -578,7 +570,6 @@ const TableRow = () => {
             <Box className="flex gap-8 items-center h-full">
               {isDraft ? (
                 <Tooltip
-                  // key={index}
                   title={RUNBACKTEST_DISABLE_TOOLTIP}
                   placement="bottom"
                   componentsProps={{
@@ -601,7 +592,6 @@ const TableRow = () => {
                   <span> {button} </span>
                 </Tooltip>
               ) : (
-                // <Tooltip title="Cannot deploy draft strategy">{button}</Tooltip>
                 button
               )}
             </Box>
@@ -642,7 +632,6 @@ const TableRow = () => {
             <Box className="flex gap-8 items-center h-full">
               {isDraft ? (
                 <Tooltip
-                  // key={index}
                   title={
                     !params.row.complete
                       ? DEPLOY_DISABLE_TOOLTIP
@@ -669,7 +658,6 @@ const TableRow = () => {
                   <span> {button} </span>
                 </Tooltip>
               ) : (
-                // <Tooltip title="Cannot deploy draft strategy">{button}</Tooltip>
                 button
               )}
             </Box>
@@ -700,7 +688,6 @@ const TableRow = () => {
               name={params.row.name}
               desc={params.row.strategy.description}
               ver={params.row?.version}
-              // demoStrategy={params.row?.demo}
               variant={params.row?.complete ? "complete" : "draft"}
               handleDelete={() => {
                 setDeleteRow({
@@ -718,7 +705,6 @@ const TableRow = () => {
               }
               isDeleteButton
               isDuplicateButton
-              // isEditButton
               fetchAllData={fetchAllData}
             />
           ) : (
@@ -731,7 +717,6 @@ const TableRow = () => {
               ver={params.row?.version}
               demoStrategy={params.row?.demo}
               demoData={params.row}
-              // handleDelete={() => setIsDeleteCase(true)}
               handleEdit={() =>
                 handleEditStrategy(
                   params.row.id,
@@ -748,7 +733,7 @@ const TableRow = () => {
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
-        headerClassName: "no-resize-header", // for CSS override
+        headerClassName: "no-resize-header",
       },
     ],
     [rows, selectedStatuses, hiddenColumns, columnWidths]
@@ -766,9 +751,9 @@ const TableRow = () => {
     page * cardsPerPage
   );
 
-  const handlePageChange = (event, value) => {
+  const handlePageChange = (_event, value) => {
     setPage(value);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -796,44 +781,7 @@ const TableRow = () => {
           backgroundColor: "white",
         }}
       >
-        {/* <DataGrid
-          disableColumnSelector
-          rows={filteredRows}
-          // columns={columns}
-          columns={visibleColumns}
-          // hideFooter
-          disableSelectionOnClick
-          getRowId={(row) => `${row.version}-${row.id}`}
-          onRowClick={handleRowClick}
-          filterModel={filterModel}
-          onFilterModelChange={setFilterModel}
-          GridLinesVisibility="None"
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
-            },
-          }}
-          loading={isLoading}
-          slotProps={{
-            loadingOverlay: {
-              variant: "circular-progress",
-              noRowsVariant: "circular-progress",
-            },
-          }}
-          pageSizeOptions={[10]}
-          sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            },
-          }}
-        /> */}
+        {/* DataGrid version kept commented as in your code */}
       </Box>
 
       {isMobile ? (
@@ -844,18 +792,31 @@ const TableRow = () => {
                 <StrategyCard
                   key={`${row.version}-${row.id}`}
                   row={row}
-                  onCardClick={handleRowClick}
+                  // Navigate when clicking ANYWHERE in the card content
+                  onCardClick={() => {
+                    handleStrategyNavigation(
+                      "view",
+                      row.id,
+                      row.strategy.name,
+                      false,
+                      row.version,
+                      row.demo
+                    );
+                    clearLocalStrategyContext();
+                  }}
                   onToggleFavorite={handleToggleFavorite}
-                  onEdit={handleEditStrategy}
-                  onDeploy={() => {
+                  onEdit={() =>
+                    handleEditStrategy(row.id, row.name, row?.version)
+                  }
+                  onDeploy={() =>
                     handleDeployStrategy(
                       row.id,
                       row.strategy.name,
                       true,
                       row?.backtestSummaryRes?.requestId,
                       row?.version
-                    );
-                  }}
+                    )
+                  }
                   onBacktest={() =>
                     handleStrategyNavigation(
                       "view",

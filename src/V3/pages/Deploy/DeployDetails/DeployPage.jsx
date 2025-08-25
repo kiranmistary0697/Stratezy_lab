@@ -20,8 +20,9 @@ const tabComponents = [
   Holdings,
   TradeToDo,
   TradeHistory,
-  Performance,
-  CompareIndex
+  Performance
+  //,
+  //CompareIndex
 ];
 
 const DeployPage = () => {
@@ -70,8 +71,9 @@ const DeployPage = () => {
               "Holdings",
               "Trade To-do",
               "Trade History",
-              "Performance",
-              "CompareIndex"
+              "Performance"
+              //,
+              //"CompareIndex"
             ]}
             value={tabIndex}
             onChange={handleTabChange}
