@@ -1,11 +1,15 @@
-import { useEffect, useMemo } from "react";
+import { useMemo, useState } from "react";
 import ActionMenu from "../../../../common/DropDownButton";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
+import { Box, Pagination } from "@mui/material";
 import Badge from "../../../../common/Badge";
 import moment from "moment";
 import DeleteModal from "../../../../common/DeleteModal";
 import { useNavigate } from "react-router-dom";
+
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import CommonCard from "../../../../common/Cards/CommonCard";
 
 const ViewOtherVersion = ({
   selectedVersion = {},
@@ -16,6 +20,18 @@ const ViewOtherVersion = ({
   isDeleting,
   setTabIndex,
 }) => {
+  const [page, setPage] = useState(1);
+  const cardsPerPage = 10;
+  // const [columnWidths, setColumnWidths] = useState(() => {
+  //   try {
+  //     const storedWidths = localStorage.getItem("otherVersionColumnWidths");
+  //     return storedWidths ? JSON.parse(storedWidths) : {};
+  //   } catch (error) {
+  //     console.error("Error loading column widths:", error);
+  //     return {};
+  //   }
+  // });
+
   const navigate = useNavigate();
   const handleStrategyNavigation = (
     action,
@@ -46,6 +62,9 @@ const ViewOtherVersion = ({
     localStorage.removeItem("stockBundle-saved");
   };
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleRowClick = ({ row }) => {
     setTabIndex(0);
     // Called when user clicks a row to view the strategy
@@ -71,7 +90,7 @@ const ViewOtherVersion = ({
       {
         field: "version",
         headerName: "Strategy Version",
-        // minWidth: 200,
+        // width: columnWidths.version || 150,
         flex: 1,
         renderCell: (params) => (
           <Badge variant="version">{params?.row?.version || "v1"}</Badge>
@@ -80,17 +99,17 @@ const ViewOtherVersion = ({
       {
         field: "createdOn",
         headerName: "Timestamp",
+        // width: columnWidths.createdOn || 170,
+        flex: 1,
         valueGetter: (_, row) => moment(row.timestamp).format("Do MMM YYYY"),
         renderCell: (params) => {
           return moment(params.row.timestamp).format("Do MMM YYYY");
         },
-        // minWidth: 150,
-        flex: 1,
       },
       {
         field: "status",
         headerName: "Status",
-        // minWidth: 150,
+        // width: columnWidths.version || 130,
         flex: 1,
         valueGetter: (_, row) => (row?.complete ? "Complete" : "Draft"),
         renderCell: (params) => (
@@ -102,11 +121,11 @@ const ViewOtherVersion = ({
       {
         field: "description",
         headerName: "Summary",
+        // width: columnWidths.version || 180,
+        flex: 1,
         renderCell: (params) => {
           return <span>{params?.row?.strategy?.description}</span>;
         },
-        // minWidth: 200,
-        flex: 1,
       },
 
       {
@@ -132,8 +151,42 @@ const ViewOtherVersion = ({
         ),
       },
     ],
+    // [columnWidths]
     []
   );
+
+  // const handleColumnResize = (params) => {
+  //   const newWidths = {
+  //     ...columnWidths,
+  //     [params.colDef.field]: params.width,
+  //   };
+
+  //   setColumnWidths(newWidths);
+  //   localStorage.setItem("otherVersionColumnWidths", JSON.stringify(newWidths));
+  // };
+
+  const pageCount = Math.ceil(selectedVersion.length / cardsPerPage);
+
+  const paginatedRows = selectedVersion.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
+  };
+
+  const mapRowToDisplay = (row) => ({
+    version: <Badge variant="version">{row.version || "v1"}</Badge>,
+    Timestamp: moment(row.timestamp).format("Do MMM YYYY"),
+    Status: (
+      <Badge variant={row?.complete ? "complete" : "draft"}>
+        {row?.complete ? "Complete" : "Draft"}
+      </Badge>
+    ),
+    Summary: row.description,
+  });
 
   return (
     <>
@@ -148,45 +201,88 @@ const ViewOtherVersion = ({
         />
       )}
 
-      <Box
-        className="flex"
-        sx={{
-          borderRadius: 2,
-          border: "1px solid #E0E0E0",
-          overflow: "hidden",
-          backgroundColor: "white",
-        }}
-      >
-        <DataGrid
-          disableColumnSelector
-          rows={selectedVersion}
-          columns={columns}
-          // hideFooter
-          // getRowId={(row) => row.version}
-          getRowId={(row) => `${row.version}-${row.id}`}
-          onRowClick={handleRowClick}
-          disableSelectionOnClick
-          GridLinesVisibility="None"
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
-            },
-          }}
-          pageSizeOptions={[10]}
+      {isMobile ? (
+        <>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {selectedVersion.length ? (
+              paginatedRows.map((data, i) => (
+                <CommonCard
+                  key={i}
+                  rows={mapRowToDisplay(data)}
+                  showDelete
+                  onRowClick={() => {
+                    handleRowClick({ row: data });
+                  }}
+                  onDelete={() => {
+                    setDeleteRow({
+                      name: data.name,
+                      version: data.version,
+                    });
+                    setIsDeleteCase(true);
+                  }}
+                />
+              ))
+            ) : (
+              <div className="text-center pt-2">No data to show</div>
+            )}
+            <Box />
+
+            <Box display="flex" flexDirection="column" gap={2}>
+              {pageCount > 1 && (
+                <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                  <Pagination
+                    count={pageCount}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                  />
+                </Box>
+              )}
+            </Box>
+          </Box>
+        </>
+      ) : (
+        <Box
+          className="flex"
           sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "Inter",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "100%",
-              letterSpacing: "0px",
-              color: "#666666",
-            },
+            borderRadius: 2,
+            border: "1px solid #E0E0E0",
+            overflow: "hidden",
+            backgroundColor: "white",
           }}
-        />
-      </Box>
+        >
+          <DataGrid
+            disableColumnSelector
+            rows={selectedVersion}
+            columns={columns}
+            // hideFooter
+            // getRowId={(row) => row.version}
+            getRowId={(row) => `${row.version}-${row.id}`}
+            onRowClick={handleRowClick}
+            // onColumnResize={handleColumnResize}
+            disableSelectionOnClick
+            GridLinesVisibility="None"
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            pageSizeOptions={[10]}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontFamily: "Inter",
+                fontWeight: 600,
+                fontSize: "12px",
+                lineHeight: "100%",
+                letterSpacing: "0px",
+                color: "#666666",
+              },
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 };
