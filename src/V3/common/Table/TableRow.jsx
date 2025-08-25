@@ -877,6 +877,13 @@ const TableRow = () => {
             onFilterModelChange={setFilterModel}
             loading={isLoading}
             pageSizeOptions={[10]}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontFamily: "Inter",

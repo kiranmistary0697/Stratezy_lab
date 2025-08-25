@@ -128,7 +128,7 @@ const BackTestOutput = () => {
             <div className="px-1 py-2 sm:p-4 md:p-8 space-y-4">
               {/* MUI Grid tip: use container/item API, not 'size' prop */}
               <Grid container>
-                <Grid item xs={12} md={6} lg={8} style={{ width: "100%" }}>
+                <Grid size={{ xs: 12, md: 6, lg: 8 }} style={{ width: "100%" }}>
                   <Output summary={summaryData} data={requestData} />
                 </Grid>
               </Grid>
@@ -138,7 +138,7 @@ const BackTestOutput = () => {
           {tabIndex === 1 && (
             <div className="px-1 py-2 sm:p-4 md:p-8 space-y-4">
               <Grid container>
-                <Grid item xs={12} md={6} lg={8} style={{ width: "100%" }}>
+                <Grid size={{ xs: 12, md: 6, lg: 8 }} style={{ width: "100%" }}>
                   <Visualisation id={id} tradeTableSymbol={tradeTableSymbol} />
                 </Grid>
               </Grid>
