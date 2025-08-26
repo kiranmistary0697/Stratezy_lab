@@ -9,7 +9,7 @@ const LayoutV3 = () => {
   useScrollToTop();
 
   return (
-    <div className="min-h-[100vh] w-[98vw] flex flex-col font-inter">
+    <div className="min-h-[100vh] w-[100vw] flex flex-col font-inter">
       <NavigationHeader />
       <main>
         <Outlet />
