@@ -613,9 +613,16 @@ const BacktestTable = ({
         field: "initialCapital",
         headerName: "Initial Capital",
         width: columnWidths.initialCapital || 90,
-        renderCell: (params) => (
-          <span className="text-[#666666]">{params.row.initialCapital}</span>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.initialCapital;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>₹0</span>;
+          }
+
+          return <span>₹{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "netProfit",
@@ -623,9 +630,16 @@ const BacktestTable = ({
         width: columnWidths.netProfit || 90,
         valueGetter: (_, row) =>
           row.netProfit ? parseFloat(row.netProfit) : 0,
-        renderCell: (params) => (
-          <span>{params.row.backtestSummary?.["Net profit"] || "0"}</span>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.netProfit;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>₹0</span>;
+          }
+
+          return <span>₹{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "maxDrawdown",
@@ -633,9 +647,16 @@ const BacktestTable = ({
         width: columnWidths.maxDrawdown || 100,
         valueGetter: (_, row) =>
           row?.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
-        renderCell: (params) => (
-          <span>{params.row.backtestSummary?.["Max Drawdown"] || "0"}</span>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.maxDrawdown;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "maxAccountValue",
@@ -648,10 +669,10 @@ const BacktestTable = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <span>0</span>;
+            return <span>₹0</span>;
           }
 
-          return <span>{num.toFixed(2)}</span>;
+          return <span>₹{num.toFixed(2)}</span>;
         },
       },
       {
@@ -660,9 +681,16 @@ const BacktestTable = ({
         width: columnWidths.avgProfitPerTrade || 100,
         valueGetter: (_, row) =>
           row?.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
-        renderCell: (params) => (
-          <span>{params.row.backtestSummary?.["avg profit/trade"] || "0"}</span>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.avgProfitPerTrade;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "expectancy",
@@ -720,11 +748,16 @@ const BacktestTable = ({
         width: columnWidths.avgAnnualProfit || 100,
         valueGetter: (_, row) =>
           row.avgAnnualProfit ? parseFloat(row.avgAnnualProfit) : 0,
-        renderCell: (params) => (
-          <span className="text-[#666666]">
-            {params.row.backtestSummary?.["avg annual profit"] || "-"}
-          </span>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.avgAnnualProfit;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "totalTrades",
@@ -745,7 +778,6 @@ const BacktestTable = ({
         headerName: "",
         width: 80,
         maxWidth: 80,
-        flex: 0, // prevent it from growing or shrinking
         sortable: false,
         disableColumnMenu: true,
         renderHeader: () => (

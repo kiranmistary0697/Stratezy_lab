@@ -22,15 +22,15 @@ const ViewOtherVersion = ({
 }) => {
   const [page, setPage] = useState(1);
   const cardsPerPage = 10;
-  // const [columnWidths, setColumnWidths] = useState(() => {
-  //   try {
-  //     const storedWidths = localStorage.getItem("otherVersionColumnWidths");
-  //     return storedWidths ? JSON.parse(storedWidths) : {};
-  //   } catch (error) {
-  //     console.error("Error loading column widths:", error);
-  //     return {};
-  //   }
-  // });
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("otherVersionColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
 
   const navigate = useNavigate();
   const handleStrategyNavigation = (
@@ -90,8 +90,8 @@ const ViewOtherVersion = ({
       {
         field: "version",
         headerName: "Strategy Version",
-        // width: columnWidths.version || 150,
-        flex: 1,
+        width: columnWidths.version || 150,
+        // flex: 1,
         renderCell: (params) => (
           <Badge variant="version">{params?.row?.version || "v1"}</Badge>
         ),
@@ -99,8 +99,8 @@ const ViewOtherVersion = ({
       {
         field: "createdOn",
         headerName: "Timestamp",
-        // width: columnWidths.createdOn || 170,
-        flex: 1,
+        width: columnWidths.createdOn || 170,
+        // flex: 1,
         valueGetter: (_, row) => moment(row.timestamp).format("Do MMM YYYY"),
         renderCell: (params) => {
           return moment(params.row.timestamp).format("Do MMM YYYY");
@@ -109,8 +109,8 @@ const ViewOtherVersion = ({
       {
         field: "status",
         headerName: "Status",
-        // width: columnWidths.version || 130,
-        flex: 1,
+        width: columnWidths.status || 130,
+        // flex: 1,
         valueGetter: (_, row) => (row?.complete ? "Complete" : "Draft"),
         renderCell: (params) => (
           <Badge variant={params.row?.complete ? "complete" : "draft"}>
@@ -121,8 +121,8 @@ const ViewOtherVersion = ({
       {
         field: "description",
         headerName: "Summary",
-        // width: columnWidths.version || 180,
-        flex: 1,
+        width: columnWidths.description || 180,
+        // flex: 1,
         renderCell: (params) => {
           return <span>{params?.row?.strategy?.description}</span>;
         },
@@ -134,8 +134,8 @@ const ViewOtherVersion = ({
         sortable: false,
         disableColumnMenu: true,
         // headerName: <Settings className="!size-[12px]" />,
-        // minWidth: 5,
-        flex: 1,
+        minWidth: 5,
+        // flex: 1,
         renderCell: (params) => (
           <ActionMenu
             isDeleteButton
@@ -151,19 +151,19 @@ const ViewOtherVersion = ({
         ),
       },
     ],
-    // [columnWidths]
-    []
+    [columnWidths]
+    // []
   );
 
-  // const handleColumnResize = (params) => {
-  //   const newWidths = {
-  //     ...columnWidths,
-  //     [params.colDef.field]: params.width,
-  //   };
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
 
-  //   setColumnWidths(newWidths);
-  //   localStorage.setItem("otherVersionColumnWidths", JSON.stringify(newWidths));
-  // };
+    setColumnWidths(newWidths);
+    localStorage.setItem("otherVersionColumnWidths", JSON.stringify(newWidths));
+  };
 
   const pageCount = Math.ceil(selectedVersion.length / cardsPerPage);
 
@@ -256,10 +256,9 @@ const ViewOtherVersion = ({
             rows={selectedVersion}
             columns={columns}
             // hideFooter
-            // getRowId={(row) => row.version}
             getRowId={(row) => `${row.version}-${row.id}`}
             onRowClick={handleRowClick}
-            // onColumnResize={handleColumnResize}
+            onColumnResize={handleColumnResize}
             disableSelectionOnClick
             GridLinesVisibility="None"
             initialState={{

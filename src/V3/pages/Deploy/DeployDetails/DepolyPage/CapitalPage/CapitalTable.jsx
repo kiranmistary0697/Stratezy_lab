@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import {
   Box,
   Checkbox,
@@ -68,7 +68,16 @@ const CapitalTable = ({
   const [openCapital, setOpenCapital] = useState(false);
   const [capitalData, setCapitalData] = useState(null);
   const [amount, setAmount] = useState("");
-  const [hiddenColumns, setHiddenColumns] = useState([]);
+  const [hiddenColumns, setHiddenColumns] = useState(() => {
+    try {
+      const stored = localStorage.getItem("hiddenColumnsCapitalTable");
+      const parsed = stored ? JSON.parse(stored) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error("Error parsing hidden columns from localStorage:", error);
+      return [];
+    }
+  });
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
 
@@ -79,6 +88,20 @@ const CapitalTable = ({
   const [saving, setSaving] = useState(false);
 
   const [rowToDelete, setRowToDelete] = useState(null);
+
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("capitalTableColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
+
+  const hiddenColumnsFromLocalStorage = localStorage.getItem(
+    "hiddenColumnsCapitalTable"
+  );
 
   const [page, setPage] = useState(1);
   const cardsPerPage = 10;
@@ -129,11 +152,18 @@ const CapitalTable = ({
   };
 
   const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) =>
-      prev.includes(field)
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
-        : [...prev, field]
-    );
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsCapitalTable",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   const handleSaveCapital = async () => {
@@ -207,7 +237,7 @@ const CapitalTable = ({
       {
         field: "Date",
         headerName: "Date",
-        flex: 1,
+        width: columnWidths.Date || 150,
         valueGetter: (params) => moment(params.row?.Date).format("DD MMM YYYY"),
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>
@@ -218,7 +248,7 @@ const CapitalTable = ({
       {
         field: "status",
         headerName: "Status",
-        flex: 1,
+        width: columnWidths.status || 150,
         renderCell: (params) => (
           <Badge variant={params.row.status?.toLowerCase()}>
             {params.row?.status}
@@ -228,7 +258,7 @@ const CapitalTable = ({
       {
         field: "Amount",
         headerName: "Amount",
-        flex: 1,
+        width: columnWidths.Amount || 180,
         minWidth: 180, // so big values like ₹3,00,00,000.00 don't get cut to "₹3"
         valueGetter: (params) => parseToNumber(params.row?.Amount) ?? 0,
         renderCell: (params) => (
@@ -240,7 +270,7 @@ const CapitalTable = ({
       {
         field: "Type",
         headerName: "Type",
-        flex: 1,
+        width: columnWidths.Type || 150,
         renderCell: (params) => (
           <Badge variant="version">{params.row?.Type}</Badge>
         ),
@@ -248,7 +278,7 @@ const CapitalTable = ({
       {
         field: "Schedule",
         headerName: "Schedule",
-        flex: 1,
+        width: columnWidths.Schedule || 150,
         renderCell: (params) => (
           <Typography sx={{ ...tableTextSx }}>
             {params.row?.Schedule}
@@ -258,7 +288,7 @@ const CapitalTable = ({
       {
         field: "manage",
         headerName: "Action",
-        flex: 1,
+        width: columnWidths.manage || 150,
         renderCell: (params) => (
           <Box className="flex gap-8 items-center h-full">
             <ActionButton
@@ -299,7 +329,10 @@ const CapitalTable = ({
             size="small"
             onClick={(e) => handlePopoverOpen(e, "column")}
           >
-            <SettingsIcon fontSize="small" />
+            <SettingsIcon
+              fontSize="small"
+              color={hiddenColumns.length ? "primary" : ""}
+            />
           </IconButton>
         ),
         renderCell: (params) => (
@@ -310,11 +343,11 @@ const CapitalTable = ({
         ),
       },
     ],
-    [hiddenColumns, formatINR, parseToNumber]
+    [hiddenColumns, formatINR, parseToNumber, columnWidths]
   );
 
   const visibleColumns = columns.filter(
-    (col) => !hiddenColumns.includes(col.field)
+    (col) => Array.isArray(hiddenColumns) && !hiddenColumns.includes(col.field)
   );
 
   const popoverContent = () => {
@@ -387,6 +420,29 @@ const CapitalTable = ({
     setPage(value);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
+
+    setColumnWidths(newWidths);
+    localStorage.setItem("capitalTableColumnWidths", JSON.stringify(newWidths));
+  };
+
+  // useEffect(() => {
+  //   if (hiddenColumnsFromLocalStorage) {
+  //     try {
+  //       const parsed = JSON.parse(hiddenColumnsFromLocalStorage);
+  //       if (Array.isArray(parsed)) {
+  //         setHiddenColumns(parsed);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error parsing hidden columns:", error);
+  //     }
+  //   }
+  // }, [hiddenColumnsFromLocalStorage]);
 
   return (
     <>
@@ -482,6 +538,7 @@ const CapitalTable = ({
             columns={visibleColumns}
             initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
             loading={loading}
+            onColumnResize={handleColumnResize}
             slotProps={{
               loadingOverlay: {
                 variant: "circular-progress",

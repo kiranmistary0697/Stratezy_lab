@@ -870,6 +870,8 @@ const FunctionTable = ({ query }) => {
       selectedCreatedBy,
       hiddenColumns,
       columnWidths,
+      typeAnchorEl,
+      subTypeAnchorEl,
     ]
   );
 

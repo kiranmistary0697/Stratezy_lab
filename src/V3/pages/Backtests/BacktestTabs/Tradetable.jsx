@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Box,
@@ -60,6 +60,20 @@ const Tradetable = (props) => {
     ...item,
   }));
 
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("tradeTableColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
+
+  const hiddenColumnsFromLocalStorage = localStorage.getItem(
+    "hiddenColumnsTradeTable"
+  );
+
   const handlePopoverOpen = (event, type) => {
     event.stopPropagation();
     setPopoverAnchor(event.currentTarget);
@@ -72,11 +86,18 @@ const Tradetable = (props) => {
   };
 
   const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) =>
-      prev.includes(field)
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
-        : [...prev, field]
-    );
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsTradeTable",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   const popoverContent = () => {
@@ -139,7 +160,7 @@ const Tradetable = (props) => {
       field: "symbol",
       headerName: "Symbol",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.symbol || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -154,7 +175,7 @@ const Tradetable = (props) => {
       field: "buyTime",
       headerName: "Buy Time",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.buyTime || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -170,7 +191,7 @@ const Tradetable = (props) => {
       field: "buyPrice",
       headerName: "Buy Price",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.buyPrice || 150,
       valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
       renderCell: (params) => (
         <Typography
@@ -186,7 +207,7 @@ const Tradetable = (props) => {
       field: "sellTime",
       headerName: "Sell Time",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.sellTime || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -201,7 +222,7 @@ const Tradetable = (props) => {
       field: "sellPrice",
       headerName: "Sell Price",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.sellPrice || 150,
       valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
       renderCell: (params) => (
         <Typography
@@ -217,7 +238,7 @@ const Tradetable = (props) => {
       field: "number",
       headerName: "Quantity",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.number || 150,
       valueGetter: (_, row) => (row.number ? parseFloat(row.number) : 0),
       renderCell: (params) => (
         <Typography
@@ -233,7 +254,7 @@ const Tradetable = (props) => {
       field: "investment",
       headerName: "Investment",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.investment || 150,
       valueGetter: (_, row) =>
         row.investment ? parseFloat(row.investment) : 0,
       renderCell: (params) => (
@@ -250,7 +271,7 @@ const Tradetable = (props) => {
       field: "risk1R",
       headerName: "Risk1R",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.risk1R || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -265,7 +286,7 @@ const Tradetable = (props) => {
       field: "principal",
       headerName: "Principal",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.principal || 150,
       valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
       renderCell: (params) => (
         <Typography
@@ -281,7 +302,7 @@ const Tradetable = (props) => {
       field: "duration",
       headerName: "Duration",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.duration || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -296,7 +317,7 @@ const Tradetable = (props) => {
       field: "annualPrf",
       headerName: "Annual Profit",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.annualPrf || 150,
       valueGetter: (_, row) => (row.annualPrf ? parseFloat(row.annualPrf) : 0),
       renderCell: (params) => (
         <Typography
@@ -312,7 +333,7 @@ const Tradetable = (props) => {
       field: "netProfit",
       headerName: "Net Profit",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.netProfit || 150,
       valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
       renderCell: (params) => (
         <Typography
@@ -328,7 +349,7 @@ const Tradetable = (props) => {
       field: "profit",
       headerName: "Profit %",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.profit || 150,
       valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
       renderCell: (params) => (
         <Typography
@@ -344,7 +365,7 @@ const Tradetable = (props) => {
       field: "maxPrf",
       headerName: "Max Profit",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.maxPrf || 150,
       valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
       renderCell: (params) => (
         <Typography
@@ -360,7 +381,7 @@ const Tradetable = (props) => {
       field: "closeReason",
       headerName: "Close Reason",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.closeReason || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -376,7 +397,6 @@ const Tradetable = (props) => {
       headerName: "",
       // minWidth: 50,
       maxWidth: 60,
-      flex: 0, // prevent it from growing or shrinking
       sortable: false,
       disableColumnMenu: true,
       renderHeader: () => (
@@ -392,6 +412,17 @@ const Tradetable = (props) => {
       ),
     },
   ];
+
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
+
+    setColumnWidths(newWidths);
+    localStorage.setItem("tradeTableColumnWidths", JSON.stringify(newWidths));
+  };
+
   const visibleColumns = columns.filter(
     (col) => !hiddenColumns.includes(col.field)
   );
@@ -420,6 +451,12 @@ const Tradetable = (props) => {
     "Profit (%)": row.profit,
     "Close Reason": row.closeReason,
   });
+
+  useEffect(() => {
+    if (hiddenColumnsFromLocalStorage) {
+      setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
+    }
+  }, []);
 
   return (
     <>
@@ -483,6 +520,7 @@ const Tradetable = (props) => {
             disableColumnSelector
             rows={combinedArrayWithId}
             columns={visibleColumns}
+            onColumnResize={handleColumnResize}
             className="h-full"
             initialState={{
               pagination: {

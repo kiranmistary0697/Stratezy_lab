@@ -718,7 +718,7 @@ const EditStrategy = () => {
           )}
 
           {view && tabIndex === 1 && (
-            <div className="p-8 space-y-4">
+            <div className="p-1 sm:p-8 space-y-4">
               <ViewBacktestResult
                 rows={rows}
                 setTabIndex={setTabIndex}
@@ -735,7 +735,7 @@ const EditStrategy = () => {
           )}
 
           {view && tabIndex === 2 && (
-            <div className="p-8 space-y-4">
+            <div className="p-2 sm:p-8 space-y-4">
               <ViewOtherVersion
                 setTabIndex={setTabIndex}
                 selectedVersion={version}

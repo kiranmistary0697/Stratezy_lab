@@ -7,6 +7,7 @@ import {
   CardContent,
   CardActions,
   CardActionArea,
+  Grid,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
@@ -17,15 +18,64 @@ import Badge from "../Badge";
 import useDateTime from "../../hooks/useDateTime";
 
 const Row = ({ label, value }) => (
-  <div
-    className="flex gap-2 items-start"
-    style={{ fontFamily: "Inter, sans-serif" }}
+  <Grid
+    container
+    alignItems="flex-start"
+    sx={{ fontFamily: "Inter, sans-serif", mb: 1 }}
   >
-    <span className="font-semibold text-gray-900 whitespace-nowrap">
-      {label}
-    </span>
-    <span className="text-[#666666] break-words">{value ?? "-"}</span>
-  </div>
+    <Grid
+      sx={{
+        width: "100px",
+        display: "flex",
+        alignItems: "start",
+        flexShrink: 0,
+      }}
+    >
+      <Typography
+        sx={{
+          fontFamily: "Inter",
+          fontSize: "14px",
+          fontWeight: 600,
+          color: "#111827",
+          whiteSpace: "nowrap",
+          flex: 1,
+          textAlign: "left", // Right-align labels for better colon alignment
+        }}
+      >
+        {label}
+      </Typography>
+      <Typography
+        sx={{
+          fontFamily: "Inter",
+          fontSize: "14px",
+          fontWeight: 600,
+          color: "#111827",
+          marginLeft: "4px", // Small space before colon
+        }}
+      >
+        :
+      </Typography>
+    </Grid>
+
+    <Grid
+      sx={{
+        width: "200px",
+      }}
+    >
+      <Typography
+        sx={{
+          fontFamily: "Inter",
+          fontSize: "14px",
+          color: "#666666",
+          wordBreak: "break-word",
+          marginLeft: "8px",
+          whiteSpace: "pre-wrap",
+        }}
+      >
+        {value ?? "-"}
+      </Typography>
+    </Grid>
+  </Grid>
 );
 
 const StrategyCard = ({
@@ -67,6 +117,7 @@ const StrategyCard = ({
           backgroundColor: "#fff",
           display: "flex",
           flexDirection: "column",
+          fontFamily: "Inter",
         }}
       >
         {/* Make the whole content area clickable; keep action buttons outside */}
@@ -83,13 +134,24 @@ const StrategyCard = ({
         >
           <CardContent>
             {/* Header Section */}
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ fontFamily: "Inter" }}
+            >
               <Typography
                 variant="h6"
                 fontWeight={600}
                 title={title}
                 // clickable handled by CardActionArea
-                sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", pr: 1 }}
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  pr: 1,
+                  fontFamily: "Inter",
+                }}
               >
                 {title}
               </Typography>
@@ -124,9 +186,9 @@ const StrategyCard = ({
 
             {/* Details */}
             <Box className="space-y-4 p-3 sm:p-4">
-              <Row label="Created On:" value={createdOn} />
+              <Row label="Created On" value={createdOn} />
               <Row
-                label="Summary:"
+                label="Summary"
                 value={strategy?.description || "No description available"}
               />
             </Box>

@@ -1,16 +1,74 @@
 /* eslint-disable react/prop-types */
-import { Box, Card, CardActions, CardContent } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  Grid,
+  Typography,
+} from "@mui/material";
 import ActionButton from "../ActionButton";
+
 const Row = ({ label, value }) => (
-  <div
-    className="flex gap-2 items-start"
-    style={{ fontFamily: "Inter, sans-serif" }}
+  <Grid
+    container
+    alignItems="flex-start"
+    sx={{ fontFamily: "Inter, sans-serif", mb: 1 }}
   >
-    <span className="font-semibold text-gray-900 whitespace-nowrap">
-      {label}
-    </span>
-    <span className="text-[#666666] break-words">{value ?? "-"}</span>
-  </div>
+    <Grid
+      sx={{
+        width: "100px",
+        display: "flex",
+        alignItems: "start",
+        flexShrink: 0,
+      }}
+    >
+      <Typography
+        sx={{
+          fontFamily: "Inter",
+          fontSize: "14px",
+          fontWeight: 600,
+          color: "#111827",
+          flex: 1,
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          textAlign: "left", // Right-align labels for better colon alignment
+        }}
+      >
+        {label}
+      </Typography>
+      <Typography
+        sx={{
+          fontFamily: "Inter",
+          fontSize: "14px",
+          fontWeight: 600,
+          color: "#111827",
+          marginLeft: "4px", // Small space before colon
+        }}
+      >
+        :
+      </Typography>
+    </Grid>
+
+    <Grid
+      sx={{
+        width: "160px",
+      }}
+    >
+      <Typography
+        sx={{
+          fontFamily: "Inter",
+          fontSize: "14px",
+          color: "#666666",
+          marginLeft: "8px",
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+        }}
+      >
+        {value ?? "-"}
+      </Typography>
+    </Grid>
+  </Grid>
 );
 
 const CommonCard = ({
@@ -41,7 +99,7 @@ const CommonCard = ({
             }}
           >
             {Object.entries(rows).map(([key, value]) => {
-              return <Row key={key} label={`${key}:`} value={value} />;
+              return <Row key={key} label={`${key}`} value={value} />;
             })}
           </Box>
         </CardContent>

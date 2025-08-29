@@ -57,16 +57,53 @@ const TradeHistroyTable = forwardRef((props, ref) => {
   const classes = useStyles();
   const [getTradeHistroy] = useLazyGetQuery();
 
-  const [hiddenColumns, setHiddenColumns] = useState([
-    //  "sellTime",
-    //  "sellPrice",
-    "risk1R",
-    "principal",
-    "duration",
-    "annualPrf",
-    "closeReason",
-    "maxPrf",
-  ]);
+  const [hiddenColumns, setHiddenColumns] = useState(() => {
+    try {
+      const stored = localStorage.getItem("hiddenColumnsTradeHistoryTable");
+      const parsed = stored
+        ? JSON.parse(stored)
+        : [
+            //  "sellTime",
+            //  "sellPrice",
+            "risk1R",
+            "principal",
+            "duration",
+            "annualPrf",
+            "closeReason",
+            "maxPrf",
+          ];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error("Error parsing hidden columns from localStorage:", error);
+      return [
+        //  "sellTime",
+        //  "sellPrice",
+        "risk1R",
+        "principal",
+        "duration",
+        "annualPrf",
+        "closeReason",
+        "maxPrf",
+      ];
+    }
+  });
+
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem(
+        "tradeHistoryTableColumnWidths"
+      );
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
+
+  const hiddenColumnsFromLocalStorage = localStorage.getItem(
+    "hiddenColumnsTradeHistoryTable"
+  );
+
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
   const [filterModel, setFilterModel] = useState({ items: [] });
@@ -91,11 +128,18 @@ const TradeHistroyTable = forwardRef((props, ref) => {
   };
 
   const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) =>
-      prev.includes(field)
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
-        : [...prev, field]
-    );
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsTradeHistoryTable",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   useEffect(() => {
@@ -208,7 +252,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "symbol",
       headerName: "Symbol",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.symbol || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -223,7 +267,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "buyTime",
       headerName: "Buy Time",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.buyTime || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -239,7 +283,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "buyPrice",
       headerName: "Buy Price",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.buyPrice || 150,
       valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
       renderCell: (params) => {
         const value = params?.row?.buyPrice;
@@ -257,7 +301,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "sellTime",
       headerName: "Sell Time",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.sellTime || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -272,7 +316,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "sellPrice",
       headerName: "Sell Price",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.sellPrice || 150,
       valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
       renderCell: (params) => {
         const value = params?.row?.sellPrice;
@@ -290,7 +334,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "number",
       headerName: "Number",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.number || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -305,7 +349,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "investment",
       headerName: "Investment",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.investment || 150,
       valueGetter: (_, row) =>
         row.investment ? parseFloat(row.investment) : 0,
       renderCell: (params) => {
@@ -324,7 +368,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "risk1R",
       headerName: "Risk1R",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.risk1R || 150,
       valueGetter: (_, row) => (row.risk1R ? parseFloat(row.risk1R) : 0),
       renderCell: (params) => {
         const value = params?.row?.risk1R;
@@ -342,7 +386,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "principal",
       headerName: "Principal",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.principal || 150,
       valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
       renderCell: (params) => {
         const value = params?.row?.principal;
@@ -360,7 +404,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "duration",
       headerName: "Duration",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.duration || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -375,7 +419,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "annualPrf",
       headerName: "Annual Profit",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.annualPrf || 150,
       valueGetter: (_, row) => (row.annualPrf ? parseFloat(row.annualPrf) : 0),
       renderCell: (params) => {
         const value = params?.row?.annualPrf;
@@ -393,7 +437,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "netProfit",
       headerName: "Net Profit",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.netProfit || 150,
       valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
       renderCell: (params) => {
         const value = params?.row?.netProfit;
@@ -411,7 +455,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "profit",
       headerName: "Profit %",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.profit || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -426,7 +470,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "maxPrf",
       headerName: "Max Profit",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.maxPrf || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -441,7 +485,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
       field: "closeReason",
       headerName: "Close Reason",
       // minWidth: 100,
-      flex: 1,
+      width: columnWidths.closeReason || 150,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -455,9 +499,8 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     {
       field: "moreaction",
       headerName: "",
-      // minWidth: 50,
+      minWidth: 50,
       maxWidth: 60,
-      flex: 0, // prevent it from growing or shrinking
       sortable: false,
       disableColumnMenu: true,
       renderHeader: () => (
@@ -475,7 +518,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
   ];
 
   const visibleColumns = columns.filter(
-    (col) => !hiddenColumns.includes(col.field)
+    (col) => Array.isArray(hiddenColumns) && !hiddenColumns.includes(col.field)
   );
 
   useImperativeHandle(ref, () => ({
@@ -494,6 +537,32 @@ const TradeHistroyTable = forwardRef((props, ref) => {
     (page - 1) * cardsPerPage,
     page * cardsPerPage
   );
+
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
+
+    setColumnWidths(newWidths);
+    localStorage.setItem(
+      "tradeHistoryTableColumnWidths",
+      JSON.stringify(newWidths)
+    );
+  };
+
+  // useEffect(() => {
+  //   if (hiddenColumnsFromLocalStorage) {
+  //     try {
+  //       const parsed = JSON.parse(hiddenColumnsFromLocalStorage);
+  //       if (Array.isArray(parsed)) {
+  //         setHiddenColumns(parsed);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error parsing hidden columns:", error);
+  //     }
+  //   }
+  // }, [hiddenColumnsFromLocalStorage]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -581,6 +650,7 @@ const TradeHistroyTable = forwardRef((props, ref) => {
             columns={visibleColumns}
             // hideFooter
             filterModel={filterModel}
+            onColumnResize={handleColumnResize}
             onFilterModelChange={setFilterModel}
             initialState={{
               pagination: {

@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -57,18 +57,50 @@ const HoldingsTable = forwardRef((props, ref) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [hiddenColumns, setHiddenColumns] = useState([
-    "sellTime",
-    "sellPrice",
-    "prf1R",
-    "closeReason",
-    "openReason",
-    "yetToDo",
-  ]);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
 
   const [filterModel, setFilterModel] = useState({ items: [] });
+  const [hiddenColumns, setHiddenColumns] = useState(() => {
+    try {
+      const stored = localStorage.getItem("hiddenColumnsHoldingsTable");
+      const parsed = stored
+        ? JSON.parse(stored)
+        : [
+            "sellTime",
+            "sellPrice",
+            "prf1R",
+            "closeReason",
+            "openReason",
+            "yetToDo",
+          ];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error("Error parsing hidden columns from localStorage:", error);
+      return [
+        "sellTime",
+        "sellPrice",
+        "prf1R",
+        "closeReason",
+        "openReason",
+        "yetToDo",
+      ];
+    }
+  });
+
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("holdingsTableColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
+
+  const hiddenColumnsFromLocalStorage = localStorage.getItem(
+    "hiddenColumnsHoldingsTable"
+  );
 
   const [page, setPage] = useState(1);
   const cardsPerPage = 10;
@@ -85,11 +117,18 @@ const HoldingsTable = forwardRef((props, ref) => {
   };
 
   const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) =>
-      prev.includes(field)
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
-        : [...prev, field]
-    );
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsHoldingsTable",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   const normalizedQuery = String(query).toLowerCase();
@@ -149,6 +188,7 @@ const HoldingsTable = forwardRef((props, ref) => {
                     "version",
                     "createdAt",
                     "status",
+                    "moreAction",
                   ].includes(field)
               )
               .map((col) => (
@@ -189,7 +229,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "symbol",
       headerName: "Symbol",
-      flex: 1,
+      width: columnWidths.symbol || 150,
       renderCell: (params) => (
         <Typography sx={{ ...tableTextSx }}>{params?.row?.symbol}</Typography>
       ),
@@ -197,7 +237,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "buyPrice",
       headerName: "Buy Price",
-      flex: 1,
+      width: columnWidths.buyPrice || 150,
       valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
       renderCell: (params) => {
         const value = params?.row?.buyPrice;
@@ -209,7 +249,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "number",
       headerName: "Number",
-      flex: 1,
+      width: columnWidths.number || 150,
       // Assuming number is numeric, apply logic accordingly:
       valueGetter: (_, row) => (row.number ? parseFloat(row.number) : 0),
       renderCell: (params) => {
@@ -222,7 +262,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "sellPrice",
       headerName: "Sell Price",
-      flex: 1,
+      width: columnWidths.sellPrice || 150,
       valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
       renderCell: (params) => {
         const value = params?.row?.sellPrice;
@@ -234,7 +274,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "sellTime",
       headerName: "Sell Time",
-      flex: 1,
+      width: columnWidths.sellTime || 150,
       renderCell: (params) => (
         <Typography sx={tableTextSx}>{params?.row?.sellTime}</Typography>
       ),
@@ -242,7 +282,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "investment",
       headerName: "Investment",
-      flex: 1,
+      width: columnWidths.investment || 150,
       valueGetter: (_, row) =>
         row.investment ? parseFloat(row.investment) : 0,
       renderCell: (params) => {
@@ -255,7 +295,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "principal",
       headerName: "Principal",
-      flex: 1,
+      width: columnWidths.principal || 150,
       valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
       renderCell: (params) => {
         const value = params?.row?.principal;
@@ -267,7 +307,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "netProfit",
       headerName: "Net Profit",
-      flex: 1,
+      width: columnWidths.netProfit || 150,
       valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
       renderCell: (params) => {
         const value = params?.row?.netProfit;
@@ -279,7 +319,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "profit",
       headerName: "Profit %",
-      flex: 1,
+      width: columnWidths.profit || 150,
       valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
       renderCell: (params) => {
         const value = params?.row?.profit;
@@ -291,7 +331,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "anPrf",
       headerName: "Annual %",
-      flex: 1,
+      width: columnWidths.anPrf || 150,
       valueGetter: (_, row) => (row.anPrf ? parseFloat(row.anPrf) : 0),
       renderCell: (params) => {
         const value = params?.row?.anPrf;
@@ -303,7 +343,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "buyTime",
       headerName: "Buy Time",
-      flex: 1,
+      width: columnWidths.buyTime || 150,
       renderCell: (params) => (
         <Typography sx={tableTextSx}>{params?.row?.buyTime}</Typography>
       ),
@@ -311,7 +351,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "prf1R",
       headerName: "Prf1R",
-      flex: 1,
+      width: columnWidths.prf1R || 150,
       valueGetter: (_, row) => (row.prf1R ? parseFloat(row.prf1R) : 0),
       renderCell: (params) => {
         const value = params?.row?.prf1R;
@@ -323,7 +363,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "risk1R",
       headerName: "Risk1R",
-      flex: 1,
+      width: columnWidths.risk1R || 150,
       valueGetter: (_, row) => (row.risk1R ? parseFloat(row.risk1R) : 0),
       renderCell: (params) => {
         const value = params?.row?.risk1R;
@@ -335,7 +375,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "duration",
       headerName: "Duration Time",
-      flex: 1,
+      width: columnWidths.duration || 150,
       renderCell: (params) => (
         <Typography sx={tableTextSx}>{params?.row?.duration}</Typography>
       ),
@@ -343,7 +383,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "closeReason",
       headerName: "Close Reason",
-      flex: 1,
+      width: columnWidths.closeReason || 150,
       renderCell: (params) => (
         <Typography sx={tableTextSx}>{params?.row?.closeReason}</Typography>
       ),
@@ -351,7 +391,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "openReason",
       headerName: "Open Reason",
-      flex: 1,
+      width: columnWidths.openReason || 200,
       renderCell: (params) => (
         <Typography sx={tableTextSx}>{params?.row?.openReason}</Typography>
       ),
@@ -359,7 +399,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "action",
       headerName: "Action",
-      flex: 1,
+      width: columnWidths.action || 150,
       disableColumnMenu: true,
       valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
       renderCell: (params) => <div>{params.row.closed ? "EXIT" : "ENTER"}</div>,
@@ -367,7 +407,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "yetToDo",
       headerName: "Yet To Do",
-      flex: 1,
+      width: columnWidths.yetToDo || 150,
       disableColumnMenu: true,
       valueGetter: (_, row) => (row.yetToDo ? "True" : "False"),
       renderCell: (params) => (
@@ -377,14 +417,17 @@ const HoldingsTable = forwardRef((props, ref) => {
     {
       field: "moreAction",
       headerName: "Setting",
-      flex: 1,
+      width: columnWidths.moreAction || 150,
       disableColumnMenu: true,
       renderHeader: () => (
         <IconButton
           size="small"
           onClick={(e) => handlePopoverOpen(e, "column")}
         >
-          <SettingsIcon fontSize="small" />
+          <SettingsIcon
+            fontSize="small"
+            color={hiddenColumns.length ? "primary" : ""}
+          />
         </IconButton>
       ),
       renderCell: () => <div>{null}</div>,
@@ -392,7 +435,7 @@ const HoldingsTable = forwardRef((props, ref) => {
   ].filter(Boolean);
 
   const visibleColumns = columns.filter(
-    (col) => !hiddenColumns.includes(col.field)
+    (col) => Array.isArray(hiddenColumns) && !hiddenColumns.includes(col.field)
   );
 
   useImperativeHandle(ref, () => ({
@@ -416,6 +459,32 @@ const HoldingsTable = forwardRef((props, ref) => {
     setPage(value);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
+
+    setColumnWidths(newWidths);
+    localStorage.setItem(
+      "holdingsTableColumnWidths",
+      JSON.stringify(newWidths)
+    );
+  };
+
+  // useEffect(() => {
+  //   if (hiddenColumnsFromLocalStorage) {
+  //     try {
+  //       const parsed = JSON.parse(hiddenColumnsFromLocalStorage);
+  //       if (Array.isArray(parsed)) {
+  //         setHiddenColumns(parsed);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error parsing hidden columns:", error);
+  //     }
+  //   }
+  // }, [hiddenColumnsFromLocalStorage]);
 
   const mapRowToDisplay = (row) => ({
     Symbol: row.symbol,
@@ -501,6 +570,7 @@ const HoldingsTable = forwardRef((props, ref) => {
             columns={visibleColumns}
             filterModel={filterModel}
             onFilterModelChange={setFilterModel}
+            onColumnResize={handleColumnResize}
             initialState={{
               pagination: {
                 paginationModel: {

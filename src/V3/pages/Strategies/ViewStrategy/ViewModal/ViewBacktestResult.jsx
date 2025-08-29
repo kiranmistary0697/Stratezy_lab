@@ -87,15 +87,25 @@ const ViewBacktestResult = ({
   const [popoverAnchor, setPopoverAnchor] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
 
-  // const [columnWidths, setColumnWidths] = useState(() => {
-  //   try {
-  //     const storedWidths = localStorage.getItem("backtestTableColumnWidths");
-  //     return storedWidths ? JSON.parse(storedWidths) : {};
-  //   } catch (error) {
-  //     console.error("Error loading column widths:", error);
-  //     return {};
-  //   }
-  // });
+  const localSelectedStatus = localStorage.getItem(
+    "selectedStatusBackTestTable"
+  );
+  const localSelectedStrategies = localStorage.getItem(
+    "localSelectedStrategies"
+  );
+  const hiddenColumnsFromLocalStorage = localStorage.getItem(
+    "hiddenColumnsBacktestTable"
+  );
+
+  const [columnWidths, setColumnWidths] = useState(() => {
+    try {
+      const storedWidths = localStorage.getItem("backtestTableColumnWidths");
+      return storedWidths ? JSON.parse(storedWidths) : {};
+    } catch (error) {
+      console.error("Error loading column widths:", error);
+      return {};
+    }
+  });
 
   const [page, setPage] = useState(1);
   const cardsPerPage = 10;
@@ -119,12 +129,19 @@ const ViewBacktestResult = ({
     [rows]
   );
 
-  const handleColumnToggle = (columnField) => {
-    setHiddenColumns((prev) =>
-      prev.includes(columnField)
-        ? prev.filter((col) => col !== columnField)
-        : [...prev, columnField]
-    );
+  const handleColumnToggle = (field) => {
+    setHiddenColumns((prev) => {
+      const updatedColumns = prev.includes(field)
+        ? prev.filter((col) => col !== field)
+        : [...prev, field];
+
+      localStorage.setItem(
+        "hiddenColumnsBacktestTable",
+        JSON.stringify(updatedColumns)
+      );
+
+      return updatedColumns;
+    });
   };
 
   const filteredRows = useMemo(
@@ -197,6 +214,21 @@ const ViewBacktestResult = ({
     localStorage.removeItem("stockBundle-saved");
   };
 
+  const handleStatusFilter = (data) => {
+    setSelectedStatuses(data.value || []);
+    localStorage.setItem(
+      "selectedStatusBackTestTable",
+      JSON.stringify(data.value || [])
+    );
+  };
+  const handleStarategiesFilter = (data) => {
+    setSelectedStrategies(data.value || []);
+    localStorage.setItem(
+      "localSelectedStrategies",
+      JSON.stringify(data.value || [])
+    );
+  };
+
   const handleStrategyRowClick = (params) => {
     setTabIndex(0);
     // Called when user clicks a row to view the strategy
@@ -226,10 +258,11 @@ const ViewBacktestResult = ({
           <CustomFilterPanel
             data={rowsWithId}
             fieldName="name"
-            applyValue={(data) => setSelectedStrategies(data.value || [])}
+            applyValue={handleStarategiesFilter}
             title="Select Strategies"
             dataKey="name"
             isVersion
+            selectedValues={selectedStrategies}
           />
         );
       case "status":
@@ -241,9 +274,10 @@ const ViewBacktestResult = ({
               { status: "Failed" },
             ]}
             fieldName="status"
-            applyValue={(data) => setSelectedStatuses(data.value || [])}
+            applyValue={handleStatusFilter}
             title="Select Status"
             dataKey="status"
+            selectedValues={selectedStatuses}
             isStatus
           />
         );
@@ -301,14 +335,12 @@ const ViewBacktestResult = ({
       {
         field: "requestId",
         headerName: "Request ID",
-        // width: columnWidths.requestId || 120,
-        flex: 1,
+        width: columnWidths.requestId || 120,
       },
       {
         field: "name",
         headerName: "Strategy Name",
-        // width: columnWidths.name || 180,
-        flex: 1.2,
+        width: columnWidths.name || 180,
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
             <span
@@ -325,9 +357,18 @@ const ViewBacktestResult = ({
             </span>
             <IconButton
               size="small"
-              onClick={(e) => handlePopoverOpen(e, "strategy")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePopoverOpen(e, "strategy");
+              }}
+              sx={{
+                backgroundColor: selectedStrategies.length ? "#D0E7FF" : "",
+              }}
             >
-              <FilterListIcon fontSize="small" />
+              <FilterListIcon
+                fontSize="small"
+                color={selectedStrategies.length ? "primary" : ""}
+              />
             </IconButton>
           </Box>
         ),
@@ -348,7 +389,7 @@ const ViewBacktestResult = ({
       {
         field: "version",
         headerName: "Version",
-        // width: columnWidths.version || 80,
+        width: columnWidths.version || 80,
         renderCell: (params) => (
           <Badge variant="version">{params.row.version || "v1"}</Badge>
         ),
@@ -356,8 +397,7 @@ const ViewBacktestResult = ({
       {
         field: "executionTime",
         headerName: "Created At",
-        // width: columnWidths.executionTime || 160,
-        flex: 1,
+        width: columnWidths.executionTime || 160,
         renderCell: (params) => (
           <span>{useDateTime(params.row?.executionTime) || "-"}</span>
         ),
@@ -365,7 +405,7 @@ const ViewBacktestResult = ({
       {
         field: "summary",
         headerName: "Status",
-        // width: columnWidths.status || 100,
+        width: columnWidths.status || 100,
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
             <span
@@ -382,14 +422,22 @@ const ViewBacktestResult = ({
             </span>
             <IconButton
               size="small"
-              onClick={(e) => handlePopoverOpen(e, "status")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePopoverOpen(e, "status");
+              }}
+              sx={{
+                backgroundColor: selectedStatuses.length ? "#D0E7FF" : "",
+              }}
             >
-              <FilterListIcon fontSize="small" />
+              <FilterListIcon
+                fontSize="small"
+                color={selectedStatuses.length ? "primary" : ""}
+              />
             </IconButton>
           </Box>
         ),
         // minWidth: 140,
-        flex: 1,
         valueGetter: (_, row) => {
           return row.summary.includes("still running")
             ? "In Progress"
@@ -414,8 +462,7 @@ const ViewBacktestResult = ({
       {
         field: "timeFrame",
         headerName: "Time Frame",
-        // width: columnWidths.timeFrame || 160,
-        flex: 1,
+        width: columnWidths.timeFrame || 160,
         valueGetter: (_, row) => `${row.startDate} to ${row.endDate}`,
         renderCell: (params) => (
           <span>{`${params.row.startDate} to ${params.row.endDate}`}</span>
@@ -424,45 +471,43 @@ const ViewBacktestResult = ({
       {
         field: "initialCapital",
         headerName: "Initial Capital",
-        // width: columnWidths.initialCapital || 90,
-        flex: 1,
+        width: columnWidths.initialCapital || 90,
+        renderCell: (params) => {
+          const value = params?.row?.initialCapital;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>₹0</span>;
+          }
+
+          return <span>₹{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "netProfit",
         headerName: "Net Profit",
-        // width: columnWidths.netProfit || 90,
-        flex: 1,
+        width: columnWidths.netProfit || 90,
         valueGetter: (_, row) =>
-          parseFloat(
-            row.backtestSummary?.["Net profit"]?.slice(
-              0,
-              row.backtestSummary?.["Net profit"].indexOf(" ") + 1
-            )
-          ) || 0,
-        renderCell: (params) => (
-          <span>{params.row.backtestSummary?.["Net profit"] || "0"}</span>
-        ),
+          row.netProfit ? parseFloat(row.netProfit) : 0,
+        renderCell: (params) => {
+          const value = params?.row?.netProfit;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>₹0</span>;
+          }
+
+          return <span>₹{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "maxDrawdown",
         headerName: "Max Drawdown",
-        // width: columnWidths.maxDrawdown || 100,
-        flex: 1,
+        width: columnWidths.maxDrawdown || 100,
         valueGetter: (_, row) =>
           row?.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
-        renderCell: (params) => (
-          <span>{params.row.backtestSummary?.["Max Drawdown"] || "0"}</span>
-        ),
-      },
-      {
-        field: "maxAccountValue",
-        headerName: "Max Account Value",
-        // width: columnWidths.maxAccountValue || 100,
-        flex: 1,
-        valueGetter: (_, row) =>
-          row?.maxDrawdown ? parseFloat(row.maxAccountValue) : 0,
         renderCell: (params) => {
-          const value = params?.row?.maxAccountValue;
+          const value = params?.row?.maxDrawdown;
           const num = Number(value);
 
           if (isNaN(num)) {
@@ -473,21 +518,43 @@ const ViewBacktestResult = ({
         },
       },
       {
+        field: "maxAccountValue",
+        headerName: "Max Account Value",
+        width: columnWidths.maxAccountValue || 100,
+        valueGetter: (_, row) =>
+          row?.maxAccountValue ? parseFloat(row.maxAccountValue) : 0,
+        renderCell: (params) => {
+          const value = params?.row?.maxAccountValue;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>₹0</span>;
+          }
+
+          return <span>₹{num.toFixed(2)}</span>;
+        },
+      },
+      {
         field: "avgProfitPerTrade",
         headerName: "Average profit/trade",
-        // width: columnWidths.avgProfitPerTrade || 100,
-        flex: 1,
+        width: columnWidths.avgProfitPerTrade || 100,
         valueGetter: (_, row) =>
           row?.avgProfitPerTrade ? parseFloat(row.avgProfitPerTrade) : 0,
-        renderCell: (params) => (
-          <span>{params.row.backtestSummary?.["avg profit/trade"] || "0"}</span>
-        ),
+        renderCell: (params) => {
+          const value = params?.row?.avgProfitPerTrade;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return <span>0</span>;
+          }
+
+          return <span>{num.toFixed(2)}</span>;
+        },
       },
       {
         field: "expectancy",
         headerName: "Expectancy",
-        // width: columnWidths.expectancy || 100,
-        flex: 1,
+        width: columnWidths.expectancy || 100,
         valueGetter: (_, row) =>
           row?.expectancy ? parseFloat(row.expectancy) : 0,
         renderCell: (params) => {
@@ -504,8 +571,7 @@ const ViewBacktestResult = ({
       {
         field: "sharpeRatio",
         headerName: "Sharpe ratio",
-        // width: columnWidths.sharpeRatio || 100,
-        flex: 1,
+        width: columnWidths.sharpeRatio || 100,
         valueGetter: (_, row) =>
           row?.sharpeRatio ? parseFloat(row.sharpeRatio) : 0,
         renderCell: (params) => {
@@ -522,8 +588,7 @@ const ViewBacktestResult = ({
       {
         field: "sqn",
         headerName: "SQN",
-        // width: columnWidths.sqn || 100,
-        flex: 1,
+        width: columnWidths.sqn || 100,
         valueGetter: (_, row) => (row?.sqn ? parseFloat(row.sqn) : 0),
         renderCell: (params) => {
           const value = params?.row?.sqn;
@@ -539,8 +604,7 @@ const ViewBacktestResult = ({
       {
         field: "avgAnnualProfit",
         headerName: "Avg Annual Profit",
-        // width: columnWidths.avgAnnualProfit || 100,
-        flex: 1,
+        width: columnWidths.avgAnnualProfit || 100,
         valueGetter: (_, row) =>
           parseFloat(
             row.backtestSummary?.["avg annual profit"]?.slice(
@@ -557,8 +621,7 @@ const ViewBacktestResult = ({
       {
         field: "totalTrades",
         headerName: "Total Trades",
-        // width: columnWidths.totalTrades || 90,
-        flex: 1,
+        width: columnWidths.totalTrades || 90,
         valueGetter: (_, row) =>
           parseFloat(row.backtestSummary?.["Total number of trades"]) || 0,
         renderCell: (params) => (
@@ -570,9 +633,8 @@ const ViewBacktestResult = ({
       {
         field: "moreaction",
         headerName: "",
-        // minWidth: 50,
+        minWidth: 50,
         maxWidth: 60,
-        flex: 0, // prevent it from growing or shrinking
         sortable: false,
         disableColumnMenu: true,
         renderHeader: () => (
@@ -612,26 +674,33 @@ const ViewBacktestResult = ({
         },
       },
     ],
-    [navigate, hiddenColumns]
-    // [navigate, hiddenColumns, columnWidths]
+    [
+      navigate,
+      hiddenColumns,
+      columnWidths,
+      hiddenColumns,
+      selectedStrategies,
+      selectedStatuses,
+      columnWidths,
+    ]
   );
 
   const visibleColumns = columns.filter(
     (col) => !hiddenColumns.includes(col.field)
   );
 
-  // const handleColumnResize = (params) => {
-  //   const newWidths = {
-  //     ...columnWidths,
-  //     [params.colDef.field]: params.width,
-  //   };
+  const handleColumnResize = (params) => {
+    const newWidths = {
+      ...columnWidths,
+      [params.colDef.field]: params.width,
+    };
 
-  //   setColumnWidths(newWidths);
-  //   localStorage.setItem(
-  //     "backtestTableColumnWidths",
-  //     JSON.stringify(newWidths)
-  //   );
-  // };
+    setColumnWidths(newWidths);
+    localStorage.setItem(
+      "backtestTableColumnWidths",
+      JSON.stringify(newWidths)
+    );
+  };
 
   const pageCount = Math.ceil(rowsWithId.length / cardsPerPage);
 
@@ -645,20 +714,35 @@ const ViewBacktestResult = ({
     window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
   };
 
-  // useEffect(() => {
-  //   const syncColumnWidths = () => {
-  //     try {
-  //       const storedWidths = localStorage.getItem("backtestTableColumnWidths");
-  //       if (storedWidths) {
-  //         setColumnWidths(JSON.parse(storedWidths));
-  //       }
-  //     } catch (error) {
-  //       console.error("Error syncing column widths:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    if (hiddenColumnsFromLocalStorage) {
+      setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
+    }
+  }, []);
 
-  //   syncColumnWidths();
-  // }, []);
+  useEffect(() => {
+    if (localSelectedStatus) {
+      setSelectedStatuses(JSON.parse(localSelectedStatus));
+    }
+    if (localSelectedStrategies) {
+      setSelectedStrategies(JSON.parse(localSelectedStrategies));
+    }
+  }, []);
+
+  useEffect(() => {
+    const syncColumnWidths = () => {
+      try {
+        const storedWidths = localStorage.getItem("backtestTableColumnWidths");
+        if (storedWidths) {
+          setColumnWidths(JSON.parse(storedWidths));
+        }
+      } catch (error) {
+        console.error("Error syncing column widths:", error);
+      }
+    };
+
+    syncColumnWidths();
+  }, []);
 
   return (
     <>
@@ -766,7 +850,7 @@ const ViewBacktestResult = ({
             onRowClick={handleRowClick}
             filterModel={filterModel}
             onFilterModelChange={setFilterModel}
-            // onColumnResize={handleColumnResize}
+            onColumnResize={handleColumnResize}
             initialState={{
               pagination: {
                 paginationModel: {

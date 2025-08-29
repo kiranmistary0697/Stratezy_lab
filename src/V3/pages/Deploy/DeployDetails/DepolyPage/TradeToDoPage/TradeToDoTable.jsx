@@ -84,10 +84,32 @@ const TradeToDoTable = forwardRef(
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const [filterModel, setFilterModel] = useState({ items: [] });
-    const [hiddenColumns, setHiddenColumns] = useState([]);
     const [popoverAnchor, setPopoverAnchor] = useState(null);
     const [activeFilter, setActiveFilter] = useState(null);
+    const [hiddenColumns, setHiddenColumns] = useState(() => {
+      try {
+        const stored = localStorage.getItem("hiddenColumnsTradeToDoTable");
+        const parsed = stored ? JSON.parse(stored) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.error("Error parsing hidden columns from localStorage:", error);
+        return [];
+      }
+    });
 
+    const [columnWidths, setColumnWidths] = useState(() => {
+      try {
+        const storedWidths = localStorage.getItem("tradeToDoTableColumnWidths");
+        return storedWidths ? JSON.parse(storedWidths) : {};
+      } catch (error) {
+        console.error("Error loading column widths:", error);
+        return {};
+      }
+    });
+
+    const hiddenColumnsFromLocalStorage = localStorage.getItem(
+      "hiddenColumnsTradeToDoTable"
+    );
     const [page, setPage] = useState(1);
 
     const rowsWithId = useMemo(
@@ -105,7 +127,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "symbol",
           headerName: "Symbol",
-          flex: 1,
+          width: columnWidths.symbol || 150,
           renderCell: (params) => (
             <Tooltip
               title={YET_TO_DO_MSG}
@@ -136,7 +158,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "companyName",
           headerName: "Company",
-          flex: 1,
+          width: columnWidths.companyName || 150,
           renderCell: (params) => (
             <Tooltip
               title={YET_TO_DO_MSG}
@@ -167,7 +189,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "number",
           headerName: "Number",
-          flex: 1,
+          width: columnWidths.number || 150,
           renderCell: (params) => (
             <Tooltip
               title={YET_TO_DO_MSG}
@@ -198,7 +220,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "buyPrice",
           headerName: "Buy Price",
-          flex: 1,
+          width: columnWidths.buyPrice || 150,
           valueGetter: (_, row) =>
             row.buyPrice ? parseFloat(row.buyPrice) : 0,
           renderCell: (p) => (
@@ -231,7 +253,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "sellPrice",
           headerName: "Sell Price",
-          flex: 1,
+          width: columnWidths.sellPrice || 150,
           valueGetter: (_, row) =>
             row.sellPrice ? parseFloat(row.sellPrice) : 0,
           renderCell: (p) => (
@@ -264,7 +286,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "principal",
           headerName: "Principal",
-          flex: 1,
+          width: columnWidths.principal || 150,
           valueGetter: (_, row) =>
             row.principal ? parseFloat(row.principal) : 0,
           renderCell: (p) => (
@@ -297,7 +319,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "investment",
           headerName: "Investment",
-          flex: 1,
+          width: columnWidths.investment || 150,
           valueGetter: (_, row) =>
             row.investment ? parseFloat(row.investment) : 0,
           renderCell: (p) => (
@@ -330,7 +352,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "netProfit",
           headerName: "Net Profit",
-          flex: 1,
+          width: columnWidths.netProfit || 150,
           valueGetter: (_, row) =>
             row.netProfit ? parseFloat(row.netProfit) : 0,
           renderCell: (p) => (
@@ -363,7 +385,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "buyTime",
           headerName: "Buy Time",
-          flex: 1,
+          width: columnWidths.buyTime || 150,
           renderCell: (params) => (
             <Tooltip
               title={YET_TO_DO_MSG}
@@ -394,7 +416,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "sellTime",
           headerName: "Sell Time",
-          flex: 1,
+          width: columnWidths.sellTime || 150,
           renderCell: (params) => (
             <Tooltip
               title={YET_TO_DO_MSG}
@@ -425,7 +447,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "duration",
           headerName: "Duration",
-          flex: 1,
+          width: columnWidths.duration || 150,
           renderCell: (params) => (
             <Tooltip
               title={YET_TO_DO_MSG}
@@ -456,7 +478,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "risk1R",
           headerName: "Risk1R",
-          flex: 1,
+          width: columnWidths.risk1R || 150,
           valueGetter: (_, row) => (row.risk1R ? parseFloat(row.risk1R) : 0),
           renderCell: (p) => (
             <Tooltip
@@ -488,7 +510,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "closeReason",
           headerName: "Close Reason",
-          flex: 1,
+          width: columnWidths.closeReason || 150,
           renderCell: (params) => (
             <Tooltip
               title={YET_TO_DO_MSG}
@@ -519,7 +541,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "openReason",
           headerName: "Open Reason",
-          flex: 1,
+          width: columnWidths.openReason || 200,
           renderCell: (params) => (
             <Tooltip
               title={YET_TO_DO_MSG}
@@ -550,7 +572,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "action",
           headerName: "Action",
-          flex: 1,
+          width: columnWidths.action || 150,
           disableColumnMenu: true,
           valueGetter: (_, row) => (row.closed ? "EXIT" : "ENTER"),
           renderCell: (params) => (
@@ -581,7 +603,7 @@ const TradeToDoTable = forwardRef(
         {
           field: "yetToDo",
           headerName: "Yet To Do",
-          flex: 1,
+          width: columnWidths.yetToDo || 150,
           disableColumnMenu: true,
           valueGetter: (_, row) => (row.yetToDo ? "True" : "False"),
           renderCell: (params) => (
@@ -612,21 +634,24 @@ const TradeToDoTable = forwardRef(
         {
           field: "moreaction",
           headerName: "Column Setting",
-          flex: 1,
+          width: columnWidths.moreaction || 100,
           disableColumnMenu: true,
           renderHeader: () => (
             <IconButton
               size="small"
               onClick={(e) => handlePopoverOpen(e, "column")}
             >
-              <SettingsIcon fontSize="small" />
+              <SettingsIcon
+                fontSize="small"
+                color={hiddenColumns.length ? "primary" : ""}
+              />
             </IconButton>
           ),
           renderCell: () => <div />,
         },
       ],
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      []
+      [columnWidths, hiddenColumns]
     );
 
     const columnsMap = useMemo(() => {
@@ -647,11 +672,18 @@ const TradeToDoTable = forwardRef(
     };
 
     const handleColumnToggle = (field) => {
-      setHiddenColumns((prev) =>
-        prev.includes(field)
+      setHiddenColumns((prev) => {
+        const updatedColumns = prev.includes(field)
           ? prev.filter((col) => col !== field)
-          : [...prev, field]
-      );
+          : [...prev, field];
+
+        localStorage.setItem(
+          "hiddenColumnsTradeToDoTable",
+          JSON.stringify(updatedColumns)
+        );
+
+        return updatedColumns;
+      });
     };
 
     const popoverContent = () => {
@@ -714,8 +746,38 @@ const TradeToDoTable = forwardRef(
       return null;
     };
 
+    const handleColumnResize = (params) => {
+      const newWidths = {
+        ...columnWidths,
+        [params.colDef.field]: params.width,
+      };
+
+      setColumnWidths(newWidths);
+      localStorage.setItem(
+        "tradeToDoTableColumnWidths",
+        JSON.stringify(newWidths)
+      );
+    };
+
+    // useEffect(() => {
+    //   if (hiddenColumnsFromLocalStorage) {
+    //     try {
+    //       const parsed = JSON.parse(hiddenColumnsFromLocalStorage);
+    //       if (Array.isArray(parsed)) {
+    //         setHiddenColumns(parsed);
+    //       }
+    //     } catch (error) {
+    //       console.error("Error parsing hidden columns:", error);
+    //     }
+    //   }
+    // }, [hiddenColumnsFromLocalStorage]);
+
     const visibleColumns = useMemo(
-      () => columns.filter((col) => !hiddenColumns.includes(col.field)),
+      () =>
+        columns.filter(
+          (col) =>
+            Array.isArray(hiddenColumns) && !hiddenColumns.includes(col.field)
+        ),
       [columns, hiddenColumns]
     );
 
@@ -982,6 +1044,7 @@ const TradeToDoTable = forwardRef(
               rows={rowsWithId}
               columns={visibleColumns}
               filterModel={filterModel}
+              onColumnResize={handleColumnResize}
               onFilterModelChange={setFilterModel}
               initialState={{
                 pagination: { paginationModel: { pageSize: 10 } },
