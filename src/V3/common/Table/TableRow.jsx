@@ -424,7 +424,29 @@ const TableRow = () => {
         renderCell: (params) => (
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span>{params.row.strategy.name}</span>
+              {/* <span>{params.row.strategy.name}</span> */}
+
+              <Tooltip
+                title={params.row.strategy.name}
+                placement="bottom"
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      fontFamily: "inherit",
+                      fontWeight: 400,
+                      fontSize: "14px",
+                      gap: 10,
+                      borderRadius: "2px",
+                      padding: "16px",
+                      background: "#FFFFFF",
+                      color: "#666666",
+                    },
+                  },
+                }}
+              >
+                <span> {params.row.strategy.name} </span>
+              </Tooltip>
+
               {params.row.demo && <Badge variant="demo">Demo</Badge>}
             </div>
           </div>

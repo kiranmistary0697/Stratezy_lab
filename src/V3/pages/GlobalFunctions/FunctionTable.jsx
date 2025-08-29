@@ -437,16 +437,35 @@ const FunctionTable = ({ query }) => {
         headerName: "Function Name",
         width: columnWidths.func || 350,
         renderCell: (params) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              cursor: "pointer",
+          <Tooltip
+            title={params.row.func || ""}
+            placement="bottom"
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  fontFamily: "inherit",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  gap: 10,
+                  borderRadius: "2px",
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                },
+              },
             }}
           >
-            <span>{params.row.func}</span>
-          </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                cursor: "pointer",
+              }}
+            >
+              <span>{params.row.func}</span>
+            </div>
+          </Tooltip>
         ),
       },
       {

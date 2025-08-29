@@ -422,6 +422,7 @@ const BacktestTable = ({
         field: "name",
         headerName: "Strategy Name",
         width: columnWidths.name || 180,
+        minWidth: 100,
         renderHeader: () => (
           <Box display="flex" alignItems="center" gap={1}>
             <span
@@ -454,17 +455,36 @@ const BacktestTable = ({
           </Box>
         ),
         renderCell: (params) => (
-          <Link
-            component="button"
-            underline="none"
-            color="#3D69D3"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStrategyRowClick(params);
+          <Tooltip
+            title={params.row.name || ""}
+            placement="bottom"
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  fontFamily: "inherit",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  gap: 10,
+                  borderRadius: "2px",
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                },
+              },
             }}
           >
-            {params.row.name}
-          </Link>
+            <Link
+              component="button"
+              underline="none"
+              color="#3D69D3"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStrategyRowClick(params);
+              }}
+            >
+              {params.row.name}
+            </Link>
+          </Tooltip>
         ),
       },
       {

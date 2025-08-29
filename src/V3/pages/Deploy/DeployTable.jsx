@@ -9,6 +9,7 @@ import {
   FormGroup,
   Link,
   Pagination,
+  Tooltip,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
@@ -298,18 +299,38 @@ const DeployTable = ({
         field: "name",
         headerName: "Strategy Name",
         width: columnWidths.name || 150,
+        minWidth: 100,
         renderCell: (params) => (
-          <Link
-            component="button"
-            underline="none"
-            color="#3D69D3"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStrategyRowClick(params);
+          <Tooltip
+            title={params.row.name || ""} // Use params.row.name instead of params.row.strategy.name
+            placement="bottom"
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  fontFamily: "inherit",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  gap: 10,
+                  borderRadius: "2px",
+                  padding: "16px",
+                  background: "#FFFFFF",
+                  color: "#666666",
+                },
+              },
             }}
           >
-            {params.row.name || "-"}
-          </Link>
+            <Link
+              component="button"
+              underline="none"
+              color="#3D69D3"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStrategyRowClick(params);
+              }}
+            >
+              {params.row.name || "-"}
+            </Link>
+          </Tooltip>
         ),
       },
       {
