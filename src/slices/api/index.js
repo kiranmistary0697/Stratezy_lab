@@ -162,6 +162,11 @@ export const api = createApi({
       transformResponse,
       onQueryStarted,
     }),
+    getCredits: builder.query({
+      query: () => generateEndPoint("stock-analysis-function/credit"),
+      providesTags: [tagTypes.PLAN_DETAILS],
+      transformResponse,
+    }),
     post: builder.mutation({
       query: ({ endpoint, payload, query = null }) => {
         const postEndpoint = generateEndPoint(endpoint, query);
@@ -234,6 +239,7 @@ export const {
   usePutMutation,
   useDeleteMutation,
   useLazyDownloadExcelQuery,
+  useGetCreditsQuery,
 } = api;
 
 export const useLazyCachedGetQuery = (...args) => {

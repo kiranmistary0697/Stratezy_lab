@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { useLazyGetQuery, usePostMutation } from "../slices/api";
+import { usePostMutation, useGetCreditsQuery } from "../slices/api"; // Updated import
 import { useAuth } from "../V2/contexts/AuthContext";
 
 import { SUBSCRIPTION_ID } from "../constants/Enum";
@@ -33,41 +33,32 @@ import moment from "moment";
 
 const NavigationHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [planDetails, setPlanDetails] = useState({
-    availableCredit: 0,
-    maxCredit: 0,
-    numDeployments: 0,
-    expiryDate: "",
-    state: "",
-    subscriptionPricingId: "",
-  });
+
+  // Replace the old planDetails state with RTK Query
+  const { data: creditApiResponse } = useGetCreditsQuery();
+
+  const planDetails = creditApiResponse?.data ||
+    creditApiResponse || {
+      availableCredit: 0,
+      maxCredit: 0,
+      numDeployments: 0,
+      expiryDate: "",
+      state: "",
+      subscriptionPricingId: "",
+    };
+
   const [anchorEl, setAnchorEl] = useState(null);
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [newSubscription] = usePostMutation();
-  const [getCredits] = useLazyGetQuery();
 
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
   const isTabletOrMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const fetchDeploymentCredit = async () => {
-    try {
-      const { data } = await getCredits({
-        endpoint: "stock-analysis-function/credit",
-        // tags: [tagTypes.GET_DEPLOY],
-      }).unwrap();
-
-      setPlanDetails(data);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchDeploymentCredit();
-  }, []);
+  // Remove the old fetchDeploymentCredit function and useEffect
+  // RTK Query handles data fetching automatically now
 
   useEffect(() => {
     setMobileOpen(false);
@@ -242,9 +233,7 @@ const NavigationHeader = () => {
           >
             <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
             <Divider />
-            <MenuItem onClick={handleSubscribe}>
-              Subscription
-            </MenuItem>
+            <MenuItem onClick={handleSubscribe}>Subscription</MenuItem>
             <MenuItem onClick={() => navigate("/plans")}>Plans</MenuItem>
             <Divider />
             <MenuItem onClick={logout}>Logout</MenuItem>

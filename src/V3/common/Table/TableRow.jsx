@@ -628,7 +628,7 @@ const TableRow = () => {
         sortable: false,
         renderCell: (params) => {
           const isDraft =
-            !params.row.complete || !params.row?.backtestSummaryRes;
+            !params.row.complete || !params.row?.backtestSummaryRes?.completed;
 
           const button = (
             <ActionButton

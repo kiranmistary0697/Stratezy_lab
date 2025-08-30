@@ -196,9 +196,9 @@ const EditStrategy = () => {
   useEffect(() => {
     if (!isConfigLoaded || !defaultVersion) return;
     handleVersionData(defaultVersion);
-    if (tabIndex === 1) {
-      handleViewData(defaultVersion);
-    }
+    // if (tabIndex === 1) {
+    handleViewData(defaultVersion);
+    // }
     handleLocation(defaultVersion);
   }, [isConfigLoaded, defaultVersion, tabIndex]);
 
@@ -210,6 +210,7 @@ const EditStrategy = () => {
 
   useEffect(() => {
     if (view && tabIndex === 1 && isConfigLoaded) {
+      // if (view && isConfigLoaded) {
       handleViewData();
     }
   }, [view, tabIndex, isConfigLoaded]);

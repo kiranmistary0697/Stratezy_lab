@@ -779,7 +779,11 @@ const ViewBacktestResult = ({
         <DeleteModal
           isOpen={isDelete}
           handleClose={() => setIsDelete(false)}
-          handleConfirm={confirmDelete}
+          handleConfirm={() => {
+            confirmDelete();
+            localStorage.removeItem("localSelectedStrategies");
+            setSelectedStrategies([]);
+          }}
           title="Are you Sure?"
           description="This action is irreversible. Once deleted, the backtest and all its data cannot be recovered."
         />

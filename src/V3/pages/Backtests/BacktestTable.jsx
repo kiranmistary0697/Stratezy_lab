@@ -311,6 +311,8 @@ const BacktestTable = ({
       }).unwrap();
 
       toast.success(data?.message);
+      localStorage.removeItem("localSelectedStrategies");
+      setSelectedStrategies([])
       setIsDelete(false);
       fetchAllData();
     } catch (error) {
