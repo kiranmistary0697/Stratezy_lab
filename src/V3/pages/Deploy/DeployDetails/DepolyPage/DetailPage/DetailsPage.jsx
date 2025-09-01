@@ -132,7 +132,7 @@ const DetailsPage = ({ data = {}, fetchDeployData = () => {} }) => {
     { label: "Net Profit", value: money.netProfit },
     { label: "Current Account Value", value: money.currentAccountValue },
     { label: "Max Drawdown", value: formatPercent2(data.maxDrawdown) },
-    { label: "Average Profit", value: formatPercent2(data.avgAnProfit) },
+    { label: "Average Annual Profit", value: formatPercent2(data.avgAnProfit) },
     {
       label: "Average Profit Per Trade",
       value: formatPercent2(data.avgProfitPerTrade),

@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { forwardRef, useMemo, useState, useEffect } from "react";
+import { forwardRef, useMemo, useState, useEffect, useImperativeHandle  } from "react";
 import {
   Box,
   Checkbox,
@@ -54,6 +54,14 @@ const fmt2 = (v) => {
   return Number.isFinite(n) ? n.toFixed(2) : "0";
 };
 
+const NUMERIC_FIELDS = [
+  "buyPrice",
+  "sellPrice",
+  "principal",
+  "investment",
+  "netProfit",
+  "risk1R",
+];
 /**
  * Props:
  *  - tradeData: array
@@ -816,6 +824,40 @@ const TradeToDoTable = forwardRef(
       setMobileSettingsOpen(false);
     };
 
+    useImperativeHandle(
+      ref,
+      () => ({
+        getCSVData: () => {
+          // columns to export: desktop -> visible columns; mobile -> selected card fields
+          const exportFields = (isMobile
+            ? cardFields
+            : visibleColumns.map((c) => c.field)
+          ).filter((f) => f && f !== "moreaction");
+
+          const headers = exportFields.map(
+            (f) => columnsMap[f]?.headerName || f.toUpperCase()
+          );
+
+          const rows = rowsWithId.map((row) =>
+            exportFields.map((f) => {
+              if (f === "action") return row.closed ? "EXIT" : "ENTER";
+              if (f === "yetToDo") return row.yetToDo ? "True" : "False";
+              const v = row[f];
+              return NUMERIC_FIELDS.includes(f) ? fmt2(v) : v ?? "-";
+            })
+          );
+
+          // react-csv consumes this shape directly
+          return {
+            data: [headers, ...rows],
+            separator: ",",
+            wrapColumnChar: '"',
+          };
+        },
+      }),
+      [isMobile, cardFields, visibleColumns, rowsWithId, columnsMap]
+    );
+    
     // Load persisted selection (mobile only)
     useEffect(() => {
       if (!isMobile || !persistMobileCardSelection) return;

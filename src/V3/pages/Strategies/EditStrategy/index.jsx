@@ -210,7 +210,6 @@ const EditStrategy = () => {
 
   useEffect(() => {
     if (view && tabIndex === 1 && isConfigLoaded) {
-      // if (view && isConfigLoaded) {
       handleViewData();
     }
   }, [view, tabIndex, isConfigLoaded]);

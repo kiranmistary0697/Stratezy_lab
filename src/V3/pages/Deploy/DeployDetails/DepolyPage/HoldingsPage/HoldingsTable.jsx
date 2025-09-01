@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState, useMemo } from "react";
 import {
   Box,
   Checkbox,
@@ -21,6 +21,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import CommonCard from "../../../../../common/Cards/CommonCard";
 
+/* ---------- table cell text ---------- */
 const tableTextSx = {
   fontFamily: "Inter",
   fontWeight: 400,
@@ -33,25 +34,64 @@ const tableTextSx = {
   height: "100%",
 };
 
+/* ---------- filter modal style ---------- */
 const useStyles = makeStyles({
-  // This targets the column and operator dropdowns in the filter modal
   filterModal: {
-    // Hide the column dropdown (the field selector) and the operator dropdown (the operator selector)
-    "& .MuiDataGrid-filterPanel": {
-      display: "none",
-    },
-    "& .MuiDataGrid-filterPanelColumn": {
-      display: "none",
-    },
-    "& .MuiDataGrid-filterPanelOperator": {
-      display: "none",
-    },
+    "& .MuiDataGrid-filterPanel": { display: "none" },
+    "& .MuiDataGrid-filterPanelColumn": { display: "none" },
+    "& .MuiDataGrid-filterPanelOperator": { display: "none" },
   },
 });
 
+/* ===================== number/currency helpers ===================== */
+function parseNumericLike(val) {
+  if (typeof val === "number" && Number.isFinite(val)) return val;
+  if (typeof val !== "string") return null;
+  const s = val.trim();
+  let n = Number(s);
+  if (Number.isFinite(n)) return n;
+  const cleaned = s.replace(/[, ]/g, "").replace(/[^\d.eE+\-]/g, "");
+  n = Number(cleaned);
+  return Number.isFinite(n) ? n : null;
+}
+
+function isNearlyInteger(n, tol = 1e-9) {
+  if (!Number.isFinite(n)) return false;
+  const nearest = Math.round(n);
+  const scale = Math.max(1, Math.abs(n));
+  return Math.abs(n - nearest) <= tol * scale;
+}
+
+function formatMaybeNumber(
+  val,
+  { decimals = 2, integerNoDecimals = true, useGrouping = true, locale = "en-IN" } = {}
+) {
+  const n = parseNumericLike(val);
+  if (n == null) return val ?? "-";
+  const fractionDigits = integerNoDecimals && isNearlyInteger(n) ? 0 : decimals;
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+    useGrouping,
+    notation: "standard",
+  }).format(n);
+}
+
+function formatMaybeCurrency(
+  val,
+  fmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" },
+  { symbol = "₹", space = false } = {}
+) {
+  const n = parseNumericLike(val);
+  if (n == null) return val ?? "-";
+  const sign = n < 0 ? "-" : "";
+  const absStr = formatMaybeNumber(Math.abs(n), fmt);
+  return `${sign}${symbol}${space ? " " : ""}${absStr}`;
+}
+
+/* ===================== component ===================== */
 const HoldingsTable = forwardRef((props, ref) => {
   const { query, rows = [], isLoading } = props;
-  // { ref, data = {}, query }
   const classes = useStyles();
 
   const theme = useTheme();
@@ -66,41 +106,37 @@ const HoldingsTable = forwardRef((props, ref) => {
       const stored = localStorage.getItem("hiddenColumnsHoldingsTable");
       const parsed = stored
         ? JSON.parse(stored)
-        : [
-            "sellTime",
-            "sellPrice",
-            "prf1R",
-            "closeReason",
-            "openReason",
-            "yetToDo",
-          ];
+        : ["sellTime", "sellPrice", "prf1R", "closeReason", "openReason", "Yet To Do", "Action"];
       return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error("Error parsing hidden columns from localStorage:", error);
-      return [
-        "sellTime",
-        "sellPrice",
-        "prf1R",
-        "closeReason",
-        "openReason",
-        "yetToDo",
-      ];
+    } catch {
+      return ["sellTime", "sellPrice", "prf1R", "closeReason", "openReason", "Yet To Do", "Action"];
     }
   });
 
+  const normKey = (s) =>
+    String(s ?? "")
+      .toLowerCase()
+      .replace(/\s+/g, "")
+      .replace(/[^a-z0-9_]/g, "");
+
+  const hiddenSet = useMemo(
+    () => new Set((hiddenColumns || []).map(normKey)),
+    [hiddenColumns]
+  );
+
+  const filterCardRowsByHidden = (obj) =>
+    Object.fromEntries(
+      Object.entries(obj).filter(([label]) => !hiddenSet.has(normKey(label)))
+    );
+    
   const [columnWidths, setColumnWidths] = useState(() => {
     try {
       const storedWidths = localStorage.getItem("holdingsTableColumnWidths");
       return storedWidths ? JSON.parse(storedWidths) : {};
-    } catch (error) {
-      console.error("Error loading column widths:", error);
+    } catch {
       return {};
     }
   });
-
-  const hiddenColumnsFromLocalStorage = localStorage.getItem(
-    "hiddenColumnsHoldingsTable"
-  );
 
   const [page, setPage] = useState(1);
   const cardsPerPage = 10;
@@ -110,7 +146,6 @@ const HoldingsTable = forwardRef((props, ref) => {
     setPopoverAnchor(event.currentTarget);
     setActiveFilter(type);
   };
-
   const handlePopoverClose = () => {
     setPopoverAnchor(null);
     setActiveFilter(null);
@@ -122,16 +157,12 @@ const HoldingsTable = forwardRef((props, ref) => {
         ? prev.filter((col) => col !== field)
         : [...prev, field];
 
-      localStorage.setItem(
-        "hiddenColumnsHoldingsTable",
-        JSON.stringify(updatedColumns)
-      );
-
+      localStorage.setItem("hiddenColumnsHoldingsTable", JSON.stringify(updatedColumns));
       return updatedColumns;
     });
   };
 
-  const normalizedQuery = String(query).toLowerCase();
+  const normalizedQuery = String(query ?? "").toLowerCase();
   const searchableFields = [
     "symbol",
     "buyPrice",
@@ -147,12 +178,9 @@ const HoldingsTable = forwardRef((props, ref) => {
   ];
 
   const rowsWithId = rows
-    ?.slice() // shallow copy
+    ?.slice()
     .sort((a, b) => a.symbol?.localeCompare(b.symbol || "") ?? 0)
-    .map((strategy, index) => ({
-      id: index + 1,
-      ...strategy,
-    }))
+    .map((strategy, index) => ({ id: index + 1, ...strategy }))
     .filter((row) =>
       searchableFields.some(
         (key) =>
@@ -160,79 +188,69 @@ const HoldingsTable = forwardRef((props, ref) => {
           String(row[key]).toLowerCase().includes(normalizedQuery)
       )
     );
+
+  /* ===================== Popover (column chooser) ===================== */
   const popoverContent = () => {
     if (!activeFilter) return null;
-
-    switch (activeFilter) {
-      case "column":
-        return (
-          <FormGroup sx={{ padding: 2 }}>
-            <Typography
-              sx={{
-                fontFamily: "Inter",
-                fontWeight: 500,
-                fontSize: "14px",
-                lineHeight: "120%",
-                letterSpacing: "0%",
-                color: "#0A0A0A",
-              }}
-            >
-              Select Column
-            </Typography>
-            {columns
-              .filter(
-                ({ field }) =>
-                  ![
-                    "requestId",
-                    "name",
-                    "version",
-                    "createdAt",
-                    "status",
-                    "moreAction",
-                  ].includes(field)
-              )
-              .map((col) => (
-                <FormControlLabel
-                  key={col.field}
-                  control={
-                    <Checkbox
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxIcon />}
-                      checked={!hiddenColumns.includes(col.field)}
-                      onChange={() => handleColumnToggle(col.field)}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        fontFamily: "Inter",
-                        fontWeight: 500,
-                        fontSize: "14px",
-                        lineHeight: "120%",
-                        letterSpacing: "0%",
-                        color: "#0A0A0A",
-                      }}
-                    >
-                      {col.headerName}
-                    </Typography>
-                  }
-                />
-              ))}
-          </FormGroup>
-        );
-      default:
-        return null;
+    if (activeFilter === "column") {
+      return (
+        <FormGroup sx={{ padding: 2 }}>
+          <Typography
+            sx={{
+              fontFamily: "Inter",
+              fontWeight: 500,
+              fontSize: "14px",
+              lineHeight: "120%",
+              letterSpacing: "0%",
+              color: "#0A0A0A",
+            }}
+          >
+            Select Column
+          </Typography>
+          {columns
+            .filter(({ field }) => !["requestId", "name", "version", "createdAt", "status", "moreAction"].includes(field))
+            .map((col) => (
+              <FormControlLabel
+                key={col.field}
+                control={
+                  <Checkbox
+                    icon={<CheckBoxOutlinedIcon />}
+                    checkedIcon={<CheckBoxIcon />}
+                    checked={!hiddenColumns.includes(col.field)}
+                    onChange={() => handleColumnToggle(col.field)}
+                  />
+                }
+                label={
+                  <Typography
+                    sx={{
+                      fontFamily: "Inter",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      lineHeight: "120%",
+                      letterSpacing: "0%",
+                      color: "#0A0A0A",
+                    }}
+                  >
+                    {col.headerName}
+                  </Typography>
+                }
+              />
+            ))}
+        </FormGroup>
+      );
     }
+    return null;
   };
+
+  /* ===================== Columns ===================== */
+  const numFmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" };
 
   const columns = [
     {
       field: "symbol",
       headerName: "Symbol",
       width: columnWidths.symbol || 150,
-      renderCell: (params) => (
-        <Typography sx={{ ...tableTextSx }}>{params?.row?.symbol}</Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.symbol ?? "-"}</Typography>,
     },
     {
       field: "buyPrice",
@@ -240,56 +258,44 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.buyPrice || 150,
       valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
       renderCell: (params) => {
-        const value = params?.row?.buyPrice;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.buyPrice);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
       },
     },
     {
       field: "number",
       headerName: "Number",
       width: columnWidths.number || 150,
-      // Assuming number is numeric, apply logic accordingly:
       valueGetter: (_, row) => (row.number ? parseFloat(row.number) : 0),
       renderCell: (params) => {
-        const value = params?.row?.number;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.number);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
       },
     },
     {
       field: "sellPrice",
-      headerName: "Sell Price",
+      headerName: "Price",
       width: columnWidths.sellPrice || 150,
       valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
       renderCell: (params) => {
-        const value = params?.row?.sellPrice;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.sellPrice);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
       },
     },
     {
       field: "sellTime",
       headerName: "Sell Time",
       width: columnWidths.sellTime || 150,
-      renderCell: (params) => (
-        <Typography sx={tableTextSx}>{params?.row?.sellTime}</Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.sellTime ?? "-"}</Typography>,
     },
     {
       field: "investment",
       headerName: "Investment",
       width: columnWidths.investment || 150,
-      valueGetter: (_, row) =>
-        row.investment ? parseFloat(row.investment) : 0,
+      valueGetter: (_, row) => (row.investment ? parseFloat(row.investment) : 0),
       renderCell: (params) => {
-        const value = params?.row?.investment;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.investment);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
       },
     },
     {
@@ -298,10 +304,8 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.principal || 150,
       valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
       renderCell: (params) => {
-        const value = params?.row?.principal;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.principal);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
       },
     },
     {
@@ -310,10 +314,8 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.netProfit || 150,
       valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
       renderCell: (params) => {
-        const value = params?.row?.netProfit;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.netProfit);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
       },
     },
     {
@@ -322,31 +324,25 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.profit || 150,
       valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
       renderCell: (params) => {
-        const value = params?.row?.profit;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.profit);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
       },
     },
     {
       field: "anPrf",
-      headerName: "Annual %",
+      headerName: "Annual Profit %",
       width: columnWidths.anPrf || 150,
       valueGetter: (_, row) => (row.anPrf ? parseFloat(row.anPrf) : 0),
       renderCell: (params) => {
-        const value = params?.row?.anPrf;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.anPrf);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
       },
     },
     {
       field: "buyTime",
       headerName: "Buy Time",
       width: columnWidths.buyTime || 150,
-      renderCell: (params) => (
-        <Typography sx={tableTextSx}>{params?.row?.buyTime}</Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.buyTime ?? "-"}</Typography>,
     },
     {
       field: "prf1R",
@@ -354,10 +350,8 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.prf1R || 150,
       valueGetter: (_, row) => (row.prf1R ? parseFloat(row.prf1R) : 0),
       renderCell: (params) => {
-        const value = params?.row?.prf1R;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.prf1R);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
       },
     },
     {
@@ -366,35 +360,27 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.risk1R || 150,
       valueGetter: (_, row) => (row.risk1R ? parseFloat(row.risk1R) : 0),
       renderCell: (params) => {
-        const value = params?.row?.risk1R;
-        const num = Number(value);
-        if (isNaN(num)) return <Typography sx={tableTextSx}>0</Typography>;
-        return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+        const n = parseNumericLike(params?.row?.risk1R);
+        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
       },
     },
     {
       field: "duration",
       headerName: "Duration Time",
       width: columnWidths.duration || 150,
-      renderCell: (params) => (
-        <Typography sx={tableTextSx}>{params?.row?.duration}</Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.duration ?? "-"}</Typography>,
     },
     {
       field: "closeReason",
       headerName: "Close Reason",
       width: columnWidths.closeReason || 150,
-      renderCell: (params) => (
-        <Typography sx={tableTextSx}>{params?.row?.closeReason}</Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.closeReason ?? "-"}</Typography>,
     },
     {
       field: "openReason",
       headerName: "Open Reason",
       width: columnWidths.openReason || 200,
-      renderCell: (params) => (
-        <Typography sx={tableTextSx}>{params?.row?.openReason}</Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.openReason ?? "-"}</Typography>,
     },
     {
       field: "action",
@@ -410,9 +396,7 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.yetToDo || 150,
       disableColumnMenu: true,
       valueGetter: (_, row) => (row.yetToDo ? "True" : "False"),
-      renderCell: (params) => (
-        <div>{params.row.yetToDo ? "True" : "False"}</div>
-      ),
+      renderCell: (params) => <div>{params.row.yetToDo ? "True" : "False"}</div>,
     },
     {
       field: "moreAction",
@@ -420,14 +404,8 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.moreAction || 150,
       disableColumnMenu: true,
       renderHeader: () => (
-        <IconButton
-          size="small"
-          onClick={(e) => handlePopoverOpen(e, "column")}
-        >
-          <SettingsIcon
-            fontSize="small"
-            color={hiddenColumns.length ? "primary" : ""}
-          />
+        <IconButton size="small" onClick={(e) => handlePopoverOpen(e, "column")}>
+          <SettingsIcon fontSize="small" color={hiddenColumns.length ? "primary" : undefined} />
         </IconButton>
       ),
       renderCell: () => <div>{null}</div>,
@@ -449,11 +427,7 @@ const HoldingsTable = forwardRef((props, ref) => {
   }));
 
   const pageCount = Math.ceil(rowsWithId.length / cardsPerPage);
-
-  const paginatedRows = rowsWithId.slice(
-    (page - 1) * cardsPerPage,
-    page * cardsPerPage
-  );
+  const paginatedRows = rowsWithId.slice((page - 1) * cardsPerPage, page * cardsPerPage);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -461,48 +435,29 @@ const HoldingsTable = forwardRef((props, ref) => {
   };
 
   const handleColumnResize = (params) => {
-    const newWidths = {
-      ...columnWidths,
-      [params.colDef.field]: params.width,
-    };
-
+    const newWidths = { ...columnWidths, [params.colDef.field]: params.width };
     setColumnWidths(newWidths);
-    localStorage.setItem(
-      "holdingsTableColumnWidths",
-      JSON.stringify(newWidths)
-    );
+    localStorage.setItem("holdingsTableColumnWidths", JSON.stringify(newWidths));
   };
 
-  // useEffect(() => {
-  //   if (hiddenColumnsFromLocalStorage) {
-  //     try {
-  //       const parsed = JSON.parse(hiddenColumnsFromLocalStorage);
-  //       if (Array.isArray(parsed)) {
-  //         setHiddenColumns(parsed);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error parsing hidden columns:", error);
-  //     }
-  //   }
-  // }, [hiddenColumnsFromLocalStorage]);
-
+  /* ===================== Mobile mapping (CommonCard) ===================== */
   const mapRowToDisplay = (row) => ({
     Symbol: row.symbol,
-    "Buy Price": row.buyPrice,
-    Number: row.number,
-    "Sell Price": row.sellPrice,
-    "Sell Time": row.sellTime,
-    Investment: row.investment,
-    Principal: row.principal,
-    "Net Profit": row.netProfit,
-    "Profit %": row.profit,
-    "Annual %": row.anPrf,
-    "Buy Time": row.buyTime,
-    Prf1R: row.prf1R,
-    Risk1R: row.risk1R,
-    "Duration Time": row.duration,
-    "Close Reason": row.closeReason,
-    "Open Reason": row.openReason,
+    "Buy Price": formatMaybeCurrency(row.buyPrice, numFmt),
+    Number: formatMaybeNumber(row.number, numFmt),
+    "Sell Price": formatMaybeCurrency(row.sellPrice, numFmt),
+    "Sell Time": row.sellTime ?? "-",
+    Investment: formatMaybeCurrency(row.investment, numFmt),
+    Principal: formatMaybeCurrency(row.principal, numFmt),
+    "Net Profit": formatMaybeCurrency(row.netProfit, numFmt),
+    "Profit %": formatMaybeNumber(row.profit, numFmt),
+    "Annual Profit %": formatMaybeNumber(row.anPrf, numFmt),
+    "Buy Time": row.buyTime ?? "-",
+    Prf1R: formatMaybeNumber(row.prf1R, numFmt),
+    Risk1R: formatMaybeNumber(row.risk1R, numFmt),
+    "Duration Time": row.duration ?? "-",
+    "Close Reason": row.closeReason ?? "-",
+    "Open Reason": row.openReason ?? "-",
     Action: row.closed ? "EXIT" : "ENTER",
     "Yet To Do": row.yetToDo ? "True" : "False",
   });
@@ -514,44 +469,32 @@ const HoldingsTable = forwardRef((props, ref) => {
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            maxHeight: 300,
-            overflowY: "auto",
-            overflowX: "hidden",
-          },
-        }}
-        // transformOrigin={{ vertical: "top", horizontal: "left" }}
+        PaperProps={{ sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" } }}
       >
         {popoverContent()}
       </Popover>
 
       {isMobile ? (
-        <>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {rowsWithId.length ? (
-              paginatedRows.map((data, i) => (
-                <CommonCard key={i} rows={mapRowToDisplay(data)} />
-              ))
-            ) : (
-              <div className="text-center pt-2">No data to show</div>
-            )}
-            <Box />
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {rowsWithId.length ? (
+            paginatedRows.map((data, i) => (
+              <CommonCard
+                key={i}
+                rows={filterCardRowsByHidden(mapRowToDisplay(data))}
+                overflowMode="wrap"     // wrap label & value
+                formatNumbers={false}   // keep preformatted "₹ ..." strings
+              />
+            ))
+          ) : (
+            <div className="text-center pt-2">No data to show</div>
+          )}
 
-            <Box display="flex" flexDirection="column" gap={2}>
-              {pageCount > 1 && (
-                <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-                  <Pagination
-                    count={pageCount}
-                    page={page}
-                    onChange={handlePageChange}
-                    color="primary"
-                  />
-                </Box>
-              )}
+          {pageCount > 1 && (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+              <Pagination count={pageCount} page={page} onChange={handlePageChange} color="primary" />
             </Box>
-          </Box>
-        </>
+          )}
+        </Box>
       ) : (
         <Box
           className={`${classes.filterModal} flex`}
@@ -560,8 +503,8 @@ const HoldingsTable = forwardRef((props, ref) => {
             border: "1px solid #E0E0E0",
             backgroundColor: "white",
             minWidth: "100%",
-            height: "500px", // Set a max height for scrolling
-            overflow: "auto", // Enable scrolling when content overflows
+            height: "500px",
+            overflow: "auto",
           }}
         >
           <DataGrid
@@ -571,13 +514,7 @@ const HoldingsTable = forwardRef((props, ref) => {
             filterModel={filterModel}
             onFilterModelChange={setFilterModel}
             onColumnResize={handleColumnResize}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
-            }}
+            initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
             loading={isLoading}
             slotProps={{
               loadingOverlay: {

@@ -9,6 +9,7 @@ import Signup from "../V2/pages/Signup";
 import Logout from "../V2/pages/Logout.jsx";
 import PrivacyPolicy from "../V2/pages/PrivacyPolicy";
 import RiskDisclosure from "../V2/pages/RiskDisclosure";
+import TermsGate from "../V2/pages/TermsGate.jsx";
 import ContextWrapper from "../V2/contexts/ContextWrapper";
 import AdditionalDetails from "../V2/pages/AdditionalDetails";
 import Plan from "../app/Plan.jsx";
@@ -51,6 +52,7 @@ export default function AppRoute() {
             <Route path={routes.signup} element={<Signup />} />
             <Route path={routes.privacyPolicy} element={<PrivacyPolicy />} />
             <Route path={routes.riskDisclosure} element={<RiskDisclosure />} />
+            <Route path={routes.termsgate} element={<TermsGate />} />
             <Route path={routes.plan} element={<Plan />} />
           </Route>
 

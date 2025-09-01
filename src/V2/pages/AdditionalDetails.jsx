@@ -21,7 +21,7 @@ const AdditionalDetails = () => {
 
             if (!response.firstTimeLogin) {
                 toast.success("Submission Successful")
-                navigate('/Strategies');
+                navigate(routes.termsgate);
             }
         } catch (error) {
             toast.error("Submission Failed")

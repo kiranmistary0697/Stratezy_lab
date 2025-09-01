@@ -7,6 +7,7 @@ const routes = {
   logout: "/signout",
   privacyPolicy: "/privacy-policy",
   riskDisclosure: "/risk-disclosure",
+  termsgate: "/termsgate",
   additionalDetails: "/additional-details",
   plan: "/plan",
   app: "/app",

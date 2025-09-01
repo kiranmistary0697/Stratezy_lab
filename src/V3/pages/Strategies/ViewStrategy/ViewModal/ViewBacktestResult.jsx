@@ -144,7 +144,13 @@ const ViewBacktestResult = ({
       return updatedColumns;
     });
   };
-
+  const formatCurrency = (num) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+    }).format(num);
+  };
   const filteredRows = useMemo(
     () =>
       rowsWithId.filter((row) => {
@@ -497,10 +503,10 @@ const ViewBacktestResult = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <span>₹0</span>;
+            return <span>{formatCurrency(0)}</span>;
           }
 
-          return <span>₹{num.toFixed(2)}</span>;
+          return <span>{formatCurrency(num)}</span>;
         },
       },
       {
@@ -514,10 +520,10 @@ const ViewBacktestResult = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <span>₹0</span>;
+            return <span>{formatCurrency(0)}</span>;
           }
 
-          return <span>₹{num.toFixed(2)}</span>;
+          return <span>{formatCurrency(num)}</span>;
         },
       },
       {
@@ -548,10 +554,10 @@ const ViewBacktestResult = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <span>₹0</span>;
+            return <span>formatCurrency(0)</span>;
           }
 
-          return <span>₹{num.toFixed(2)}</span>;
+          return <span>{formatCurrency(num)}</span>;
         },
       },
       {
@@ -779,11 +785,7 @@ const ViewBacktestResult = ({
         <DeleteModal
           isOpen={isDelete}
           handleClose={() => setIsDelete(false)}
-          handleConfirm={() => {
-            confirmDelete();
-            localStorage.removeItem("localSelectedStrategies");
-            setSelectedStrategies([]);
-          }}
+          handleConfirm={confirmDelete}
           title="Are you Sure?"
           description="This action is irreversible. Once deleted, the backtest and all its data cannot be recovered."
         />

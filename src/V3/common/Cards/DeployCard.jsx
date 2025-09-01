@@ -1,83 +1,158 @@
 /* eslint-disable react/prop-types */
-import {
-  Box,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  Typography,
-} from "@mui/material";
+import React, { useMemo } from "react";
+import { Box, Card, CardActions, CardContent, Typography } from "@mui/material";
 import Badge from "../../common/Badge";
 import ActionButton from "../ActionButton";
 
-const Row = ({ label, value }) => (
-  <Grid
-    container
-    alignItems="flex-start"
-    sx={{ fontFamily: "Inter, sans-serif", mb: 1 }}
-  >
-    <Grid
+/* ------------------------ Number formatting helpers ----------------------- */
+function parseNumericLike(val) {
+  if (typeof val === "number" && Number.isFinite(val)) return val;
+  if (typeof val !== "string") return null;
+  const s = val.trim();
+  let n = Number(s);
+  if (Number.isFinite(n)) return n;
+  const cleaned = s.replace(/[, ]/g, "").replace(/[^\d.eE+\-]/g, "");
+  n = Number(cleaned);
+  return Number.isFinite(n) ? n : null;
+}
+function isNearlyInteger(n, tol = 1e-9) {
+  if (!Number.isFinite(n)) return false;
+  const nearest = Math.round(n);
+  const scale = Math.max(1, Math.abs(n));
+  return Math.abs(n - nearest) <= tol * scale;
+}
+function formatMaybeNumber(
+  val,
+  { decimals = 2, integerNoDecimals = true, locale, useGrouping = true } = {}
+) {
+  const n = parseNumericLike(val);
+  if (n == null) return val ?? "-";
+  const fractionDigits = integerNoDecimals && isNearlyInteger(n) ? 0 : decimals;
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+    useGrouping,
+    notation: "standard",
+  }).format(n);
+}
+function formatMaybeCurrency(
+  val,
+  fmt = {},
+  { symbol = "₹", space = false } = {}
+) {
+  const n = parseNumericLike(val);
+  if (n == null) return val ?? "-";
+  const sign = n < 0 ? "-" : "";
+  const absStr = formatMaybeNumber(Math.abs(n), fmt);
+  return `${sign}${symbol}${space ? " " : ""}${absStr}`;
+}
+
+/* ---------------------------------- Row ----------------------------------- */
+/** Both columns wrap; value stays aligned under its own column. */
+const Row = ({
+  label,
+  value,
+  currencySymbol, // e.g., "₹" to show currency; omit for plain numbers
+  formatNumbers = true,
+  numberFormat = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,
+    locale: "en-IN",
+  },
+}) => {
+  // Normalize label to have exactly one trailing colon
+  const labelText = (() => {
+    const s = label == null ? "" : String(label);
+    return s.replace(/:\s*$/, "") + ":";
+  })();
+
+  const displayContent = useMemo(() => {
+    // Non-primitive (e.g., <Badge/>) -> render as-is
+    if (!formatNumbers || (typeof value !== "number" && typeof value !== "string"))
+      return value ?? "-";
+
+    return currencySymbol
+      ? formatMaybeCurrency(value, numberFormat, { symbol: currencySymbol })
+      : formatMaybeNumber(value, numberFormat);
+  }, [value, formatNumbers, numberFormat, currencySymbol]);
+
+  const isText =
+    typeof displayContent === "string" || typeof displayContent === "number";
+
+  return (
+    <Box
       sx={{
-        width: "130px",
-        display: "flex",
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "minmax(110px, 42%) 1fr",
+          sm: "minmax(140px, 35%) 1fr",
+        },
         alignItems: "start",
-        flexShrink: 0,
+        columnGap: 1,
+        mb: 1,
+        fontFamily: "Inter, sans-serif",
       }}
     >
-      <Typography
-        sx={{
-          fontFamily: "Inter",
-          fontSize: "14px",
-          fontWeight: 600,
-          color: "#111827",
-          flex: 1,
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          textAlign: "left", // Right-align labels for better colon alignment
-        }}
-      >
-        {label}
-      </Typography>
-      <Typography
-        sx={{
-          fontFamily: "Inter",
-          fontSize: "14px",
-          fontWeight: 600,
-          color: "#111827",
-          marginLeft: "4px", // Small space before colon
-        }}
-      >
-        :
-      </Typography>
-    </Grid>
+      {/* Label wraps */}
+      <Box sx={{ minWidth: 0 }}>
+        <Typography
+          sx={{
+            fontFamily: "Inter",
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "#111827",
+            whiteSpace: "normal",
+            overflowWrap: "anywhere",
+            wordBreak: "break-word",
+            hyphens: "auto",
+          }}
+          title={labelText}
+        >
+          {labelText}
+        </Typography>
+      </Box>
 
-    <Grid
-      sx={{
-        width: "150px",
-      }}
-    >
-      <Typography
-        sx={{
-          fontFamily: "Inter",
-          fontSize: "14px",
-          color: "#666666",
-          marginLeft: "8px",
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-        }}
-      >
-        {value ?? "-"}
-      </Typography>
-    </Grid>
-  </Grid>
-);
+      {/* Value wraps */}
+      <Box sx={{ minWidth: 0 }}>
+        {isText ? (
+          <Typography
+            sx={{
+              fontFamily: "Inter",
+              fontSize: "14px",
+              color: "#666666",
+              ml: "2px",
+              whiteSpace: "normal",
+              overflowWrap: "anywhere",
+              wordBreak: "break-word",
+              hyphens: "auto",
+            }}
+            title={String(displayContent)}
+          >
+            {displayContent ?? "-"}
+          </Typography>
+        ) : (
+          <Box sx={{ ml: "2px" }}>{displayContent}</Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
 
+/* --------------------------------- DeployCard ------------------------------ */
 const DeployCard = ({
   row = {},
   handleActivate = () => {},
   handleDelete = () => {},
   onCardClick = () => {},
   onNameClick = () => {},
+  // Optional number format defaults (Indian grouping)
+  numberFormat = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,
+    locale: "en-IN",
+  },
 }) => {
   const {
     name,
@@ -103,7 +178,7 @@ const DeployCard = ({
           border: "1px solid #E0E0E0",
           borderRadius: 2,
           width: "100%",
-          maxWidth: 400,
+          maxWidth: "100%",
           backgroundColor: "#fff",
           display: "flex",
           flexDirection: "column",
@@ -117,6 +192,7 @@ const DeployCard = ({
               fontWeight={600}
               onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 onNameClick();
               }}
               title={name}
@@ -135,31 +211,49 @@ const DeployCard = ({
             }}
             sx={{ cursor: "pointer", fontFamily: "Inter" }}
           >
-            <Row label="Strategy Name:" value={name} />
-            <Row label="Deployed On:" value={deployedDate} />
-            <Row label="Date:" value={dataDate} />
+            <Row label="Strategy Name" value={name} numberFormat={numberFormat} />
+            <Row label="Deployed On" value={deployedDate} formatNumbers={false} />
+            <Row label="Date" value={dataDate} formatNumbers={false} />
             <Row
-              label="Status:"
-              value={
-                <Badge variant={state?.toLowerCase() || "default"}>
-                  {state || "-"}
-                </Badge>
-              }
+              label="Status"
+              value={<Badge variant={state?.toLowerCase() || "default"}>{state || "-"}</Badge>}
+              formatNumbers={false}
             />
-            <Row label="Brokerage:" value={brokerage} />
-            <Row label="Initial Capital:" value={initialCapital} />
-            <Row label="Current Capital:" value={currentCapital} />
-            <Row label="Avg Annual Profit:" value={avgAnProfit} />
-            <Row label="Average Profit Per Trade:" value={avgProfitPerTrade} />
-            <Row label="Max Drawdown:" value={maxDrawdown} />
-            <Row label="Net Profit:" value={netProfit} />
-            <Row label="Exchange:" value={exchange} />
+            <Row label="Brokerage" value={brokerage} formatNumbers={false} />
+
+            {/* Currency fields */}
+            <Row
+              label="Initial Capital"
+              value={initialCapital ?? 0}
+              currencySymbol="₹"
+              numberFormat={numberFormat}
+            />
+            <Row
+              label="Current Capital"
+              value={currentCapital ?? 0}
+              currencySymbol="₹"
+              numberFormat={numberFormat}
+            />
+            <Row
+              label="Net Profit"
+              value={netProfit ?? 0}
+              currencySymbol="₹"
+              numberFormat={numberFormat}
+            />
+
+            {/* Other numeric fields (plain numbers) */}
+            <Row label="Avg Annual Profit (%)" value={avgAnProfit ?? 0} numberFormat={numberFormat} />
+            <Row
+              label="Average Profit Per Trade (%)"
+              value={avgProfitPerTrade ?? 0}
+              numberFormat={numberFormat}
+            />
+            <Row label="Max Drawdown (%)" value={maxDrawdown ?? 0} numberFormat={numberFormat} />
+            <Row label="Exchange" value={exchange} formatNumbers={false} />
           </Box>
         </CardContent>
 
-        <CardActions
-          sx={{ display: "flex", justifyContent: "space-between", px: 2 }}
-        >
+        <CardActions sx={{ display: "flex", justifyContent: "space-between", px: 2 }}>
           <Box sx={{ display: "flex", gap: 1, m: 1 }}>
             <ActionButton
               action="Backtest"
@@ -171,7 +265,6 @@ const DeployCard = ({
                 handleActivate();
               }}
             />
-
             <ActionButton
               action="Delete"
               label="Delete"

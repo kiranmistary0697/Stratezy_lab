@@ -1,78 +1,141 @@
 /* eslint-disable react/prop-types */
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Grid,
-} from "@mui/material";
+import React, { useMemo } from "react";
+import { Box, Typography, Card, CardContent, CardActions } from "@mui/material";
 import Badge from "../../common/Badge";
 import useDateTime from "../../hooks/useDateTime";
 import ActionButton from "../ActionButton";
 
-const Row = ({ label, value }) => (
-  <Grid
-    container
-    alignItems="flex-start"
-    sx={{ fontFamily: "Inter, sans-serif", mb: 1 }}
-  >
-    <Grid
+/* ------------------------ Number formatting helpers ----------------------- */
+function parseNumericLike(val) {
+  if (typeof val === "number" && Number.isFinite(val)) return val;
+  if (typeof val !== "string") return null;
+  const s = val.trim();
+  let n = Number(s);
+  if (Number.isFinite(n)) return n;
+  const cleaned = s.replace(/[, ]/g, "").replace(/[^\d.eE+\-]/g, "");
+  n = Number(cleaned);
+  return Number.isFinite(n) ? n : null;
+}
+function isNearlyInteger(n, tol = 1e-9) {
+  if (!Number.isFinite(n)) return false;
+  const nearest = Math.round(n);
+  const scale = Math.max(1, Math.abs(n));
+  return Math.abs(n - nearest) <= tol * scale;
+}
+function formatMaybeNumber(
+  val,
+  { decimals = 2, integerNoDecimals = true, locale, useGrouping = false } = {}
+) {
+  const n = parseNumericLike(val);
+  if (n == null) return val ?? "-";
+  const fractionDigits = integerNoDecimals && isNearlyInteger(n) ? 0 : decimals;
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+    useGrouping,
+    notation: "standard",
+  }).format(n);
+}
+function formatMaybeCurrency(
+  val,
+  fmt = {},
+  { symbol = "₹", space = false } = {}
+) {
+  const n = parseNumericLike(val);
+  if (n == null) return val ?? "-";
+  const sign = n < 0 ? "-" : "";
+  const absStr = formatMaybeNumber(Math.abs(n), fmt);
+  return `${sign}${symbol}${space ? " " : ""}${absStr}`;
+}
+
+/* ---------------------------------- Row ----------------------------------- */
+/** Both columns wrap; value stays aligned under its own column. */
+const Row = ({
+  label,
+  value,
+  currencySymbol, // e.g., "₹" to show currency; omit for plain numbers
+  formatNumbers = true,
+  numberFormat = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: false,
+    locale: undefined,
+  },
+}) => {
+  const displayContent = useMemo(() => {
+    // Non-primitive values (e.g., <Badge/>) are rendered as-is
+    if (!formatNumbers || (typeof value !== "number" && typeof value !== "string"))
+      return value ?? "-";
+
+    return currencySymbol
+      ? formatMaybeCurrency(value, numberFormat, { symbol: currencySymbol })
+      : formatMaybeNumber(value, numberFormat);
+  }, [value, formatNumbers, numberFormat, currencySymbol]);
+
+  const isText =
+    typeof displayContent === "string" || typeof displayContent === "number";
+  const labelText = label == null ? "" : String(label);
+
+  return (
+    <Box
       sx={{
-        width: "140px",
-        display: "flex",
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "minmax(110px, 42%) 1fr",
+          sm: "minmax(140px, 35%) 1fr",
+        },
         alignItems: "start",
-        flexShrink: 0,
+        columnGap: 1,
+        mb: 1,
+        fontFamily: "Inter, sans-serif",
       }}
     >
-      <Typography
-        sx={{
-          fontFamily: "Inter",
-          fontSize: "14px",
-          fontWeight: 600,
-          color: "#111827",
-          flex: 1,
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          textAlign: "left", // Right-align labels for better colon alignment
-        }}
-      >
-        {label}
-      </Typography>
-      <Typography
-        sx={{
-          fontFamily: "Inter",
-          fontSize: "14px",
-          fontWeight: 600,
-          color: "#111827",
-          marginLeft: "4px", // Small space before colon
-        }}
-      >
-        :
-      </Typography>
-    </Grid>
+      {/* Label wraps */}
+      <Box sx={{ minWidth: 0 }}>
+        <Typography
+          sx={{
+            fontFamily: "Inter",
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "#111827",
+            whiteSpace: "normal",
+            overflowWrap: "anywhere",
+            wordBreak: "break-word",
+            hyphens: "auto",
+          }}
+          title={labelText}
+        >
+          {labelText}:
+        </Typography>
+      </Box>
 
-    <Grid
-      sx={{
-        width: "150px",
-      }}
-    >
-      <Typography
-        sx={{
-          fontFamily: "Inter",
-          fontSize: "14px",
-          color: "#666666",
-          marginLeft: "8px",
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-        }}
-      >
-        {value ?? "-"}
-      </Typography>
-    </Grid>
-  </Grid>
-);
+      {/* Value wraps */}
+      <Box sx={{ minWidth: 0 }}>
+        {isText ? (
+          <Typography
+            sx={{
+              fontFamily: "Inter",
+              fontSize: "14px",
+              color: "#666666",
+              ml: "2px",
+              whiteSpace: "normal",
+              overflowWrap: "anywhere",
+              wordBreak: "break-word",
+              hyphens: "auto",
+            }}
+            title={String(displayContent)}
+          >
+            {displayContent ?? "-"}
+          </Typography>
+        ) : (
+          <Box sx={{ ml: "2px" }}>{displayContent}</Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
 
+/* ------------------------------- BacktestCard ------------------------------ */
 const BacktestCard = ({
   row,
   onDeploy,
@@ -80,6 +143,13 @@ const BacktestCard = ({
   extractSummaryMetrics,
   handleStrategyRowClick,
   onBacktestClick,
+  // Optional: number format overrides
+  numberFormat = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,   // enable grouping by default; set false if you don't want it
+    locale: "en-IN",     // Indian grouping by default; change if needed
+  },
 }) => {
   const summary = row?.summary || "";
   const status = summary.includes("still running")
@@ -90,7 +160,6 @@ const BacktestCard = ({
 
   const backtestSummary = extractSummaryMetrics(summary);
 
-  // Stop propagation on name click to prevent card click navigation
   const onNameClick = (e) => {
     e.stopPropagation();
     handleStrategyRowClick({ row });
@@ -103,7 +172,7 @@ const BacktestCard = ({
           border: "1px solid #E0E0E0",
           borderRadius: 2,
           width: "100%",
-          maxWidth: 400,
+          maxWidth: "100%",
           backgroundColor: "#fff",
           display: "flex",
           flexDirection: "column",
@@ -111,7 +180,7 @@ const BacktestCard = ({
         }}
       >
         <CardContent sx={{ fontFamily: "Inter" }}>
-          {/* Header: Strategy Name and Version */}
+          {/* Header */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography
               variant="h6"
@@ -133,85 +202,61 @@ const BacktestCard = ({
             }}
           >
             <Box className="flex flex-col gap-1 text-sm text-gray-900">
-              <Row label="Requested ID:" value={row?.requestId} />
+              <Row label="Requested ID" value={row?.requestId} numberFormat={numberFormat} />
               <Row
-                label="Created At:"
+                label="Created At"
                 value={useDateTime(row?.executionTime)}
+                formatNumbers={false}
               />
               <Row
-                label="Status:"
-                value={
-                  <Badge variant={status?.toLowerCase() || "default"}>
-                    {status || "-"}
-                  </Badge>
-                }
+                label="Status"
+                value={<Badge variant={status?.toLowerCase() || "default"}>{status || "-"}</Badge>}
+                formatNumbers={false}
               />
               <Row
-                label="Time Frame:"
+                label="Time Frame"
                 value={`${row.startDate} to ${row.endDate}`}
+                formatNumbers={false}
               />
-              <Row label="Initial Capital:" value={row.initialCapital} />
+
+              {/* Currency fields */}
               <Row
-                label="Net Profit:"
-                value={row.netProfit ? Number(row.netProfit).toFixed(2) : 0}
-              />
-              <Row
-                label="Max Drawdown:"
-                value={
-                  row?.maxDrawdown ? Number(row.maxDrawdown).toFixed(2) : 0
-                }
+                label="Initial Capital"
+                value={row.initialCapital ?? 0}
+                currencySymbol="₹"
+                numberFormat={numberFormat}
               />
               <Row
-                label="Max Account Value:"
-                value={
-                  row?.maxAccountValue
-                    ? Number(row.maxAccountValue).toFixed(2)
-                    : 0
-                }
+                label="Net Profit"
+                value={row.netProfit ?? 0}
+                currencySymbol="₹"
+                numberFormat={numberFormat}
               />
               <Row
-                label="Average profit/trade:"
-                value={
-                  row?.avgProfitPerTrade
-                    ? Number(row.avgProfitPerTrade).toFixed(2)
-                    : 0
-                }
+                label="Max Account Value"
+                value={row.maxAccountValue ?? 0}
+                currencySymbol="₹"
+                numberFormat={numberFormat}
               />
+
+              {/* Other numeric fields (no currency) */}
+              <Row label="Max Drawdown" value={row.maxDrawdown ?? 0} numberFormat={numberFormat} />
+              <Row label="Average profit/trade" value={row.avgProfitPerTrade ?? 0} numberFormat={numberFormat} />
+              <Row label="Expectancy" value={row.expectancy ?? 0} numberFormat={numberFormat} />
+              <Row label="Sharpe Ratio" value={row.sharpeRatio ?? 0} numberFormat={numberFormat} />
+              <Row label="SQN" value={row.sqn ?? 0} numberFormat={numberFormat} />
+              <Row label="Avg Annual Profit" value={row.avgAnnualProfit ?? 0} numberFormat={numberFormat} />
               <Row
-                label="Expectancy:"
-                value={row?.expectancy ? Number(row.expectancy).toFixed(2) : 0}
-              />
-              <Row
-                label="Sharpe Ratio:"
-                value={
-                  row.sharpeRatio ? Number(row.sharpeRatio).toFixed(2) : "0"
-                }
-              />
-              <Row
-                label="SQN:"
-                value={row.sqn ? Number(row.sqn).toFixed(2) : "0"}
-              />
-              <Row
-                label="Avg Annual Profit:"
-                value={
-                  row.avgAnnualProfit
-                    ? Number(row.avgAnnualProfit).toFixed(2)
-                    : "0"
-                }
-              />
-              <Row
-                label="Total Trades:"
-                value={backtestSummary["Total number of trades"] || "0"}
+                label="Total Trades"
+                value={backtestSummary["Total number of trades"] || 0}
+                numberFormat={numberFormat}
               />
             </Box>
           </Box>
         </CardContent>
 
-        {/* Card Actions - 3 dot menu */}
-        <CardActions
-          sx={{ display: "flex", justifyContent: "space-between", px: 2 }}
-        >
-          <Box sx={{ display: "flex", gap: 1, marginBottom: 2, marginLeft: 1 }}>
+        <CardActions sx={{ display: "flex", justifyContent: "space-between", px: 2 }}>
+          <Box sx={{ display: "flex", gap: 1, mb: 2, ml: 1 }}>
             <ActionButton
               action="Deploy"
               label="Deploy"

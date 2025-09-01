@@ -47,11 +47,11 @@ const stats = [
     value: currentCapital ? currencyFormatter.format(currentCapital) : "₹0",
   },
   {
-    label: "Profit",
+    label: "Net Profit",
     value: netProfit ? currencyFormatter.format(netProfit) : "₹0",
   },
   {
-    label: "Profit %",
+    label: "Avg Annual Profit (%)",
     value: avgAnProfit != null ? `${avgAnProfit.toFixed(2)} %` : "0.00 %",
   },
 ];

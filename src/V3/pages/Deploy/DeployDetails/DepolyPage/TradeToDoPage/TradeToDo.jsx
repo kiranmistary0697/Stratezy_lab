@@ -27,9 +27,15 @@ const TradeToDo = ({ data = {} }) => {
   const [loading, setLoading] = useState(false);
   const [tradeData, setTradeData] = useState([]);
   const triggerDownload = () => {
-    if (csvLink.current) {
-      csvLink.current.link.click();
+    // pull the latest columns (visible/card) + rows from child
+    if (tradeTableRef.current) {
+      const next = tradeTableRef.current.getCSVData();
+      setCsvData(next);
     }
+    // let React render <CSVLink> with updated data before clicking
+    setTimeout(() => {
+      csvLink.current?.link?.click();
+    }, 0);
   };
 
   const handleDateChange = (newDate) => {

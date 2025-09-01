@@ -640,10 +640,10 @@ const BacktestTable = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <span>₹0</span>;
+            return <span>{formatCurrency(0)}</span>;
           }
 
-          return <span>₹{num.toFixed(2)}</span>;
+          return <span>{formatCurrency(num)}</span>;
         },
       },
       {
@@ -657,10 +657,10 @@ const BacktestTable = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <span>₹0</span>;
+            return <span>{formatCurrency(0)}</span>;
           }
 
-          return <span>₹{num.toFixed(2)}</span>;
+          return <span>{formatCurrency(num)}</span>;
         },
       },
       {
@@ -691,10 +691,10 @@ const BacktestTable = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <span>₹0</span>;
+            return <span>{formatCurrency(0)}</span>;
           }
 
-          return <span>₹{num.toFixed(2)}</span>;
+          return <span>{formatCurrency(num)}</span>;
         },
       },
       {
@@ -877,6 +877,14 @@ const BacktestTable = ({
     setPage(value);
     window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
   };
+
+const formatCurrency = (num) => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2,
+  }).format(num);
+};
 
   return (
     <>

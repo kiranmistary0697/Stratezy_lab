@@ -36,21 +36,14 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import FunctionCard from "../../common/Cards/FunctionCard";
 
 const useStyles = makeStyles({
-  // This targets the column and operator dropdowns in the filter modal
   filterModal: {
-    // Hide the column dropdown (the field selector) and the operator dropdown (the operator selector)
-    "& .MuiDataGrid-filterPanel": {
-      display: "none",
-    },
-    "& .MuiDataGrid-filterPanelColumn": {
-      display: "none",
-    },
-    "& .MuiDataGrid-filterPanelOperator": {
-      display: "none",
-    },
+    "& .MuiDataGrid-filterPanel": { display: "none" },
+    "& .MuiDataGrid-filterPanelColumn": { display: "none" },
+    "& .MuiDataGrid-filterPanelOperator": { display: "none" },
   },
 });
-const FunctionTable = ({ query }) => {
+
+const FunctionTable = ({ query = "" }) => {
   const localSelectedStatus = localStorage.getItem("selectedStatus");
   const localSelectedSubStatuses = localStorage.getItem("selectedSubStatuses");
   const localSelectedCreatedBy = localStorage.getItem("selectedCreatedBy");
@@ -58,15 +51,17 @@ const FunctionTable = ({ query }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [getAllStock] = usePostMutation();
-  const [deleteData, { isLoading: isDeleting }] = useLazyGetQuery();
+  const [deleteData] = useLazyGetQuery();
 
   const [filterModel, setFilterModel] = useState({ items: [] });
   const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [selectedSubStatuses, setSelectedSubStatuses] = useState([]);
   const [selectedCreatedBy, setSelectedCreatedBy] = useState([]);
+
   const [typeAnchorEl, setTypeAnchorEl] = useState(null);
   const [subTypeAnchorEl, setSubTypeAnchorEl] = useState(null);
   const [createdByAnchor, setCreatedByAnchor] = useState(null);
+
   const [openDuplicateModal, setOpenDuplicateModal] = useState(false);
 
   const [rows, setRows] = useState([]);
@@ -82,8 +77,7 @@ const FunctionTable = ({ query }) => {
     try {
       const storedWidths = localStorage.getItem("functionTableColumnWidths");
       return storedWidths ? JSON.parse(storedWidths) : {};
-    } catch (error) {
-      console.error("Error loading column widths:", error);
+    } catch {
       return {};
     }
   });
@@ -98,111 +92,24 @@ const FunctionTable = ({ query }) => {
     "hiddenColumnsFunctionTable"
   );
 
-  const fetchStockDetails = async () => {
-    try {
-      setIsLoading(true);
-      const { data } = await getAllStock({
-        endpoint: "stock-analysis-function/details",
-        payload: {
-          filter: true,
-          trade: true,
-          entry: true,
-          exit: true,
-          gentry: true,
-          gexit: true,
-          psizing: true,
-          order: true,
-          staticFunc: false,
-          underlying: false,
-          cacheable: false,
-        },
-        tags: [tagTypes.GET_FILTERTYPE],
-      });
-
-      setRows(data?.data);
-    } catch (error) {
-      console.error("Failed to fetch stock details:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePopoverOpen = (event, type) => {
-    event.stopPropagation();
-    setPopoverAnchor(event.currentTarget);
-    setActiveFilter(type);
-  };
-
-  const handlePopoverClose = () => {
-    setPopoverAnchor(null);
-    setActiveFilter(null);
-  };
-
-  const handleColumnToggle = (field) => {
-    setHiddenColumns((prev) => {
-      const updatedColumns = prev.includes(field)
-        ? prev.filter((f) => f !== field)
-        : [...prev, field];
-
-      localStorage.setItem(
-        "hiddenColumnsFunctionTable",
-        JSON.stringify(updatedColumns)
-      );
-
-      return updatedColumns;
-    });
-  };
-
-  const handleColumnResize = (params) => {
-    const newWidths = {
-      ...columnWidths,
-      [params.colDef.field]: params.width,
-    };
-
-    setColumnWidths(newWidths);
-    localStorage.setItem(
-      "functionTableColumnWidths",
-      JSON.stringify(newWidths)
-    );
-  };
-
-  const handleRowClick = ({ row }) => {
-    navigate(`/Devstudio/edit-function?name=${row.shortFuncName}`);
-
-    localStorage.removeItem("argsData");
-    localStorage.removeItem("editorFunctionCode");
-    localStorage.removeItem("selectedValues");
-    localStorage.removeItem("selectedTypes");
-  };
-
-  // Separate handler for type filter
+  // ------- Handlers (defined before columns so columns can use them)
   const handleTypeFilterOpen = (event) => {
     event.stopPropagation();
     setTypeAnchorEl(event.currentTarget);
   };
+  const handleTypeFilterClose = () => setTypeAnchorEl(null);
 
-  const handleTypeFilterClose = () => {
-    setTypeAnchorEl(null);
-  };
-
-  // Separate handler for subType filter
   const handleSubTypeFilterOpen = (event) => {
     event.stopPropagation();
     setSubTypeAnchorEl(event.currentTarget);
   };
+  const handleSubTypeFilterClose = () => setSubTypeAnchorEl(null);
 
   const handleCreatedByFilterOpen = (event) => {
     event.stopPropagation();
     setCreatedByAnchor(event.currentTarget);
   };
-
-  const handleCreatedByFilterClose = () => {
-    setCreatedByAnchor(null);
-  };
-
-  const handleSubTypeFilterClose = () => {
-    setSubTypeAnchorEl(null);
-  };
+  const handleCreatedByFilterClose = () => setCreatedByAnchor(null);
 
   const handleStatusFilterChange = (filterData) => {
     setSelectedStatuses(filterData.value || []);
@@ -211,7 +118,6 @@ const FunctionTable = ({ query }) => {
       JSON.stringify(filterData.value || [])
     );
   };
-
   const handleSubTypeFilterChange = (filterData) => {
     setSelectedSubStatuses(filterData.value || []);
     localStorage.setItem(
@@ -219,7 +125,6 @@ const FunctionTable = ({ query }) => {
       JSON.stringify(filterData.value || [])
     );
   };
-
   const handleCreatedByFilterChange = (filterData) => {
     setSelectedCreatedBy(filterData.value || []);
     localStorage.setItem(
@@ -228,208 +133,52 @@ const FunctionTable = ({ query }) => {
     );
   };
 
-  useEffect(() => {
-    if (localSelectedStatus) {
-      setSelectedStatuses(JSON.parse(localSelectedStatus));
-    }
-    if (localSelectedSubStatuses) {
-      setSelectedSubStatuses(JSON.parse(localSelectedSubStatuses));
-    }
-    if (localSelectedCreatedBy) {
-      setSelectedCreatedBy(JSON.parse(localSelectedCreatedBy));
-    }
-  }, []);
-
-  useEffect(() => {
-    const syncColumnWidths = () => {
-      try {
-        const storedWidths = localStorage.getItem("functionTableColumnWidths");
-        if (storedWidths) {
-          setColumnWidths(JSON.parse(storedWidths));
-        }
-      } catch (error) {
-        console.error("Error syncing column widths:", error);
-      }
-    };
-
-    syncColumnWidths();
-  }, []);
-
-  const popoverContent = () => {
-    if (!activeFilter) return null;
-
-    switch (activeFilter) {
-      case "column":
-        return (
-          <FormGroup sx={{ padding: 2 }}>
-            <Typography
-              sx={{
-                fontFamily: "Inter",
-                fontWeight: 500,
-                fontSize: "14px",
-                lineHeight: "120%",
-                letterSpacing: "0%",
-                color: "#0A0A0A",
-              }}
-            >
-              Select Column
-            </Typography>
-            {columns
-              .filter(({ field }) => !["moreActions"].includes(field))
-              .map((col) => (
-                <FormControlLabel
-                  key={col.field}
-                  control={
-                    <Checkbox
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxIcon />}
-                      checked={!hiddenColumns.includes(col.field)}
-                      onChange={() => handleColumnToggle(col.field)}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        fontFamily: "Inter",
-                        fontWeight: 500,
-                        fontSize: "14px",
-                        lineHeight: "120%",
-                        letterSpacing: "0%",
-                        color: "#0A0A0A",
-                      }}
-                    >
-                      {col.headerName}
-                    </Typography>
-                  }
-                />
-              ))}
-          </FormGroup>
-        );
-      default:
-        return null;
-    }
+  const handleRowClick = ({ row }) => {
+    navigate(`/Devstudio/edit-function?name=${row.shortFuncName}`);
+    localStorage.removeItem("argsData");
+    localStorage.removeItem("editorFunctionCode");
+    localStorage.removeItem("selectedValues");
+    localStorage.removeItem("selectedTypes");
   };
 
-  const tableRows = (rows?.flat() || [])
-    .sort((a, b) => a.symbol?.localeCompare(b.symbol || "") ?? 0)
-    .map((item, index) => ({
-      id: index + 1,
-      ...item,
-    }));
-
-  const effectiveStatuses =
-    selectedStatuses.includes("Buy") || selectedStatuses.includes("Sell")
-      ? [
-          ...selectedStatuses.filter((s) => s !== "Buy" && s !== "Sell"),
-          "Trade Rule",
-        ]
-      : selectedStatuses;
-
-  const normalizedQuery = query.toLowerCase();
-
-  const searchedRows = tableRows.filter((row) => {
-    const filteredRow =
-      row.func?.toLowerCase().includes(normalizedQuery) ||
-      row.shortFuncName?.toLowerCase().includes(normalizedQuery);
-    return filteredRow;
-  });
-
-  const filteredRows = searchedRows.filter((row) => {
-    if (
-      effectiveStatuses.length === 0 &&
-      selectedSubStatuses.length === 0 &&
-      selectedCreatedBy.length === 0
-    )
-      return true;
-
-    const rowTypes = [];
-    const rowSubTypes = [];
-    const rowCreatedBy = [];
-
-    if (row.filter) rowTypes.push("Stock Filter");
-    if (row.filter && row.stockList) {
-      rowSubTypes.push("Static");
-    } else {
-      rowSubTypes.push("Dynamic");
-    }
-
-    if (row.accountRule) {
-      rowSubTypes.push("Account");
-    }
-
-    if (row.buysell) {
-      rowTypes.push("Trade Rule");
-      rowSubTypes.push("Buy");
-      rowSubTypes.push("Sell");
-    }
-
-    if (row.gentry) {
-      rowTypes.push("Global Entry & Exit");
-      rowSubTypes.push("Global Entry");
-    }
-    if (row.gexit) {
-      rowTypes.push("Global Entry & Exit");
-      rowSubTypes.push("Global Exit");
-    }
-
-    if (row.entry) {
-      rowTypes.push("Stock Entry & Exit");
-      rowSubTypes.push("Stock Entry");
-    }
-    if (row.exit) {
-      rowTypes.push("Stock Entry & Exit");
-      rowSubTypes.push("Stock Exit");
-    }
-
-    if (row.psizing) rowTypes.push("Portfolio Sizing");
-
-    if (row.sort) rowTypes.push("Trade Sequence");
-    if (row.utility) rowTypes.push("Utility");
-
-    rowCreatedBy.push(row.userDefined ? "User" : "System");
-
-    const matchesType =
-      effectiveStatuses.length === 0 ||
-      effectiveStatuses.some((type) => rowTypes.includes(type));
-    const matchesSubType =
-      selectedSubStatuses.length === 0 ||
-      selectedSubStatuses.some((subType) => rowSubTypes.includes(subType));
-
-    const matchCreatedBy =
-      selectedCreatedBy.length === 0 ||
-      selectedCreatedBy.some((type) => rowCreatedBy.includes(type));
-
-    return matchesType && matchesSubType && matchCreatedBy;
-  });
-
-  const handleDelete = async () => {
-    try {
-      const { data } = await deleteData({
-        endpoint: `stock-analysis-function/delete/${deleteRow.name}`,
-        tags: [tagTypes.GET_FILTERTYPE],
-      }).unwrap();
-
-      if (data?.success) {
-        toast.success(data.message);
-      }
-    } catch (error) {
-      console.error("Failed to delete:", error);
-    } finally {
-      fetchStockDetails();
-      setIsDelete(false);
-    }
+  const persistColumnWidth = ({ field, width }) => {
+    if (!field || typeof width !== "number") return;
+    const newWidths = { ...columnWidths, [field]: width };
+    setColumnWidths(newWidths);
+    localStorage.setItem(
+      "functionTableColumnWidths",
+      JSON.stringify(newWidths)
+    );
   };
 
-  useEffect(() => {
-    fetchStockDetails();
-  }, []);
+  const handleColumnWidthChange = (params) => {
+    persistColumnWidth({ field: params?.colDef?.field, width: params?.width });
+  };
 
-  useEffect(() => {
-    if (hiddenColumnsFromLocalStorage) {
-      setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
-    }
-  }, []);
+  const handlePopoverOpen = (event, type) => {
+    event.stopPropagation();
+    setPopoverAnchor(event.currentTarget);
+    setActiveFilter(type);
+  };
+  const handlePopoverClose = () => {
+    setPopoverAnchor(null);
+    setActiveFilter(null);
+  };
 
+  const handleColumnToggle = (field) => {
+    setHiddenColumns((prev) => {
+      const updated = prev.includes(field)
+        ? prev.filter((f) => f !== field)
+        : [...prev, field];
+      localStorage.setItem(
+        "hiddenColumnsFunctionTable",
+        JSON.stringify(updated)
+      );
+      return updated;
+    });
+  };
+
+  // ------- Columns (moved above popoverContent)
   const columns = useMemo(
     () => [
       {
@@ -493,7 +242,7 @@ const FunctionTable = ({ query }) => {
             >
               <FilterListIcon
                 fontSize="small"
-                color={selectedStatuses.length ? "primary" : ""}
+                color={selectedStatuses.length ? "primary" : undefined}
               />
             </IconButton>
 
@@ -504,11 +253,7 @@ const FunctionTable = ({ query }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "left" }}
               PaperProps={{
-                sx: {
-                  maxHeight: 300,
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                },
+                sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" },
               }}
             >
               <CustomFilterPanel
@@ -530,9 +275,11 @@ const FunctionTable = ({ query }) => {
             </Popover>
           </Box>
         ),
-        valueGetter: (_, row) => {
-          const badges = [];
+        valueGetter: (params) => {
+          const row = params?.row;
+          if (!row) return "NA";
 
+          const badges = [];
           if (row.filter) badges.push("Stock Filter");
           if (row.buysell) badges.push("Trade Rule");
           if (row.entry || row.exit) badges.push("Stock Entry & Exit");
@@ -540,12 +287,10 @@ const FunctionTable = ({ query }) => {
           if (row.sort) badges.push("Trade Sequence");
           if (row.psizing) badges.push("Portfolio Sizing");
           if (row.utility) badges.push("Utility");
-
           return badges.length > 0 ? badges.join(", ") : "NA";
         },
         renderCell: ({ row }) => {
           const badges = [];
-
           if (row.filter) badges.push("Stock Filter");
           if (row.buysell) badges.push("Trade Rule");
           if (row.entry || row.exit) badges.push("Stock Entry & Exit");
@@ -553,18 +298,16 @@ const FunctionTable = ({ query }) => {
           if (row.sort) badges.push("Trade Sequence");
           if (row.psizing) badges.push("Portfolio Sizing");
           if (row.utility) badges.push("Utility");
-
           return (
             <Box
               sx={{
                 display: "flex",
                 gap: "5px",
-                flexDirection: "row",
-                alignItems: "center",
                 height: "100%",
+                alignItems: "center",
               }}
             >
-              {badges.length > 0 ? (
+              {badges.length ? (
                 badges.map((label, idx) => (
                   <Badge key={idx} variant="version">
                     <span>{label}</span>
@@ -604,7 +347,7 @@ const FunctionTable = ({ query }) => {
             >
               <FilterListIcon
                 fontSize="small"
-                color={selectedSubStatuses.length ? "primary" : ""}
+                color={selectedSubStatuses.length ? "primary" : undefined}
               />
             </IconButton>
             <Popover
@@ -614,11 +357,7 @@ const FunctionTable = ({ query }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "left" }}
               PaperProps={{
-                sx: {
-                  maxHeight: 300,
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                },
+                sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" },
               }}
             >
               <CustomFilterPanel
@@ -642,32 +381,25 @@ const FunctionTable = ({ query }) => {
             </Popover>
           </Box>
         ),
-        valueGetter: (_, row) => {
+        valueGetter: (params) => {
+          const row = params?.row;
+          if (!row) return "NA";
+
           const badges = [];
-
-          if (row.filter && row.stockList) {
-            badges.push("Static");
-          } else {
-            badges.push("Dynamic");
-          }
-
+          if (row.filter && row.stockList) badges.push("Static");
+          else if (row.filter && !row.stockList) badges.push("Dynamic");
           if (row.buysell) badges.push("Buy", "Sell");
           if (row.accountRule) badges.push("Account");
           if (row.gentry) badges.push("Global Entry");
           if (row.gexit) badges.push("Global Exit");
           if (row.entry) badges.push("Stock Entry");
           if (row.exit) badges.push("Stock Exit");
-
           return badges.length > 0 ? badges.join(", ") : "NA";
         },
         renderCell: ({ row }) => {
           const badges = [];
-
-          if (row.filter && row.stockList) {
-            badges.push("Static");
-          } else if (row.filter && !row.stockList) {
-            badges.push("Dynamic");
-          }
+          if (row.filter && row.stockList) badges.push("Static");
+          else if (row.filter && !row.stockList) badges.push("Dynamic");
           if (row.buysell) {
             badges.push("Buy");
             badges.push("Sell");
@@ -677,18 +409,16 @@ const FunctionTable = ({ query }) => {
           if (row.gexit) badges.push("Global Exit");
           if (row.entry) badges.push("Stock Entry");
           if (row.exit) badges.push("Stock Exit");
-
           return (
             <Box
               sx={{
                 display: "flex",
                 gap: "5px",
-                flexDirection: "row",
-                alignItems: "center",
                 height: "100%",
+                alignItems: "center",
               }}
             >
-              {badges.length > 0 ? (
+              {badges.length ? (
                 badges.map((label, idx) => (
                   <Badge key={idx} variant="version">
                     <span>{label}</span>
@@ -705,16 +435,13 @@ const FunctionTable = ({ query }) => {
         field: "timestamp",
         headerName: "Created On",
         width: columnWidths.timestamp || 180,
-        valueGetter: (_, row) => {
-          const createdOn = row?.createdOn;
+        valueGetter: (params) => {
+          const createdOn = params?.row?.createdOn;
           return createdOn ? new Date(createdOn) : null;
         },
         renderCell: (params) => {
           const timestamp = params?.row?.createdOn;
-          if (!timestamp) {
-            return <div className="text-[#666666]">-</div>;
-          }
-
+          if (!timestamp) return <div className="text-[#666666]">-</div>;
           const date = new Date(timestamp);
           const formatted = date.toLocaleString("en-GB", {
             day: "2-digit",
@@ -725,7 +452,6 @@ const FunctionTable = ({ query }) => {
             second: "2-digit",
             hour12: false,
           });
-
           return <div className="text-[#666666]">{formatted}</div>;
         },
       },
@@ -756,7 +482,7 @@ const FunctionTable = ({ query }) => {
             >
               <FilterListIcon
                 fontSize="small"
-                color={selectedCreatedBy.length ? "primary" : ""}
+                color={selectedCreatedBy.length ? "primary" : undefined}
               />
             </IconButton>
             <Popover
@@ -766,11 +492,7 @@ const FunctionTable = ({ query }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "left" }}
               PaperProps={{
-                sx: {
-                  maxHeight: 300,
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                },
+                sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" },
               }}
             >
               <CustomFilterPanel
@@ -847,7 +569,7 @@ const FunctionTable = ({ query }) => {
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
-        headerClassName: "no-resize-header", // for CSS override
+        headerClassName: "no-resize-header",
         renderHeader: () => (
           <IconButton
             size="small"
@@ -855,7 +577,7 @@ const FunctionTable = ({ query }) => {
           >
             <SettingsIcon
               fontSize="small"
-              color={hiddenColumns.length ? "primary" : ""}
+              color={hiddenColumns.length ? "primary" : undefined}
             />
           </IconButton>
         ),
@@ -866,7 +588,7 @@ const FunctionTable = ({ query }) => {
               isDeleteButton={isRemove}
               isDuplicateButton
               isEditButton={isRemove}
-              handleDelete={(event) => {
+              handleDelete={() => {
                 setDeleteRow({ name: row.shortFuncName });
                 setIsDelete(true);
               }}
@@ -891,21 +613,248 @@ const FunctionTable = ({ query }) => {
       columnWidths,
       typeAnchorEl,
       subTypeAnchorEl,
+      createdByAnchor,
     ]
   );
 
-  const visibleColumns = columns.filter(
-    (col) => !hiddenColumns.includes(col.field)
+  // ------- Popover content (now safely below columns)
+  const popoverContent = () => {
+    if (!activeFilter) return null;
+    switch (activeFilter) {
+      case "column":
+        return (
+          <FormGroup sx={{ padding: 2 }}>
+            <Typography
+              sx={{
+                fontFamily: "Inter",
+                fontWeight: 500,
+                fontSize: "14px",
+                lineHeight: "120%",
+                letterSpacing: "0%",
+                color: "#0A0A0A",
+              }}
+            >
+              Select Column
+            </Typography>
+            {columns
+              .filter(({ field }) => !["moreActions"].includes(field))
+              .map((col) => (
+                <FormControlLabel
+                  key={col.field}
+                  control={
+                    <Checkbox
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxIcon />}
+                      checked={!hiddenColumns.includes(col.field)}
+                      onChange={() => handleColumnToggle(col.field)}
+                    />
+                  }
+                  label={
+                    <Typography
+                      sx={{
+                        fontFamily: "Inter",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        lineHeight: "120%",
+                        letterSpacing: "0%",
+                        color: "#0A0A0A",
+                      }}
+                    >
+                      {col.headerName}
+                    </Typography>
+                  }
+                />
+              ))}
+          </FormGroup>
+        );
+      default:
+        return null;
+    }
+  };
+
+  // ------- Data prep
+  const tableRows = (rows?.flat() || [])
+    .sort((a, b) => a.symbol?.localeCompare(b.symbol || "") ?? 0)
+    .map((item, index) => ({
+      id: item?.shortFuncName ?? index + 1,
+      ...item,
+    }));
+
+  const effectiveStatuses =
+    selectedStatuses.includes("Buy") || selectedStatuses.includes("Sell")
+      ? [
+          ...selectedStatuses.filter((s) => s !== "Buy" && s !== "Sell"),
+          "Trade Rule",
+        ]
+      : selectedStatuses;
+
+  const normalizedQuery = String(query).toLowerCase();
+
+  const searchedRows = tableRows.filter(
+    (row) =>
+      row.func?.toLowerCase().includes(normalizedQuery) ||
+      row.shortFuncName?.toLowerCase().includes(normalizedQuery)
   );
 
-  const pageCount = Math.ceil(searchedRows.length / cardsPerPage);
-  const paginatedRows = searchedRows.slice(
+  const filteredRows = searchedRows.filter((row) => {
+    if (
+      effectiveStatuses.length === 0 &&
+      selectedSubStatuses.length === 0 &&
+      selectedCreatedBy.length === 0
+    )
+      return true;
+
+    const rowTypes = [];
+    const rowSubTypes = [];
+    const rowCreatedBy = [];
+
+    if (row.filter) rowTypes.push("Stock Filter");
+    if (row.filter && row.stockList) rowSubTypes.push("Static");
+    else if (row.filter && !row.stockList) rowSubTypes.push("Dynamic");
+
+    if (row.accountRule) rowSubTypes.push("Account");
+
+    if (row.buysell) {
+      rowTypes.push("Trade Rule");
+      rowSubTypes.push("Buy", "Sell");
+    }
+
+    if (row.gentry) {
+      rowTypes.push("Global Entry & Exit");
+      rowSubTypes.push("Global Entry");
+    }
+    if (row.gexit) {
+      rowTypes.push("Global Entry & Exit");
+      rowSubTypes.push("Global Exit");
+    }
+
+    if (row.entry) {
+      rowTypes.push("Stock Entry & Exit");
+      rowSubTypes.push("Stock Entry");
+    }
+    if (row.exit) {
+      rowTypes.push("Stock Entry & Exit");
+      rowSubTypes.push("Stock Exit");
+    }
+
+    if (row.psizing) rowTypes.push("Portfolio Sizing");
+    if (row.sort) rowTypes.push("Trade Sequence");
+    if (row.utility) rowTypes.push("Utility");
+
+    rowCreatedBy.push(row.userDefined ? "User" : "System");
+
+    const matchesType =
+      effectiveStatuses.length === 0 ||
+      effectiveStatuses.some((type) => rowTypes.includes(type));
+    const matchesSubType =
+      selectedSubStatuses.length === 0 ||
+      selectedSubStatuses.some((subType) => rowSubTypes.includes(subType));
+    const matchCreatedBy =
+      selectedCreatedBy.length === 0 ||
+      selectedCreatedBy.some((type) => rowCreatedBy.includes(type));
+
+    return matchesType && matchesSubType && matchCreatedBy;
+  });
+
+  // ------- Data fetching
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        setIsLoading(true);
+        const { data } = await getAllStock({
+          endpoint: "stock-analysis-function/details",
+          payload: {
+            filter: true,
+            trade: true,
+            entry: true,
+            exit: true,
+            gentry: true,
+            gexit: true,
+            psizing: true,
+            order: true,
+            staticFunc: false,
+            underlying: false,
+            cacheable: false,
+          },
+          tags: [tagTypes.GET_FILTERTYPE],
+        });
+        if (alive) setRows(data?.data || []);
+      } catch (e) {
+        console.error("Failed to fetch stock details:", e);
+      } finally {
+        if (alive) setIsLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (hiddenColumnsFromLocalStorage) {
+      try {
+        setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
+      } catch {
+        localStorage.removeItem("hiddenColumnsFunctionTable");
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("functionTableColumnWidths");
+      if (stored) setColumnWidths(JSON.parse(stored));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const pageCount = Math.ceil(filteredRows.length / cardsPerPage);
+  const paginatedRows = filteredRows.slice(
     (page - 1) * cardsPerPage,
     page * cardsPerPage
   );
   const handlePageChange = (event, value) => {
     setPage(value);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDelete = async () => {
+    try {
+      const { data } = await deleteData({
+        endpoint: `stock-analysis-function/delete/${deleteRow.name}`,
+        tags: [tagTypes.GET_FILTERTYPE],
+      }).unwrap();
+      if (data?.success) toast.success(data.message);
+    } catch (error) {
+      console.error("Failed to delete:", error);
+    } finally {
+      // refresh
+      try {
+        setIsLoading(true);
+        const { data } = await getAllStock({
+          endpoint: "stock-analysis-function/details",
+          payload: {
+            filter: true,
+            trade: true,
+            entry: true,
+            exit: true,
+            gentry: true,
+            gexit: true,
+            psizing: true,
+            order: true,
+            staticFunc: false,
+            underlying: false,
+            cacheable: false,
+          },
+          tags: [tagTypes.GET_FILTERTYPE],
+        });
+        setRows(data?.data || []);
+      } catch {}
+      setIsLoading(false);
+      setIsDelete(false);
+    }
   };
 
   return (
@@ -933,32 +882,21 @@ const FunctionTable = ({ query }) => {
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         PaperProps={{
-          sx: {
-            maxHeight: 300,
-            overflowY: "auto",
-            overflowX: "hidden",
-          },
+          sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" },
         }}
       >
         {popoverContent()}
       </Popover>
+
       {isMobile ? (
         <>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-            }}
-          >
-            {searchedRows.length ? (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {filteredRows.length ? (
               paginatedRows.map((row, i) => (
                 <FunctionCard
-                  key={i}
+                  key={row.id ?? i}
                   row={row}
-                  onCardClick={() => {
-                    handleRowClick({ row });
-                  }}
+                  onCardClick={() => handleRowClick({ row })}
                   onEdit={() => {
                     if (row.userDefined) {
                       navigate(
@@ -984,7 +922,6 @@ const FunctionTable = ({ query }) => {
             )}
           </Box>
 
-          {/* Pagination Control */}
           {pageCount > 1 && (
             <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
               <Pagination
@@ -1012,17 +949,14 @@ const FunctionTable = ({ query }) => {
             disableColumnSelector
             rows={filteredRows}
             loading={isLoading}
-            columns={visibleColumns}
+            columns={columns.filter((c) => !hiddenColumns.includes(c.field))}
             filterModel={filterModel}
             onRowClick={handleRowClick}
-            onColumnResize={handleColumnResize}
+            onColumnWidthChange={handleColumnWidthChange}
             onFilterModelChange={setFilterModel}
+            getRowId={(row) => row.id ?? row.shortFuncName ?? row._id}
             initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
+              pagination: { paginationModel: { pageSize: 10 } },
             }}
             pageSizeOptions={[10]}
             sx={{

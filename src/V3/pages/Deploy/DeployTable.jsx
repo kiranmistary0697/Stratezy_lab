@@ -102,6 +102,14 @@ const DeployTable = ({
   const [page, setPage] = useState(1);
   const cardsPerPage = 10;
 
+  const formatCurrency = (num) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+    }).format(num);
+  };
+
   const hiddenColumnsFromLocalStorage = localStorage.getItem(
     "hiddenColumnsDeploy"
   );
@@ -394,9 +402,15 @@ const DeployTable = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+            return (
+              <Typography sx={{ ...tableTextSx }}>
+                {formatCurrency(0)}
+              </Typography>
+            );
           }
-          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+          return (
+            <Typography sx={tableTextSx}>{formatCurrency(num)}</Typography>
+          );
         },
       },
       {
@@ -413,9 +427,37 @@ const DeployTable = ({
           const num = Number(value);
 
           if (isNaN(num)) {
-            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
+            return (
+              <Typography sx={{ ...tableTextSx }}>
+                {formatCurrency(0)}
+              </Typography>
+            );
           }
-          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
+          return (
+            <Typography sx={tableTextSx}>{formatCurrency(num)}</Typography>
+          );
+        },
+      },
+      {
+        field: "netProfit",
+        headerName: "Net Profit",
+        width: columnWidths.netProfit || 130,
+        valueGetter: (_, row) =>
+          row.netProfit ? parseFloat(row.netProfit) : 0,
+        renderCell: (params) => {
+          const value = params?.row?.netProfit;
+          const num = Number(value);
+
+          if (isNaN(num)) {
+            return (
+              <Typography sx={{ ...tableTextSx }}>
+                {formatCurrency(0)}
+              </Typography>
+            );
+          }
+          return (
+            <Typography sx={tableTextSx}>{formatCurrency(num)}</Typography>
+          );
         },
       },
       {
@@ -458,22 +500,6 @@ const DeployTable = ({
           row.maxDrawdown ? parseFloat(row.maxDrawdown) : 0,
         renderCell: (params) => {
           const value = params?.row?.maxDrawdown;
-          const num = Number(value);
-
-          if (isNaN(num)) {
-            return <Typography sx={{ ...tableTextSx }}>0</Typography>;
-          }
-          return <Typography sx={tableTextSx}>{num.toFixed(2)}</Typography>;
-        },
-      },
-      {
-        field: "netProfit",
-        headerName: "Net Profit",
-        width: columnWidths.netProfit || 130,
-        valueGetter: (_, row) =>
-          row.netProfit ? parseFloat(row.netProfit) : 0,
-        renderCell: (params) => {
-          const value = params?.row?.netProfit;
           const num = Number(value);
 
           if (isNaN(num)) {

@@ -22,6 +22,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import CommonCard from "../../../common/Cards/CommonCard";
 
+/* ---------- table cell text ---------- */
 const tableTextSx = {
   fontFamily: "Inter",
   fontWeight: 400,
@@ -34,16 +35,59 @@ const tableTextSx = {
   height: "100%",
 };
 
+/* ===================== number/currency helpers ===================== */
+function parseNumericLike(val) {
+  if (typeof val === "number" && Number.isFinite(val)) return val;
+  if (typeof val !== "string") return null;
+  const s = val.trim();
+  let n = Number(s);
+  if (Number.isFinite(n)) return n;
+  const cleaned = s.replace(/[, ]/g, "").replace(/[^\d.eE+\-]/g, "");
+  n = Number(cleaned);
+  return Number.isFinite(n) ? n : null;
+}
+function isNearlyInteger(n, tol = 1e-9) {
+  if (!Number.isFinite(n)) return false;
+  const nearest = Math.round(n);
+  const scale = Math.max(1, Math.abs(n));
+  return Math.abs(n - nearest) <= tol * scale;
+}
+function formatMaybeNumber(
+  val,
+  { decimals = 2, integerNoDecimals = true, useGrouping = true, locale = "en-IN" } = {}
+) {
+  const n = parseNumericLike(val);
+  if (n == null) return val ?? "-";
+  const fractionDigits = integerNoDecimals && isNearlyInteger(n) ? 0 : decimals;
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+    useGrouping,
+    notation: "standard",
+  }).format(n);
+}
+function formatMaybeCurrency(
+  val,
+  fmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" },
+  { symbol = "₹", space = false } = {}
+) {
+  const n = parseNumericLike(val);
+  if (n == null) return val ?? "-";
+  const sign = n < 0 ? "-" : "";
+  const absStr = formatMaybeNumber(Math.abs(n), fmt);
+  return `${sign}${symbol}${space ? " " : ""}${absStr}`;
+}
+
 const Tradetable = (props) => {
   const { rows = [] } = props;
 
   const [hiddenColumns, setHiddenColumns] = useState([
-    "sellTime",
-    "sellPrice",
+    //"sellTime",
+    //"sellPrice",
     "risk1R",
-    "principal",
+    //"principal",
     "duration",
-    "annualPrf",
+    //"annualPrf",
     "maxPrf",
   ]);
 
@@ -64,8 +108,7 @@ const Tradetable = (props) => {
     try {
       const storedWidths = localStorage.getItem("tradeTableColumnWidths");
       return storedWidths ? JSON.parse(storedWidths) : {};
-    } catch (error) {
-      console.error("Error loading column widths:", error);
+    } catch {
       return {};
     }
   });
@@ -79,7 +122,6 @@ const Tradetable = (props) => {
     setPopoverAnchor(event.currentTarget);
     setActiveFilter(type);
   };
-
   const handlePopoverClose = () => {
     setPopoverAnchor(null);
     setActiveFilter(null);
@@ -90,19 +132,13 @@ const Tradetable = (props) => {
       const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
         : [...prev, field];
-
-      localStorage.setItem(
-        "hiddenColumnsTradeTable",
-        JSON.stringify(updatedColumns)
-      );
-
+      localStorage.setItem("hiddenColumnsTradeTable", JSON.stringify(updatedColumns));
       return updatedColumns;
     });
   };
 
   const popoverContent = () => {
     if (!activeFilter) return null;
-
     switch (activeFilter) {
       case "column":
         return (
@@ -155,308 +191,205 @@ const Tradetable = (props) => {
     }
   };
 
+  /* ===================== Columns ===================== */
+  const numFmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" };
+
   const columns = [
     {
       field: "symbol",
       headerName: "Symbol",
-      // minWidth: 100,
       width: columnWidths.symbol || 150,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.symbol}
-        </Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.symbol}</Typography>,
     },
     {
       field: "buyTime",
       headerName: "Buy Time",
-      // minWidth: 100,
       width: columnWidths.buyTime || 150,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.buyTime}
-        </Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.buyTime}</Typography>,
     },
-
     {
       field: "buyPrice",
       headerName: "Buy Price",
-      // minWidth: 100,
       width: columnWidths.buyPrice || 150,
       valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
       renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.buyPrice}
-        </Typography>
-      ),
-    },
-    {
-      field: "sellTime",
-      headerName: "Sell Time",
-      // minWidth: 100,
-      width: columnWidths.sellTime || 150,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.sellTime}
-        </Typography>
-      ),
-    },
-    {
-      field: "sellPrice",
-      headerName: "Sell Price",
-      // minWidth: 100,
-      width: columnWidths.sellPrice || 150,
-      valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.sellPrice}
+        <Typography sx={tableTextSx}>
+          {formatMaybeCurrency(params.row.buyPrice, numFmt)}
         </Typography>
       ),
     },
     {
       field: "number",
       headerName: "Quantity",
-      // minWidth: 100,
       width: columnWidths.number || 150,
       valueGetter: (_, row) => (row.number ? parseFloat(row.number) : 0),
       renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.number}
-        </Typography>
-      ),
-    },
-    {
-      field: "investment",
-      headerName: "Investment",
-      // minWidth: 100,
-      width: columnWidths.investment || 150,
-      valueGetter: (_, row) =>
-        row.investment ? parseFloat(row.investment) : 0,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.investment}
-        </Typography>
-      ),
-    },
-    {
-      field: "risk1R",
-      headerName: "Risk1R",
-      // minWidth: 100,
-      width: columnWidths.risk1R || 150,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.risk1R}
+        <Typography sx={tableTextSx}>
+          {formatMaybeNumber(params.row.number, numFmt)}
         </Typography>
       ),
     },
     {
       field: "principal",
       headerName: "Principal",
-      // minWidth: 100,
       width: columnWidths.principal || 150,
       valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
       renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.principal}
+        <Typography sx={tableTextSx}>
+          {formatMaybeCurrency(params.row.principal, numFmt)}
         </Typography>
       ),
     },
     {
-      field: "duration",
-      headerName: "Duration",
-      // minWidth: 100,
-      width: columnWidths.duration || 150,
+      field: "sellTime",
+      headerName: "Sell Time",
+      width: columnWidths.sellTime || 150,
+      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.sellTime}</Typography>,
+    },
+    {
+      field: "sellPrice",
+      headerName: "Sell Price",
+      width: columnWidths.sellPrice || 150,
+      valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
       renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.duration}
+        <Typography sx={tableTextSx}>
+          {formatMaybeCurrency(params.row.sellPrice, numFmt)}
         </Typography>
       ),
     },
     {
-      field: "annualPrf",
-      headerName: "Annual Profit",
-      // minWidth: 100,
-      width: columnWidths.annualPrf || 150,
-      valueGetter: (_, row) => (row.annualPrf ? parseFloat(row.annualPrf) : 0),
+      field: "investment",
+      headerName: "Investment",
+      width: columnWidths.investment || 150,
+      valueGetter: (_, row) => (row.investment ? parseFloat(row.investment) : 0),
       renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.annualPrf}
+        <Typography sx={tableTextSx}>
+          {formatMaybeCurrency(params.row.investment, numFmt)}
         </Typography>
       ),
     },
     {
       field: "netProfit",
       headerName: "Net Profit",
-      // minWidth: 100,
       width: columnWidths.netProfit || 150,
       valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
       renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.netProfit}
+        <Typography sx={tableTextSx}>
+          {formatMaybeCurrency(params.row.netProfit, numFmt)}
         </Typography>
       ),
     },
     {
       field: "profit",
       headerName: "Profit %",
-      // minWidth: 100,
       width: columnWidths.profit || 150,
       valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
       renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.profit}
+        <Typography sx={tableTextSx}>
+          {formatMaybeNumber(params.row.profit, numFmt)}
         </Typography>
       ),
     },
     {
+      field: "annualPrf",
+      headerName: "Annual Profit %",
+      width: columnWidths.annualPrf || 150,
+      valueGetter: (_, row) => (row.annualPrf ? parseFloat(row.annualPrf) : 0),
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>
+          {formatMaybeNumber(params.row.annualPrf, numFmt)}
+        </Typography>
+      ),
+    },
+    {
+      field: "risk1R",
+      headerName: "Risk1R",
+      width: columnWidths.risk1R || 150,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{formatMaybeNumber(params.row.risk1R, numFmt)}</Typography>
+      ),
+    },
+    {
+      field: "duration",
+      headerName: "Duration",
+      width: columnWidths.duration || 150,
+      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.duration}</Typography>,
+    },
+    {
       field: "maxPrf",
       headerName: "Max Profit",
-      // minWidth: 100,
       width: columnWidths.maxPrf || 150,
-      valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
+      valueGetter: (_, row) => (row.maxPrf ? parseFloat(row.maxPrf) : 0),
       renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.profit}
+        <Typography sx={tableTextSx}>
+          {formatMaybeNumber(params.row.maxPrf, numFmt)}
         </Typography>
       ),
     },
     {
       field: "closeReason",
       headerName: "Close Reason",
-      // minWidth: 100,
       width: columnWidths.closeReason || 150,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            ...tableTextSx,
-          }}
-        >
-          {params.row.closeReason}
-        </Typography>
-      ),
+      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.closeReason}</Typography>,
     },
     {
       field: "moreaction",
       headerName: "",
-      // minWidth: 50,
       maxWidth: 60,
       sortable: false,
       disableColumnMenu: true,
       renderHeader: () => (
-        <IconButton
-          size="small"
-          onClick={(e) => handlePopoverOpen(e, "column")}
-        >
-          <SettingsIcon
-            fontSize="small"
-            color={hiddenColumns.length ? "primary" : ""}
-          />
+        <IconButton size="small" onClick={(e) => handlePopoverOpen(e, "column")}>
+          <SettingsIcon fontSize="small" color={hiddenColumns.length ? "primary" : ""} />
         </IconButton>
       ),
     },
   ];
 
   const handleColumnResize = (params) => {
-    const newWidths = {
-      ...columnWidths,
-      [params.colDef.field]: params.width,
-    };
-
+    const newWidths = { ...columnWidths, [params.colDef.field]: params.width };
     setColumnWidths(newWidths);
     localStorage.setItem("tradeTableColumnWidths", JSON.stringify(newWidths));
   };
 
-  const visibleColumns = columns.filter(
-    (col) => !hiddenColumns.includes(col.field)
-  );
+  const visibleColumns = columns.filter((col) => !hiddenColumns.includes(col.field));
 
   const pageCount = Math.ceil(combinedArrayWithId.length / cardsPerPage);
-
-  const paginatedRows = combinedArrayWithId.slice(
-    (page - 1) * cardsPerPage,
-    page * cardsPerPage
-  );
+  const paginatedRows = combinedArrayWithId.slice((page - 1) * cardsPerPage, page * cardsPerPage);
 
   const handlePageChange = (event, value) => {
     setPage(value);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  /* ===================== Mobile mapping (CommonCard) ===================== */
   const mapRowToDisplay = (row) => ({
     Symbol: row.symbol,
     "Buy Time": row.buyTime,
-    "Buy Price": row.buyPrice,
+    "Buy Price": formatMaybeCurrency(row.buyPrice, numFmt),
     "Sell Time": row.sellTime,
-    "Sell Price": row.sellPrice,
-    Quantity: row.number,
-    Investment: row.investment,
-    "Net Profit": row.netProfit,
-    "Profit (%)": row.profit,
+    "Sell Price": formatMaybeCurrency(row.sellPrice, numFmt),
+    Quantity: formatMaybeNumber(row.number, numFmt),
+    Investment: formatMaybeCurrency(row.investment, numFmt),
+    "Net Profit": formatMaybeCurrency(row.netProfit, numFmt),
+    "Profit (%)": formatMaybeNumber(row.profit, numFmt),
+    "Annual Profit (%)": formatMaybeNumber(row.annualPrf, numFmt),
+    Risk1R: formatMaybeNumber(row.risk1R, numFmt),
+    Duration: row.duration,
+    "Max Profit": formatMaybeNumber(row.maxPrf, numFmt),
     "Close Reason": row.closeReason,
   });
 
   useEffect(() => {
     if (hiddenColumnsFromLocalStorage) {
-      setHiddenColumns(JSON.parse(hiddenColumnsFromLocalStorage));
+      try {
+        const parsed = JSON.parse(hiddenColumnsFromLocalStorage);
+        if (Array.isArray(parsed)) setHiddenColumns(parsed);
+      } catch {
+        // ignore
+      }
     }
-  }, []);
+  }, []); // load once
 
   return (
     <>
@@ -465,14 +398,7 @@ const Tradetable = (props) => {
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            maxHeight: 300,
-            overflowY: "auto",
-            overflowX: "hidden",
-          },
-        }}
-        // transformOrigin={{ vertical: "top", horizontal: "left" }}
+        PaperProps={{ sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" } }}
       >
         {popoverContent()}
       </Popover>
@@ -482,7 +408,12 @@ const Tradetable = (props) => {
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {combinedArrayWithId.length ? (
               paginatedRows.map((data, i) => (
-                <CommonCard key={i} rows={mapRowToDisplay(data)} />
+                <CommonCard
+                  key={i}
+                  rows={mapRowToDisplay(data)}
+                  overflowMode="wrap"     // wrap label & value
+                  formatNumbers={false}   // keep preformatted "₹ ..." strings
+                />
               ))
             ) : (
               <div className="text-center pt-2">No data to show</div>
@@ -523,11 +454,7 @@ const Tradetable = (props) => {
             onColumnResize={handleColumnResize}
             className="h-full"
             initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
+              pagination: { paginationModel: { pageSize: 10 } },
             }}
             pageSizeOptions={[10]}
             sx={{

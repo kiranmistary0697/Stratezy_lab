@@ -48,7 +48,6 @@ const FunctionSelect = ({
     utility: [],
   });
 
-  // getDefaultValues now takes stockData as param
   const getDefaultValues = (data) => ({
     filterRule: data
       ? data.filter && data.stockList
@@ -70,31 +69,20 @@ const FunctionSelect = ({
         ? ["Account"]
         : []),
     ],
-    // tradeSequence: data?.sort ? ["Trade Sequence"] : [],
-    tradeSequence: [
-      // ...(data?.sort ? ["Trade Sequence"] : []),
-      ...(data?.sort && data?.accountRule ? ["Account"] : []),
-    ],
-    // portfolioSizing: data?.psizing ? ["Portfolio Sizing"] : [],
+    tradeSequence: [...(data?.sort && data?.accountRule ? ["Account"] : [])],
     portfolioSizing: [
-      // ...(data?.psizing ? ["Portfolio Sizing"] : []),
       ...(data?.psizing && data?.accountRule ? ["Account"] : []),
     ],
     utility: data?.utility ? ["Utility"] : [],
   });
 
-  // Helper: shallow compare two objects (simple JSON string comparison)
   const shallowEqual = (obj1, obj2) =>
     JSON.stringify(obj1) === JSON.stringify(obj2);
 
-  // Initialize selectedTypes and selectedValues based on stockData when id or stockData changes
   useEffect(() => {
     if (!id || !stockData) return;
 
-    // Recalculate defaults
     const defaultSelectedValues = getDefaultValues(stockData);
-
-    // Compute defaultSelectedTypes: true if any subtypes selected, else false
     const defaultSelectedTypes = Object.fromEntries(
       Object.entries(defaultSelectedValues).map(([key, arr]) => [
         key,
@@ -102,7 +90,6 @@ const FunctionSelect = ({
       ])
     );
 
-    // Only update if changed
     if (!shallowEqual(selectedValues, defaultSelectedValues)) {
       setSelectedValues(defaultSelectedValues);
     }
@@ -110,14 +97,11 @@ const FunctionSelect = ({
       setSelectedTypes(defaultSelectedTypes);
     }
 
-    // Only clear local storage if needed
     localStorage.removeItem("selectedTypes");
     localStorage.removeItem("selectedValues");
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stockData, id]);
 
-  // Load saved state from localStorage only if no id (new function, not editing)
   useEffect(() => {
     if (!id) {
       const storedTypes = localStorage.getItem("selectedTypes");
@@ -126,32 +110,28 @@ const FunctionSelect = ({
       if (storedTypes) {
         try {
           setSelectedTypes(JSON.parse(storedTypes));
-        } catch (e) {
+        } catch {
           console.error("Invalid selectedTypes in localStorage");
         }
       }
-
       if (storedValues) {
         try {
           setSelectedValues(JSON.parse(storedValues));
-        } catch (e) {
+        } catch {
           console.error("Invalid selectedValues in localStorage");
         }
       }
     }
   }, [id]);
 
-  // Persist selectedTypes to localStorage
   useEffect(() => {
     localStorage.setItem("selectedTypes", JSON.stringify(selectedTypes));
   }, [selectedTypes]);
 
-  // Persist selectedValues to localStorage
   useEffect(() => {
     localStorage.setItem("selectedValues", JSON.stringify(selectedValues));
   }, [selectedValues]);
 
-  // Update parent component whenever state changes
   useEffect(() => {
     const updatedFunction = {
       filterRule: selectedValues.filterRule?.length > 0,
@@ -227,7 +207,7 @@ const FunctionSelect = ({
       }
     }
 
-    //payload modification
+    // payload modification
     if (Object.values(selectedTypes).every((val) => val === false)) {
       updatedFunction.utility = true;
     }
@@ -256,7 +236,6 @@ const FunctionSelect = ({
   const toggleType = (type) => {
     const canEdit = !id || editUserData;
     if (!canEdit) return;
-
     setSelectedTypes((prev) => ({
       ...prev,
       [type]: !prev[type],
@@ -266,16 +245,12 @@ const FunctionSelect = ({
 
   const handleSelectChange = (key, value) => {
     const selected = Array.isArray(value) ? value : [value];
-
     setSelectedValues((prev) => {
       if (
         selected.length === 0 ||
         (selected.length === 1 && selected[0] === undefined)
       ) {
-        return {
-          ...prev,
-          [key]: [],
-        };
+        return { ...prev, [key]: [] };
       }
       return {
         ...prev,
@@ -432,7 +407,7 @@ const FunctionSelect = ({
             const options = allOptions[key];
 
             return (
-              <div key={key}>
+              <div key={key} className="min-w-0 w-full sm:w-auto">
                 <label
                   className={`block mb-1 text-xs font-semibold ${
                     isEnabled ? "text-[#0A0A0A]" : "opacity-50"
@@ -450,12 +425,20 @@ const FunctionSelect = ({
                       ? () => {}
                       : (e) => handleSelectChange(key, e.target.value)
                   }
-                  // className={`min-w-[160px] bg-white border border-gray-200 rounded-md ${
-                  className={`min-w-[320px] sm:min-w-[160px] md:min-w-[200px] bg-white border border-gray-200 rounded-md ${
-                    !isEnabled ? "opacity-50" : ""
-                  }`}
+                  className={`${!isEnabled ? "opacity-50" : ""}`}
+                  sx={{
+                    width: { xs: "100%", sm: 160, md: 200 }, // full width on mobile
+                    maxWidth: "100%",
+                    "& .MuiSelect-select": {
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 0.5,
+                      py: 0.5,
+                      alignItems: "center",
+                    },
+                  }}
                   renderValue={(selected) => (
-                    <div className="flex gap-2">
+                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                       {selected.length > 0 ? (
                         selected.map((val) => (
                           <Badge variant="version" key={val}>
@@ -465,8 +448,21 @@ const FunctionSelect = ({
                       ) : (
                         <span className="text-gray-400">No Options</span>
                       )}
-                    </div>
+                    </Box>
                   )}
+                  MenuProps={{
+                    marginThreshold: 0,
+                    anchorOrigin: { vertical: "bottom", horizontal: "left" },
+                    transformOrigin: { vertical: "top", horizontal: "left" },
+                    PaperProps: {
+                      sx: {
+                        maxHeight: 320,
+                        width: { xs: "calc(100vw - 32px)", sm: "auto" },
+                        maxWidth: { xs: "calc(100vw - 32px)", sm: "auto" },
+                        overflowX: "hidden",
+                      },
+                    },
+                  }}
                 >
                   {options.map((option) => (
                     <MenuItem
