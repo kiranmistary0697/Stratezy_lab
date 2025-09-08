@@ -32,7 +32,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import CommonCard from "../../../../../common/Cards/CommonCard";
 
-/* ---------- table cell text ---------- */
 const tableTextSx = {
   fontFamily: "Inter",
   fontWeight: 400,
@@ -45,7 +44,6 @@ const tableTextSx = {
   height: "100%",
 };
 
-/* ---------- filter modal style ---------- */
 const useStyles = makeStyles({
   filterModal: {
     "& .MuiDataGrid-filterPanel": { display: "none" },
@@ -54,7 +52,6 @@ const useStyles = makeStyles({
   },
 });
 
-/* ===================== number/currency helpers ===================== */
 function parseNumericLike(val) {
   if (typeof val === "number" && Number.isFinite(val)) return val;
   if (typeof val !== "string") return null;
@@ -65,15 +62,22 @@ function parseNumericLike(val) {
   n = Number(cleaned);
   return Number.isFinite(n) ? n : null;
 }
+
 function isNearlyInteger(n, tol = 1e-9) {
   if (!Number.isFinite(n)) return false;
   const nearest = Math.round(n);
   const scale = Math.max(1, Math.abs(n));
   return Math.abs(n - nearest) <= tol * scale;
 }
+
 function formatMaybeNumber(
   val,
-  { decimals = 2, integerNoDecimals = true, useGrouping = true, locale = "en-IN" } = {}
+  {
+    decimals = 2,
+    integerNoDecimals = true,
+    useGrouping = true,
+    locale = "en-IN",
+  } = {}
 ) {
   const n = parseNumericLike(val);
   if (n == null) return val ?? "-";
@@ -85,9 +89,15 @@ function formatMaybeNumber(
     notation: "standard",
   }).format(n);
 }
+
 function formatMaybeCurrency(
   val,
-  fmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" },
+  fmt = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,
+    locale: "en-IN",
+  },
   { symbol = "₹", space = false } = {}
 ) {
   const n = parseNumericLike(val);
@@ -97,7 +107,6 @@ function formatMaybeCurrency(
   return `${sign}${symbol}${space ? " " : ""}${absStr}`;
 }
 
-/* ===================== component ===================== */
 const CapitalTable = ({
   data = {},
   rows = [],
@@ -155,6 +164,7 @@ const CapitalTable = ({
     setPopoverAnchor(event.currentTarget);
     setActiveFilter(type);
   };
+
   const handlePopoverClose = () => {
     setPopoverAnchor(null);
     setActiveFilter(null);
@@ -163,7 +173,12 @@ const CapitalTable = ({
   const handleConfirmDelete = async () => {
     if (!rowToDelete) return;
     try {
-      const params = new URLSearchParams({ name, exchange, version, brokerage }).toString();
+      const params = new URLSearchParams({
+        name,
+        exchange,
+        version,
+        brokerage,
+      }).toString();
       const { data } = await deleteCapital({
         endpoint: `/deploy/strategy/clearcapital?${params}`,
         tags: [tagTypes.ADDCAPITAL, tagTypes.GET_CAPITAL],
@@ -189,7 +204,10 @@ const CapitalTable = ({
       const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
         : [...prev, field];
-      localStorage.setItem("hiddenColumnsCapitalTable", JSON.stringify(updatedColumns));
+      localStorage.setItem(
+        "hiddenColumnsCapitalTable",
+        JSON.stringify(updatedColumns)
+      );
       return updatedColumns;
     });
   };
@@ -216,8 +234,12 @@ const CapitalTable = ({
     }
   };
 
-  /* ===================== columns ===================== */
-  const numFmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" };
+  const numFmt = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,
+    locale: "en-IN",
+  };
 
   const columns = useMemo(
     () => [
@@ -258,13 +280,17 @@ const CapitalTable = ({
         field: "Type",
         headerName: "Type",
         width: columnWidths.Type || 150,
-        renderCell: (params) => <Badge variant="version">{params.row?.Type}</Badge>,
+        renderCell: (params) => (
+          <Badge variant="version">{params.row?.Type}</Badge>
+        ),
       },
       {
         field: "Schedule",
         headerName: "Schedule",
         width: columnWidths.Schedule || 150,
-        renderCell: (params) => <Typography sx={tableTextSx}>{params.row?.Schedule}</Typography>,
+        renderCell: (params) => (
+          <Typography sx={tableTextSx}>{params.row?.Schedule}</Typography>
+        ),
       },
       {
         field: "manage",
@@ -282,11 +308,15 @@ const CapitalTable = ({
                   type: params.row.Type,
                 });
                 setAmount(params.row.Amount);
-                setSelectedType(params.row?.Type?.replace(/\s+/g, "").toUpperCase());
+                setSelectedType(
+                  params.row?.Type?.replace(/\s+/g, "").toUpperCase()
+                );
                 setStartDate(params.row.Date);
               }}
               label={params.row.status === "Completed" ? "NA" : "Manage"}
-              textColor={params.row.status === "Completed" ? "#666666" : "#3D69D3"}
+              textColor={
+                params.row.status === "Completed" ? "#666666" : "#3D69D3"
+              }
               iconClass="ri-play-line"
             />
           </Box>
@@ -300,12 +330,21 @@ const CapitalTable = ({
         sortable: false,
         disableColumnMenu: true,
         renderHeader: () => (
-          <IconButton size="small" onClick={(e) => handlePopoverOpen(e, "column")}>
-            <SettingsIcon fontSize="small" color={hiddenColumns.length ? "primary" : ""} />
+          <IconButton
+            size="small"
+            onClick={(e) => handlePopoverOpen(e, "column")}
+          >
+            <SettingsIcon
+              fontSize="small"
+              color={hiddenColumns.length ? "primary" : ""}
+            />
           </IconButton>
         ),
         renderCell: (params) => (
-          <ActionMenu isDeleteButton handleDelete={() => handleDeleteClick(params.row)} />
+          <ActionMenu
+            isDeleteButton
+            handleDelete={() => handleDeleteClick(params.row)}
+          />
         ),
       },
     ],
@@ -333,7 +372,17 @@ const CapitalTable = ({
           Select Column
         </Typography>
         {columns
-          .filter(({ field }) => !["requestId", "name", "version", "createdAt", "status", "moreaction"].includes(field))
+          .filter(
+            ({ field }) =>
+              ![
+                "requestId",
+                "name",
+                "version",
+                "createdAt",
+                "status",
+                "moreaction",
+              ].includes(field)
+          )
           .map((col) => (
             <FormControlLabel
               key={col.field}
@@ -366,7 +415,10 @@ const CapitalTable = ({
   };
 
   const pageCount = Math.ceil(rows.length / cardsPerPage);
-  const paginatedRows = rows.slice((page - 1) * cardsPerPage, page * cardsPerPage);
+  const paginatedRows = rows.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -414,7 +466,9 @@ const CapitalTable = ({
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        PaperProps={{ sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" } }}
+        PaperProps={{
+          sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" },
+        }}
       >
         {popoverContent()}
       </Popover>
@@ -425,7 +479,11 @@ const CapitalTable = ({
             paginatedRows.map((row, i) => {
               const cardRows = {
                 Date: moment(row.Date).format("DD MMM YYYY"),
-                Status: <Badge variant={row.status?.toLowerCase()}>{row.status}</Badge>,
+                Status: (
+                  <Badge variant={row.status?.toLowerCase()}>
+                    {row.status}
+                  </Badge>
+                ),
                 Amount: formatMaybeCurrency(row.Amount, numFmt),
                 Type: <Badge variant="version">{row.Type}</Badge>,
                 Schedule: row.Schedule ?? "-",
@@ -435,11 +493,18 @@ const CapitalTable = ({
                 <Box key={i}>
                   <CommonCard
                     rows={cardRows}
-                    overflowMode="wrap"    // wrap label & value
-                    formatNumbers={false}  // preserve preformatted "₹ ..."
+                    overflowMode="wrap"
+                    formatNumbers={false}
                   />
-                  {/* actions bar under the card */}
-                  <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end", px: 1, mb: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      justifyContent: "flex-end",
+                      px: 1,
+                      mb: 1,
+                    }}
+                  >
                     <ActionButton
                       action="Backtest"
                       label={isCompleted ? "" : "Manage"}
@@ -448,9 +513,15 @@ const CapitalTable = ({
                       onClick={() => {
                         if (isCompleted) return;
                         setOpenCapital(true);
-                        setCapitalData({ date: row.Date, initialAmount: row.Amount, type: row.Type });
+                        setCapitalData({
+                          date: row.Date,
+                          initialAmount: row.Amount,
+                          type: row.Type,
+                        });
                         setAmount(row.Amount);
-                        setSelectedType(row?.Type?.replace(/\s+/g, "").toUpperCase());
+                        setSelectedType(
+                          row?.Type?.replace(/\s+/g, "").toUpperCase()
+                        );
                         setStartDate(row.Date);
                       }}
                     />
@@ -471,7 +542,12 @@ const CapitalTable = ({
 
           {pageCount > 1 && (
             <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-              <Pagination count={pageCount} page={page} onChange={handlePageChange} color="primary" />
+              <Pagination
+                count={pageCount}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
             </Box>
           )}
         </Box>

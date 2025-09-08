@@ -50,7 +50,6 @@ const CustomFilterPanel = ({
             const isChecked = selectedValues.includes(item[dataKey]);
             return (
               <FormControlLabel
-                // className="custom-select"
                 key={key}
                 control={
                   <Checkbox
@@ -61,7 +60,6 @@ const CustomFilterPanel = ({
                   />
                 }
                 label={
-                  // <div className="flex items-center gap-2">
                   <Typography
                     sx={{
                       fontFamily: "Inter",
@@ -84,7 +82,6 @@ const CustomFilterPanel = ({
                         {item[dataKey]}
                       </Badge>
                     )}
-                    {/* </div> */}
                   </Typography>
                 }
               />

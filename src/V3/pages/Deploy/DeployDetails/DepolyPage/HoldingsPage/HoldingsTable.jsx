@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import { forwardRef, useEffect, useImperativeHandle, useState, useMemo } from "react";
+import { forwardRef, useImperativeHandle, useState, useMemo } from "react";
 import {
   Box,
   Checkbox,
@@ -64,7 +64,12 @@ function isNearlyInteger(n, tol = 1e-9) {
 
 function formatMaybeNumber(
   val,
-  { decimals = 2, integerNoDecimals = true, useGrouping = true, locale = "en-IN" } = {}
+  {
+    decimals = 2,
+    integerNoDecimals = true,
+    useGrouping = true,
+    locale = "en-IN",
+  } = {}
 ) {
   const n = parseNumericLike(val);
   if (n == null) return val ?? "-";
@@ -79,7 +84,12 @@ function formatMaybeNumber(
 
 function formatMaybeCurrency(
   val,
-  fmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" },
+  fmt = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,
+    locale: "en-IN",
+  },
   { symbol = "₹", space = false } = {}
 ) {
   const n = parseNumericLike(val);
@@ -106,10 +116,26 @@ const HoldingsTable = forwardRef((props, ref) => {
       const stored = localStorage.getItem("hiddenColumnsHoldingsTable");
       const parsed = stored
         ? JSON.parse(stored)
-        : ["sellTime", "sellPrice", "prf1R", "closeReason", "openReason", "Yet To Do", "Action"];
+        : [
+            "sellTime",
+            "sellPrice",
+            "prf1R",
+            "closeReason",
+            "openReason",
+            "Yet To Do",
+            "Action",
+          ];
       return Array.isArray(parsed) ? parsed : [];
     } catch {
-      return ["sellTime", "sellPrice", "prf1R", "closeReason", "openReason", "Yet To Do", "Action"];
+      return [
+        "sellTime",
+        "sellPrice",
+        "prf1R",
+        "closeReason",
+        "openReason",
+        "Yet To Do",
+        "Action",
+      ];
     }
   });
 
@@ -128,7 +154,7 @@ const HoldingsTable = forwardRef((props, ref) => {
     Object.fromEntries(
       Object.entries(obj).filter(([label]) => !hiddenSet.has(normKey(label)))
     );
-    
+
   const [columnWidths, setColumnWidths] = useState(() => {
     try {
       const storedWidths = localStorage.getItem("holdingsTableColumnWidths");
@@ -157,7 +183,10 @@ const HoldingsTable = forwardRef((props, ref) => {
         ? prev.filter((col) => col !== field)
         : [...prev, field];
 
-      localStorage.setItem("hiddenColumnsHoldingsTable", JSON.stringify(updatedColumns));
+      localStorage.setItem(
+        "hiddenColumnsHoldingsTable",
+        JSON.stringify(updatedColumns)
+      );
       return updatedColumns;
     });
   };
@@ -208,7 +237,17 @@ const HoldingsTable = forwardRef((props, ref) => {
             Select Column
           </Typography>
           {columns
-            .filter(({ field }) => !["requestId", "name", "version", "createdAt", "status", "moreAction"].includes(field))
+            .filter(
+              ({ field }) =>
+                ![
+                  "requestId",
+                  "name",
+                  "version",
+                  "createdAt",
+                  "status",
+                  "moreAction",
+                ].includes(field)
+            )
             .map((col) => (
               <FormControlLabel
                 key={col.field}
@@ -243,14 +282,21 @@ const HoldingsTable = forwardRef((props, ref) => {
   };
 
   /* ===================== Columns ===================== */
-  const numFmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" };
+  const numFmt = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,
+    locale: "en-IN",
+  };
 
   const columns = [
     {
       field: "symbol",
       headerName: "Symbol",
       width: columnWidths.symbol || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.symbol ?? "-"}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params?.row?.symbol ?? "-"}</Typography>
+      ),
     },
     {
       field: "buyPrice",
@@ -259,7 +305,11 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.buyPrice ? parseFloat(row.buyPrice) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.buyPrice);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeCurrency(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
@@ -269,7 +319,11 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.number ? parseFloat(row.number) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.number);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeNumber(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
@@ -279,23 +333,34 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.sellPrice ? parseFloat(row.sellPrice) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.sellPrice);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeCurrency(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
       field: "sellTime",
       headerName: "Sell Time",
       width: columnWidths.sellTime || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.sellTime ?? "-"}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params?.row?.sellTime ?? "-"}</Typography>
+      ),
     },
     {
       field: "investment",
       headerName: "Investment",
       width: columnWidths.investment || 150,
-      valueGetter: (_, row) => (row.investment ? parseFloat(row.investment) : 0),
+      valueGetter: (_, row) =>
+        row.investment ? parseFloat(row.investment) : 0,
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.investment);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeCurrency(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
@@ -305,7 +370,11 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.principal ? parseFloat(row.principal) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.principal);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeCurrency(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
@@ -315,7 +384,11 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.netProfit ? parseFloat(row.netProfit) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.netProfit);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeCurrency(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeCurrency(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
@@ -325,7 +398,11 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.profit ? parseFloat(row.profit) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.profit);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeNumber(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
@@ -335,14 +412,20 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.anPrf ? parseFloat(row.anPrf) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.anPrf);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeNumber(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
       field: "buyTime",
       headerName: "Buy Time",
       width: columnWidths.buyTime || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.buyTime ?? "-"}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params?.row?.buyTime ?? "-"}</Typography>
+      ),
     },
     {
       field: "prf1R",
@@ -351,7 +434,11 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.prf1R ? parseFloat(row.prf1R) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.prf1R);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeNumber(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
@@ -361,26 +448,40 @@ const HoldingsTable = forwardRef((props, ref) => {
       valueGetter: (_, row) => (row.risk1R ? parseFloat(row.risk1R) : 0),
       renderCell: (params) => {
         const n = parseNumericLike(params?.row?.risk1R);
-        return <Typography sx={tableTextSx}>{n == null ? "-" : formatMaybeNumber(n, numFmt)}</Typography>;
+        return (
+          <Typography sx={tableTextSx}>
+            {n == null ? "-" : formatMaybeNumber(n, numFmt)}
+          </Typography>
+        );
       },
     },
     {
       field: "duration",
       headerName: "Duration Time",
       width: columnWidths.duration || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.duration ?? "-"}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params?.row?.duration ?? "-"}</Typography>
+      ),
     },
     {
       field: "closeReason",
       headerName: "Close Reason",
       width: columnWidths.closeReason || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.closeReason ?? "-"}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>
+          {params?.row?.closeReason ?? "-"}
+        </Typography>
+      ),
     },
     {
       field: "openReason",
       headerName: "Open Reason",
       width: columnWidths.openReason || 200,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params?.row?.openReason ?? "-"}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>
+          {params?.row?.openReason ?? "-"}
+        </Typography>
+      ),
     },
     {
       field: "action",
@@ -396,7 +497,9 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.yetToDo || 150,
       disableColumnMenu: true,
       valueGetter: (_, row) => (row.yetToDo ? "True" : "False"),
-      renderCell: (params) => <div>{params.row.yetToDo ? "True" : "False"}</div>,
+      renderCell: (params) => (
+        <div>{params.row.yetToDo ? "True" : "False"}</div>
+      ),
     },
     {
       field: "moreAction",
@@ -404,8 +507,14 @@ const HoldingsTable = forwardRef((props, ref) => {
       width: columnWidths.moreAction || 150,
       disableColumnMenu: true,
       renderHeader: () => (
-        <IconButton size="small" onClick={(e) => handlePopoverOpen(e, "column")}>
-          <SettingsIcon fontSize="small" color={hiddenColumns.length ? "primary" : undefined} />
+        <IconButton
+          size="small"
+          onClick={(e) => handlePopoverOpen(e, "column")}
+        >
+          <SettingsIcon
+            fontSize="small"
+            color={hiddenColumns.length ? "primary" : undefined}
+          />
         </IconButton>
       ),
       renderCell: () => <div>{null}</div>,
@@ -427,7 +536,10 @@ const HoldingsTable = forwardRef((props, ref) => {
   }));
 
   const pageCount = Math.ceil(rowsWithId.length / cardsPerPage);
-  const paginatedRows = rowsWithId.slice((page - 1) * cardsPerPage, page * cardsPerPage);
+  const paginatedRows = rowsWithId.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -437,7 +549,10 @@ const HoldingsTable = forwardRef((props, ref) => {
   const handleColumnResize = (params) => {
     const newWidths = { ...columnWidths, [params.colDef.field]: params.width };
     setColumnWidths(newWidths);
-    localStorage.setItem("holdingsTableColumnWidths", JSON.stringify(newWidths));
+    localStorage.setItem(
+      "holdingsTableColumnWidths",
+      JSON.stringify(newWidths)
+    );
   };
 
   /* ===================== Mobile mapping (CommonCard) ===================== */
@@ -469,7 +584,9 @@ const HoldingsTable = forwardRef((props, ref) => {
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        PaperProps={{ sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" } }}
+        PaperProps={{
+          sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" },
+        }}
       >
         {popoverContent()}
       </Popover>
@@ -481,8 +598,8 @@ const HoldingsTable = forwardRef((props, ref) => {
               <CommonCard
                 key={i}
                 rows={filterCardRowsByHidden(mapRowToDisplay(data))}
-                overflowMode="wrap"     // wrap label & value
-                formatNumbers={false}   // keep preformatted "₹ ..." strings
+                overflowMode="wrap" // wrap label & value
+                formatNumbers={false} // keep preformatted "₹ ..." strings
               />
             ))
           ) : (
@@ -491,7 +608,12 @@ const HoldingsTable = forwardRef((props, ref) => {
 
           {pageCount > 1 && (
             <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-              <Pagination count={pageCount} page={page} onChange={handlePageChange} color="primary" />
+              <Pagination
+                count={pageCount}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
             </Box>
           )}
         </Box>

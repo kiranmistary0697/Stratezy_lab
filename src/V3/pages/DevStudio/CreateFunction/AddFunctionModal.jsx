@@ -53,7 +53,6 @@ const AddFunctionModal = ({
     { key: "gexit", stateKey: "marketEntryExitExit" },
   ];
 
-  //replace Space with Underscore
   const replaceSpaceWithUnderscore = (str) => {
     return str.replace(/ /g, "_");
   };
@@ -73,7 +72,6 @@ const AddFunctionModal = ({
     validationSchema: Yup.object({
       functionName: Yup.string()
         .required("Function Name is required")
-        // .matches(/^[a-zA-Z0-9_]+$/, "Whitespace is not permitted"),
         .matches(
           /^[a-zA-Z0-9_\s]+$/,
           "Only letters, numbers, underscores, and spaces are permitted"
@@ -84,7 +82,6 @@ const AddFunctionModal = ({
         "Only letters, numbers, and underscores are permitted"
       ),
     }),
-    //stock-analysis-function/verify
     onSubmit: async (values) => {
       const receivedArgs = argsData
         .filter((data) => data.value !== "")
@@ -137,7 +134,6 @@ const AddFunctionModal = ({
             return;
           }
         }
-        // Save only if verification succeeded
         const saveStockResponse = await saveNewStock({
           endpoint:
             isDuplicate || isNewFunc
@@ -170,7 +166,6 @@ const AddFunctionModal = ({
         navigate("/Globalfunctions");
       } catch (error) {
         console.error("Failed to save stock:", error);
-        // Optional: Show error feedback to the user
       } finally {
         setIsSaving(false);
       }

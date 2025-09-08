@@ -54,7 +54,12 @@ function isNearlyInteger(n, tol = 1e-9) {
 }
 function formatMaybeNumber(
   val,
-  { decimals = 2, integerNoDecimals = true, useGrouping = true, locale = "en-IN" } = {}
+  {
+    decimals = 2,
+    integerNoDecimals = true,
+    useGrouping = true,
+    locale = "en-IN",
+  } = {}
 ) {
   const n = parseNumericLike(val);
   if (n == null) return val ?? "-";
@@ -68,7 +73,12 @@ function formatMaybeNumber(
 }
 function formatMaybeCurrency(
   val,
-  fmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" },
+  fmt = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,
+    locale: "en-IN",
+  },
   { symbol = "₹", space = false } = {}
 ) {
   const n = parseNumericLike(val);
@@ -132,7 +142,10 @@ const Tradetable = (props) => {
       const updatedColumns = prev.includes(field)
         ? prev.filter((col) => col !== field)
         : [...prev, field];
-      localStorage.setItem("hiddenColumnsTradeTable", JSON.stringify(updatedColumns));
+      localStorage.setItem(
+        "hiddenColumnsTradeTable",
+        JSON.stringify(updatedColumns)
+      );
       return updatedColumns;
     });
   };
@@ -192,20 +205,29 @@ const Tradetable = (props) => {
   };
 
   /* ===================== Columns ===================== */
-  const numFmt = { decimals: 2, integerNoDecimals: true, useGrouping: true, locale: "en-IN" };
+  const numFmt = {
+    decimals: 2,
+    integerNoDecimals: true,
+    useGrouping: true,
+    locale: "en-IN",
+  };
 
   const columns = [
     {
       field: "symbol",
       headerName: "Symbol",
       width: columnWidths.symbol || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.symbol}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params.row.symbol}</Typography>
+      ),
     },
     {
       field: "buyTime",
       headerName: "Buy Time",
       width: columnWidths.buyTime || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.buyTime}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params.row.buyTime}</Typography>
+      ),
     },
     {
       field: "buyPrice",
@@ -244,7 +266,9 @@ const Tradetable = (props) => {
       field: "sellTime",
       headerName: "Sell Time",
       width: columnWidths.sellTime || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.sellTime}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params.row.sellTime}</Typography>
+      ),
     },
     {
       field: "sellPrice",
@@ -261,7 +285,8 @@ const Tradetable = (props) => {
       field: "investment",
       headerName: "Investment",
       width: columnWidths.investment || 150,
-      valueGetter: (_, row) => (row.investment ? parseFloat(row.investment) : 0),
+      valueGetter: (_, row) =>
+        row.investment ? parseFloat(row.investment) : 0,
       renderCell: (params) => (
         <Typography sx={tableTextSx}>
           {formatMaybeCurrency(params.row.investment, numFmt)}
@@ -306,14 +331,18 @@ const Tradetable = (props) => {
       headerName: "Risk1R",
       width: columnWidths.risk1R || 150,
       renderCell: (params) => (
-        <Typography sx={tableTextSx}>{formatMaybeNumber(params.row.risk1R, numFmt)}</Typography>
+        <Typography sx={tableTextSx}>
+          {formatMaybeNumber(params.row.risk1R, numFmt)}
+        </Typography>
       ),
     },
     {
       field: "duration",
       headerName: "Duration",
       width: columnWidths.duration || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.duration}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params.row.duration}</Typography>
+      ),
     },
     {
       field: "maxPrf",
@@ -330,7 +359,9 @@ const Tradetable = (props) => {
       field: "closeReason",
       headerName: "Close Reason",
       width: columnWidths.closeReason || 150,
-      renderCell: (params) => <Typography sx={tableTextSx}>{params.row.closeReason}</Typography>,
+      renderCell: (params) => (
+        <Typography sx={tableTextSx}>{params.row.closeReason}</Typography>
+      ),
     },
     {
       field: "moreaction",
@@ -339,8 +370,14 @@ const Tradetable = (props) => {
       sortable: false,
       disableColumnMenu: true,
       renderHeader: () => (
-        <IconButton size="small" onClick={(e) => handlePopoverOpen(e, "column")}>
-          <SettingsIcon fontSize="small" color={hiddenColumns.length ? "primary" : ""} />
+        <IconButton
+          size="small"
+          onClick={(e) => handlePopoverOpen(e, "column")}
+        >
+          <SettingsIcon
+            fontSize="small"
+            color={hiddenColumns.length ? "primary" : ""}
+          />
         </IconButton>
       ),
     },
@@ -352,10 +389,15 @@ const Tradetable = (props) => {
     localStorage.setItem("tradeTableColumnWidths", JSON.stringify(newWidths));
   };
 
-  const visibleColumns = columns.filter((col) => !hiddenColumns.includes(col.field));
+  const visibleColumns = columns.filter(
+    (col) => !hiddenColumns.includes(col.field)
+  );
 
   const pageCount = Math.ceil(combinedArrayWithId.length / cardsPerPage);
-  const paginatedRows = combinedArrayWithId.slice((page - 1) * cardsPerPage, page * cardsPerPage);
+  const paginatedRows = combinedArrayWithId.slice(
+    (page - 1) * cardsPerPage,
+    page * cardsPerPage
+  );
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -389,7 +431,7 @@ const Tradetable = (props) => {
         // ignore
       }
     }
-  }, []); // load once
+  }, []);
 
   return (
     <>
@@ -398,7 +440,9 @@ const Tradetable = (props) => {
         anchorEl={popoverAnchor}
         onClose={handlePopoverClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        PaperProps={{ sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" } }}
+        PaperProps={{
+          sx: { maxHeight: 300, overflowY: "auto", overflowX: "hidden" },
+        }}
       >
         {popoverContent()}
       </Popover>
@@ -411,8 +455,8 @@ const Tradetable = (props) => {
                 <CommonCard
                   key={i}
                   rows={mapRowToDisplay(data)}
-                  overflowMode="wrap"     // wrap label & value
-                  formatNumbers={false}   // keep preformatted "₹ ..." strings
+                  overflowMode="wrap"
+                  formatNumbers={false}
                 />
               ))
             ) : (

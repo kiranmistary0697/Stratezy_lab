@@ -8,8 +8,6 @@ import {
   timelineItemClasses,
 } from "@mui/lab";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import Badge from "../../../common/Badge";
-import { Box, Tooltip, Typography } from "@mui/material";
 
 const timelineSteps = [
   { title: "Stock Bundles", keywords: ["filter"], dataKeys: ["filterRule"] },

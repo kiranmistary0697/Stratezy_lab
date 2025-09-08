@@ -79,18 +79,14 @@ const ConfirmModal = ({
           payload,
           tags: [tagTypes.CREATE_STRATEGY, tagTypes.GET_FILTERTYPE],
         }).unwrap();
-
-        // const newFilter = { name: strategyName, type: "Static", selectedStock };
-        // onSave(newFilter);
         setSuccessModalOpen(true);
         handleClose();
         onClose();
       } else {
-        // alert("Verification failed. Please check your strategy.");
+        console.error("Verification failed. Please check your strategy.");
       }
     } catch (error) {
       console.error("Error during verification or saving:", error);
-      // alert("An error occurred while verifying or saving the strategy.");
     } finally {
       setIsSaving(false); // End loading
     }

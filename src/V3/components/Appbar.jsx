@@ -8,13 +8,10 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Logo from "../Logo.png";
-import Logos from "../S.png";
-import { blue } from "@mui/material/colors";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { Select } from "@mui/material";
@@ -48,9 +45,6 @@ function Appbar() {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -68,7 +62,6 @@ function Appbar() {
       case "Backtests":
         navigate("/Backtests");
         break;
-      // Add cases for other pages as needed
       default:
         break;
     }
@@ -81,13 +74,11 @@ function Appbar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-           */}
           <Box sx={{ display: { xs: "none", md: "flex" }, mr: 2 }}>
             <img
               src={Logo}
               alt="Logo"
-              style={{ width: "67.06px", height: "19px" }} // Adjust the height based on your logo size
+              style={{ width: "67.06px", height: "19px" }}
             />
           </Box>
 
@@ -120,11 +111,11 @@ function Appbar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={() => handleNavigate(page)}>
-                  <div
+                  <Box
                     sx={{ textAlign: "center", padding: "10px", gap: "10px" }}
                   >
                     {page}
-                  </div>
+                  </Box>
                 </MenuItem>
               ))}
             </Menu>
@@ -149,30 +140,7 @@ function Appbar() {
             LOGO
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {/* {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={() => handleNavigate(page)}
-                sx={{
-                  my: 2,
-                  display: "block",
-                  backgroundColor: "transparent", // Ensure no solid background interferes
-                  textTransform: "none", // Prevents MUI from forcing uppercase text
-                  ...(page === "Dev Studio"
-                    ? {
-                        background:
-                          "linear-gradient(90deg, #0037FF 0%, #FF1DC6 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                      }
-                    : { color: "black" }),
-                }}
-              >
-                {page}
-              </Button>
-            ))} */}
-          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mr: 2 }}>
             <Select
               value={selectedCountry}

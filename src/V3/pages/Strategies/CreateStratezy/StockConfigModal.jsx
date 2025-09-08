@@ -6,9 +6,8 @@ import {
   TextField,
   useMediaQuery,
   useTheme,
-  Grid,
 } from "@mui/material";
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import ModalButton from "../../../common/Table/ModalButton";
 
 const LabelWithInput = ({ label, value, onChange }) => (
@@ -49,7 +48,6 @@ const StockConfigModal = ({
   const [localArgs, setLocalArgs] = useState([]);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
   useEffect(() => {
     setLocalArgs(args);
   }, [args]);
@@ -100,10 +98,6 @@ const StockConfigModal = ({
           >
             {title}
           </div>
-
-          {/* <Typography className="text-sm" color="textSecondary">
-            {subTitle}
-          </Typography> */}
 
           {(adesc || []).map((label, index) => (
             <LabelWithInput

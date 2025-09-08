@@ -73,7 +73,6 @@ const PortfolioSizing = ({
   const [minInvest, setInvest] = useState("0.002");
   const [isVerificationOpen, setIsVerificationOpen] = useState(false);
 
-
   useEffect(() => {
     (async () => {
       if (portfolioSizing?.length) {
@@ -243,7 +242,6 @@ const PortfolioSizing = ({
                       values.portfolioSizing?.selectedPortfolio
                   ) || null
                 }
-                // value={values.portfolioSizing?.selectedPortfolio || ""}
                 onChange={(e, newValue) => {
                   handleChangeStockBundle("name", newValue || "");
                 }}
@@ -277,7 +275,6 @@ const PortfolioSizing = ({
 
                   return (
                     <Tooltip
-                      // title={selectedOption.desc || ""}
                       title={
                         <Box>
                           <Typography

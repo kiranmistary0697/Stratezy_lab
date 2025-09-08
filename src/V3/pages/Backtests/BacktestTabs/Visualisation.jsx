@@ -242,23 +242,10 @@ const Visualisation = ({ id, tradeTableSymbol }) => {
                 </label>
               </Box>
               <Box sx={{ display: "flex", gap: "10px" }}>
-                {/* <TextField
-                  value={symbolName}
-                  onChange={(e) => setSymbolName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && symbolName.trim() !== "") {
-                      handleBacktest();
-                    }
-                  }}
-                  size="small"
-                  placeholder="Enter NSE symbol"
-                  aria-label="Symbol input"
-                  className="custom-select max-md:w-full"
-                /> */}
                 <Autocomplete
                   className="custom-select max-md:w-full"
                   size="small"
-                  freeSolo // allows inputting values not in the list if desired
+                  freeSolo
                   options={uniqueTradeSymbols}
                   value={symbolName}
                   onInputChange={(event, newInputValue) => {
@@ -267,7 +254,6 @@ const Visualisation = ({ id, tradeTableSymbol }) => {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && symbolName.trim() !== "") {
                       handleBacktest();
-                      // Prevent form submission or input field from losing focus if needed
                       e.preventDefault();
                     }
                   }}
@@ -276,7 +262,6 @@ const Visualisation = ({ id, tradeTableSymbol }) => {
                       {...params}
                       placeholder="Enter NSE symbol"
                       aria-label="Symbol input"
-                      // className="custom-select max-md:w-full"
                       size="small"
                     />
                   )}
@@ -321,11 +306,11 @@ const Visualisation = ({ id, tradeTableSymbol }) => {
       </Box>
 
       {/* Graph Area */}
-      <Box // parent decides the height at each breakpoint
+      <Box
         sx={{
           position: "relative",
           width: "100%",
-          height: { xs: 280, sm: 360, md: 480, lg: 560 }, // 👈 tune as you like
+          height: { xs: 280, sm: 360, md: 480, lg: 560 },
         }}
       >
         {loading ? (
@@ -346,7 +331,7 @@ const Visualisation = ({ id, tradeTableSymbol }) => {
                 automargin: true,
               },
               ...(isMobile
-                ? {} // No y-axes on mobile
+                ? {}
                 : {
                     yaxis: {
                       title: { text: "Primary Y-Axis", standoff: 30 },

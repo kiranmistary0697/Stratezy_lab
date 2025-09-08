@@ -1,5 +1,3 @@
-import React from "react";
-
 const DetailsInfo = ({ label, value, action }) => {
   return (
     <div className="flex gap-20 items-center w-full max-md:gap-10 max-sm:flex-col max-sm:gap-2 max-sm:items-start">

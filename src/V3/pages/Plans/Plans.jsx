@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import PlansHeader from "./PlansHeader";
 import PlansCard from "./PlansCard";
 import { usePostMutation, useLazyGetQuery } from "../../../slices/api";
-import { SUBSCRIPTION_ID } from "../../../constants/Enum";
 
 const freePlanList = [
   "50 Backtest Credits",
@@ -37,7 +36,6 @@ const Plans = () => {
     try {
       const { data } = await getCredits({
         endpoint: "stock-analysis-function/credit",
-        // tags: [tagTypes.GET_DEPLOY],
       }).unwrap();
 
       setPlanDetails(data);

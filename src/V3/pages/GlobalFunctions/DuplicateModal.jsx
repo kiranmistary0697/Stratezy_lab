@@ -5,7 +5,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import ModalButton from "../../common/Table/ModalButton";
 
 const DuplicateModal = ({ isOpen, handleClose, title, buttonText }) => {
@@ -71,12 +71,7 @@ const DuplicateModal = ({ isOpen, handleClose, title, buttonText }) => {
             <ModalButton variant="secondary" onClick={handleClose}>
               Cancel
             </ModalButton>
-            <ModalButton
-              variant="primary"
-              // onClick={buttonText === "Save" ? handleSave : handleSaveDraft}
-            >
-              {buttonText}
-            </ModalButton>
+            <ModalButton variant="primary">{buttonText}</ModalButton>
           </div>
         </Box>
       </DialogContent>

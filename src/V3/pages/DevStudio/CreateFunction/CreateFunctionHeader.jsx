@@ -89,16 +89,6 @@ const CreateFunctionHeader = ({
       {/* Button Section */}
 
       <nav className="flex gap-2 justify-end ">
-        {/* {isFunction && showButtons && (
-          <HeaderButton
-            variant="primary"
-            onClick={() => {
-              setIsCancelStrategy(true);
-            }}
-          >
-            Cancel
-          </HeaderButton>
-        )} */}
         {isVerify && (
           <HeaderButton
             variant="contained"
