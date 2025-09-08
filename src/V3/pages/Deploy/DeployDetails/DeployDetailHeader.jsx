@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import HeaderButton from "../../../common/Table/HeaderButton";
@@ -16,7 +16,7 @@ const DeployDetailHeader = ({ strategy }) => {
   const [selectedStock, setSelectedStock] = useState(null);
   const [isDelete, setIsDelete] = useState(false);
   const [isActiveStrategy, setIsActiveStrategy] = useState(false);
-  const [actionType, setActionType] = useState(""); // new state
+  const [actionType, setActionType] = useState("");
 
   const open = Boolean(anchorEl);
 
@@ -56,7 +56,6 @@ const DeployDetailHeader = ({ strategy }) => {
         <DeleteModal
           isOpen={isDelete}
           handleClose={() => setIsDelete(false)}
-          // handleConfirm={confirmDelete}
           title="Are you Sure?"
           description="This action is irreversible. Once deleted, the deployment and all its data cannot be recovered."
         />
@@ -78,7 +77,6 @@ const DeployDetailHeader = ({ strategy }) => {
           setSuccessModalOpen={() => setSuccessModalOpen(true)}
           close={() => setSuccessModalOpen(false)}
           isNavigate
-          // onActionSuccess={fetchAllData} // ✅ Refresh table
         />
       )}
 
@@ -114,7 +112,7 @@ const DeployDetailHeader = ({ strategy }) => {
               "&:focus": {
                 outline: "none",
               },
-            }} // Removes outline
+            }}
             onClick={handleClick}
           >
             <MoreVertIcon className="border !border-none" />
@@ -138,7 +136,7 @@ const DeployDetailHeader = ({ strategy }) => {
             </MenuItem>
 
             <MenuItem
-              sx={{ color: "#CD3D64" }} // Makes text red
+              sx={{ color: "#CD3D64" }}
               onClick={() => {
                 setIsDelete(true);
                 handleClose();
@@ -161,7 +159,6 @@ const DeployDetailHeader = ({ strategy }) => {
           )}
 
           <HeaderButton variant="contained">Rebalance</HeaderButton>
-          {/* </Box> */}
         </nav>
       </Box>
     </>

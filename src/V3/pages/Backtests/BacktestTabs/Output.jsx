@@ -2,15 +2,14 @@ import { useMemo } from "react";
 import useDateTime from "../../../hooks/useDateTime";
 import useTimeFormat from "../../../hooks/useTimeFormat";
 
-/** Build a normalized-key map: trim, collapse spaces, lowercase, strip quotes */
 function normalizeSummary(summary) {
   if (!summary || typeof summary !== "object") return {};
   const out = {};
   for (const [rawK, v] of Object.entries(summary)) {
     const k = String(rawK)
-      .replace(/[\u200B-\u200D\uFEFF]/g, "") // zero-width chars
-      .replace(/["“”]/g, "") // quotes
-      .replace(/\s+/g, " ") // collapse spaces/newlines
+      .replace(/[\u200B-\u200D\uFEFF]/g, "")
+      .replace(/["“”]/g, "")
+      .replace(/\s+/g, " ")
       .trim()
       .toLowerCase();
     out[k] = v;
@@ -18,21 +17,17 @@ function normalizeSummary(summary) {
   return out;
 }
 
-/** Parse values like "10300.85 K Rs." → 10300850 (number, INR) */
 function parseKRsToNumber(val) {
   if (val == null) return null;
   const s = String(val).trim();
 
-  // Extract numeric part
   const num = parseFloat(s.replace(/[,₹]/g, "").match(/-?\d+(\.\d+)?/)?.[0]);
   if (Number.isNaN(num)) return null;
 
-  // Detect standalone K token (avoid matching the 'k' in words)
   const hasStandaloneK = /\bK\b/i.test(s) || /\bK\s*Rs\.?/i.test(s);
   return hasStandaloneK ? num * 1000 : num;
 }
 
-/** INR currency formatter */
 function formatINR(n) {
   if (n == null || Number.isNaN(n)) return "-";
   return new Intl.NumberFormat("en-IN", {
@@ -42,7 +37,6 @@ function formatINR(n) {
   }).format(n);
 }
 
-/** Mobile-friendly row: wraps on small screens */
 function Row({ label, value }) {
   return (
     <>
@@ -66,7 +60,7 @@ const Output = ({ summary, data }) => {
       startCapital: pull("start capital"),
       netProfit: pull("net profit"),
       currentAccountValue: pull("current account value"),
-      maxAccountValue: pull("max account val"), // normalized key
+      maxAccountValue: pull("max account val"),
       investedPrincipal: pull("invested principal"),
       minAccountVal: pull("min account val"),
       uninvestedCapital: pull("uninvested capital"),
@@ -109,9 +103,6 @@ const Output = ({ summary, data }) => {
             value={money.currentAccountValue}
           />
           <Row label="Max Account Value" value={money.maxAccountValue} />
-          {/* <Row label="Invested principal" value={money.investedPrincipal} />
-          <Row label="Min account val" value={money.minAccountVal} />
-          <Row label="Uninvested capital" value={money.uninvestedCapital} /> */}
           <Row label="Net booked profit" value={money.netBookedProfit} />
         </div>
       </div>

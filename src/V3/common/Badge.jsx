@@ -1,5 +1,3 @@
-"use client";
-
 const Badge = ({
   children,
   variant = "default",
@@ -7,7 +5,6 @@ const Badge = ({
   isStrategyTooltip = false,
 }) => {
   const getVariantClasses = (variant) => {
-    //#CC8325
     switch (variant) {
       case "version":
         return "bg-indigo-50 text-indigo-700 border-[#C7D7FE]";
@@ -36,7 +33,7 @@ const Badge = ({
       case "operational":
         return "bg-emerald-50 text-green-500 border-green-500";
       default:
-        return "bg-gray-100 text-gray-600 border-gray-400"; // Fallback variant
+        return "bg-gray-100 text-gray-600 border-gray-400";
     }
   };
 

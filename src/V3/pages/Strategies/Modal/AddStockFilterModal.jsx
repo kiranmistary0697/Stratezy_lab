@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,10 +14,9 @@ import {
   Menu,
   MenuItem,
   Popover,
-  ListItemIcon,
   createFilterOptions,
 } from "@mui/material";
-import { Delete as DeleteIcon, MoreVert } from "@mui/icons-material";
+import { MoreVert } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../../../hooks/useDebounce";
 
@@ -45,7 +44,7 @@ const AddStockFilterModal = ({
   const { rule = "", func = "", desc = "" } = viewStockList ?? {};
 
   const [isEditing, setIsEditing] = useState(edit);
-  const [allStocks, setAllStocks] = useState([]); // flat NSE list from API
+  const [allStocks, setAllStocks] = useState([]);
   const [selectedStocks, setSelectedStocks] = useState([]);
   const [isNewStock, setIsNewStock] = useState(false);
   const [input, setInput] = useState("");

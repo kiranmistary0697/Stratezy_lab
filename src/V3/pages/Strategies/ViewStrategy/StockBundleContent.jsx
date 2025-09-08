@@ -1,4 +1,3 @@
-"use client";
 import { InfoIcon } from "./Icons";
 
 const StockBundleContent = () => {
@@ -26,10 +25,6 @@ const StockBundleContent = () => {
 
           <InfoIcon />
         </div>
-
-        {/* <Box className="max-md:max-w-full">
-          <StockBundleStep filter={filters} propFilter={propFilter} />
-        </Box> */}
       </section>
     </main>
   );

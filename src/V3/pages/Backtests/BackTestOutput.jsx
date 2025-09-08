@@ -8,13 +8,10 @@ import Output from "./BacktestTabs/Output";
 import Visualisation from "./BacktestTabs/Visualisation";
 import Tradetable from "./BacktestTabs/Tradetable";
 
-import { useSelector } from "react-redux";
 import { useLazyGetQuery } from "../../../slices/api";
 import { tagTypes } from "../../tagTypes";
 
 const BackTestOutput = () => {
-  const backTestData = useSelector((state) => state.Stock.backTestData);
-
   const [getTradeTable] = useLazyGetQuery();
   const [getRequestId] = useLazyGetQuery();
 
@@ -62,10 +59,6 @@ const BackTestOutput = () => {
 
   const handleTabChange = (_e, newIndex) => setTabIndex(newIndex);
 
-  const backTestIdData = backTestData?.data?.find(
-    ({ requestId }) => requestId === id
-  );
-
   const extractSummaryMetrics = (rawString = "") => {
     const summary = {};
     rawString.split("\n").forEach((line) => {
@@ -88,7 +81,6 @@ const BackTestOutput = () => {
   const summaryData = extractSummaryMetrics(requestData?.summary);
 
   return (
-    // Outer layout holder: give height, but no scrolling here
     <div
       className="
         px-2 sm:px-4 md:px-8
@@ -99,12 +91,10 @@ const BackTestOutput = () => {
       "
       style={{ boxSizing: "border-box" }}
     >
-      {/* Make the CARD the single scroll container */}
       <div
         className="bg-white flex flex-col border border-[#E0E1E4] h-full min-h-0 min-w-0 overflow-y-auto rounded-lg"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        {/* Header block should not collapse; keep it out of the scroll height calc issues */}
         <div className="shrink-0">
           <BacktestDetailHeader
             tab={tabIndex}
@@ -122,11 +112,9 @@ const BackTestOutput = () => {
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
         </div>
 
-        {/* Scrollable content area — avoid nested scrolling here */}
         <div className="flex-1 min-h-0 min-w-0">
           {tabIndex === 0 && (
             <div className="px-1 py-2 sm:p-4 md:p-8 space-y-4">
-              {/* MUI Grid tip: use container/item API, not 'size' prop */}
               <Grid container>
                 <Grid size={{ xs: 12, md: 6, lg: 8 }} style={{ width: "100%" }}>
                   <Output summary={summaryData} data={requestData} />

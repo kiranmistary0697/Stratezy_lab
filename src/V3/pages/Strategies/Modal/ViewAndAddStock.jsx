@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -23,10 +23,10 @@ const ViewAndAddStock = ({
     if (newStockLabel && newStockDescription) {
       const newStockItem = {
         label: newStockLabel,
-        value: newStockLabel.toLowerCase(), 
+        value: newStockLabel.toLowerCase(),
         description: newStockDescription,
       };
-      initialStockList.push(newStockItem); // Direct mutation is not recommended
+      initialStockList.push(newStockItem);
       setSelectedStocks((prev) => [...prev, newStockItem]);
       setNewStockLabel("");
       setNewStockDescription("");

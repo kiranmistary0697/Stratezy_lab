@@ -1,14 +1,11 @@
 import { Box, Dialog, DialogContent, Typography } from "@mui/material";
-import React from "react";
 import ModalButton from "../../../common/Table/ModalButton";
 
 const WarningPopupModal = ({
   isOpen,
   handleClose = () => {},
   title,
-  name,
   description,
-  buttonText,
   handleConfirm = () => {},
 }) => {
   return (
@@ -33,7 +30,7 @@ const WarningPopupModal = ({
             >
               {title}
             </Typography>
-            
+
             <Typography
               sx={{
                 fontFamily: "Inter",

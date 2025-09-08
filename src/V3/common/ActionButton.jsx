@@ -1,11 +1,5 @@
-import { Button, Icon, IconButton, Tooltip } from "@mui/material";
-import {
-  Visibility,
-  Edit,
-  Delete,
-  Share,
-  CheckCircle,
-} from "@mui/icons-material"; // Import required icons
+import { Button, CircularProgress, Icon } from "@mui/material";
+import { Delete, Share, CheckCircle } from "@mui/icons-material";
 
 const getIcon = (action) => {
   switch (action) {
@@ -63,21 +57,18 @@ const ActionButton = ({
       textDecoration: "none",
       padding: "0px",
       minWidth: isWidthFixed ? "120px" : "auto",
-      fontFamily: "inherit", // Inherits parent font
+      fontFamily: "inherit",
       fontSize: "14px",
-      fontWeight: 400, // Removes MUI's bold styling
+      fontWeight: 400,
       lineHeight: "16.8px",
       letterSpacing: "0px",
-      textTransform: "none", // Prevents MUI from capitalizing text
+      textTransform: "none",
     }}
   >
     {isLoader ? (
       <CircularProgress size={20} />
     ) : label ? (
-      <>
-        {/* <Icon className={getIcon()} fontSize={iconSize} /> */}
-        {label}
-      </>
+      <>{label}</>
     ) : (
       <Icon className={getIcon()} fontSize={iconSize} />
     )}

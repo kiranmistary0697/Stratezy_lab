@@ -424,8 +424,6 @@ const TableRow = () => {
         renderCell: (params) => (
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              {/* <span>{params.row.strategy.name}</span> */}
-
               <Tooltip
                 title={params.row.strategy.name}
                 placement="bottom"
@@ -790,21 +788,6 @@ const TableRow = () => {
           description="This action is irreversible. Once deleted, the strategy and all its data cannot be recovered."
         />
       )}
-      <Box
-        className="flex"
-        sx={{
-          borderTopWidth: 1,
-          borderRightWidth: 1,
-          borderLeftWidth: 1,
-          borderRadius: 2,
-          borderStyle: "solid",
-          borderColor: "#E0E0E0",
-          overflow: "hidden",
-          backgroundColor: "white",
-        }}
-      >
-        {/* DataGrid version kept commented as in your code */}
-      </Box>
 
       {isMobile ? (
         <>
@@ -814,7 +797,6 @@ const TableRow = () => {
                 <StrategyCard
                   key={`${row.version}-${row.id}`}
                   row={row}
-                  // Navigate when clicking ANYWHERE in the card content
                   onCardClick={() => {
                     handleStrategyNavigation(
                       "view",

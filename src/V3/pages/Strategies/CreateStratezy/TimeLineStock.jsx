@@ -1,4 +1,3 @@
-import React from "react";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem, { timelineItemClasses } from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
@@ -29,7 +28,7 @@ const timelineSteps = [
 
 const TimeLineStock = ({ values, goToStep, step, isView = false }) => {
   const handleStepClick = (index) => {
-    goToStep(index); // Directly update the step
+    goToStep(index);
   };
 
   return (
@@ -42,7 +41,7 @@ const TimeLineStock = ({ values, goToStep, step, isView = false }) => {
       }}
     >
       {timelineSteps.map((stepItem, index) => {
-        let iconColor = "#E0E1E4"; // Default gray
+        let iconColor = "#E0E1E4";
 
         switch (stepItem.title) {
           case "Stock Bundle":
@@ -91,7 +90,7 @@ const TimeLineStock = ({ values, goToStep, step, isView = false }) => {
         }
 
         if (index === step) {
-          iconColor = "#3D69D3"; // Highlight current stepItem
+          iconColor = "#3D69D3";
         }
 
         return (

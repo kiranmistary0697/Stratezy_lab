@@ -194,10 +194,6 @@ const EditorFunctionModal = ({
               />
             </Box>
           </Box>
-          {/* <KeywordSearch
-            keywordData={keywordData}
-            fullHeight={isSmallScreen ? false : true}
-          /> */}
         </Grid>
 
         <Grid
@@ -434,7 +430,6 @@ const EditorFunctionModal = ({
                     cursor: "pointer",
                     color: "white",
                     marginLeft: isSmallScreen ? "80px" : "",
-                    // visibility: isSmallScreen ? "hidden" : "visible",
                   }}
                   onClick={handleClose}
                 />
