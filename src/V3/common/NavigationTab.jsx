@@ -4,7 +4,6 @@ const NavigationTab = ({ children, gradient, to }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const isActive = location.pathname === to; // Dynamically check active state
   const isActive = location.pathname.startsWith(to);
 
   const handleClick = () => {

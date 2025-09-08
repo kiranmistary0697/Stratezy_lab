@@ -9,7 +9,6 @@ import Holdings from "./DepolyPage/HoldingsPage/Holdings";
 import TradeToDo from "./DepolyPage/TradeToDoPage/TradeToDo";
 import TradeHistory from "./DepolyPage/TradeHistroyPage/TradeHistory";
 import Performance from "./DepolyPage/Performance";
-import CompareIndex from "./DepolyPage/CompareIndex";
 import DetailsPage from "./DepolyPage/DetailPage/DetailsPage";
 import { useLazyGetQuery } from "../../../../slices/api";
 import { tagTypes } from "../../../tagTypes";
@@ -20,9 +19,7 @@ const tabComponents = [
   Holdings,
   TradeToDo,
   TradeHistory,
-  Performance
-  //,
-  //CompareIndex
+  Performance,
 ];
 
 const DeployPage = () => {
@@ -71,16 +68,13 @@ const DeployPage = () => {
               "Holdings",
               "Trade To-do",
               "Trade History",
-              "Performance"
-              //,
-              //"CompareIndex"
+              "Performance",
             ]}
             value={tabIndex}
             onChange={handleTabChange}
           />
           <Divider sx={{ width: "100%", borderColor: "zinc.200" }} />
         </div>
-        {/* <div className="flex-grow overflow-auto"> */}
         <div className="p-3 space-y-4 flex-grow overflow-auto">
           <Grid
             size={{
@@ -95,7 +89,6 @@ const DeployPage = () => {
             />
           </Grid>
         </div>
-        {/* </div> */}
       </div>
     </div>
   );

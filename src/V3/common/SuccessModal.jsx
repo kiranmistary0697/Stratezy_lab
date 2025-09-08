@@ -1,8 +1,7 @@
-import React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import { DialogContentText, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const SuccessModal = ({
@@ -13,7 +12,6 @@ const SuccessModal = ({
   description,
   version,
 }) => {
-  //   <CheckCircleIcon fontSize="small" sx={{ color: "#0A994A" }} />
   return (
     <div>
       <Dialog
@@ -56,7 +54,7 @@ const SuccessModal = ({
             </Typography>
           </div>
         </DialogContent>
-      </Dialog>{" "}
+      </Dialog>
     </div>
   );
 };

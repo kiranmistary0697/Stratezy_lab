@@ -71,7 +71,7 @@ const BacktestHeader = ({
           display: "flex",
           gap: 1.5,
           width: { xs: "100%", md: "auto" },
-          justifyContent: { xs: "flex-start", md: "flex-end" }, // Buttons left aligned on xs, right aligned on md+
+          justifyContent: { xs: "flex-start", md: "flex-end" },
           flexWrap: "wrap",
         }}
       >

@@ -1,21 +1,16 @@
 import { useState } from "react";
 import {
   Box,
-  IconButton,
   Popover,
   TextField,
   ThemeProvider,
-  Typography,
   createTheme,
-  styled,
 } from "@mui/material";
 import { LocalizationProvider, DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import dayjs from "dayjs";
 import moment from "moment";
 
-// Custom theme overrides
 const theme = createTheme({
   components: {
     MuiTextField: {
@@ -53,106 +48,6 @@ const theme = createTheme({
   },
 });
 
-// Custom calendar header
-const CustomCalendarHeaderRoot = styled("div")({
-  display: "flex",
-  justifyContent: "space-between",
-  padding: "8px 16px",
-  alignItems: "center",
-});
-
-const CustomCalendarHeader = ({ currentMonth, onMonthChange }) => (
-  <CustomCalendarHeaderRoot>
-    <IconButton
-      onClick={() => onMonthChange(currentMonth.subtract(1, "month"))}
-    >
-      <ChevronLeft />
-    </IconButton>
-    <Typography variant="body2">{currentMonth.format("MMMM YYYY")}</Typography>
-    <IconButton onClick={() => onMonthChange(currentMonth.add(1, "month"))}>
-      <ChevronRight />
-    </IconButton>
-  </CustomCalendarHeaderRoot>
-);
-
-// Calendar wrapper
-// const CalendarHeaderComponent = ({
-//   selectedDate,
-//   onDateChange,
-//   onClose,
-//   isShowPending,
-//   pendingDates = [],
-//   completedDates = [],
-//   isView = false,
-//   isFuture = false, // Add isFuture prop
-//   minDate,
-// }) => {
-//   return (
-//     <LocalizationProvider dateAdapter={AdapterDayjs}>
-//       <DateCalendar
-//         views={["year", "month", "day"]}
-//         minDate={
-//           dayjs(minDate, "DD/MM/YYYY", true).isValid()
-//             ? dayjs(minDate, "DD/MM/YYYY")
-//             : undefined
-//         }
-//         value={dayjs(selectedDate)}
-//         onChange={(newDate) => {
-//           if (!isView) {
-//             onDateChange(newDate);
-//             onClose();
-//           }
-//         }}
-//         shouldDisableDate={(date) => {
-//           // Disable date if in view mode or before today when isFuture is true
-//           return isView || (isFuture && dayjs(date).isBefore(dayjs(), "day"));
-//         }}
-//         // slots={{ calendarHeader: CustomCalendarHeader }}
-//         slotProps={{
-//           day: (ownerState) => {
-//             const date = ownerState.day;
-//             const isToday = dayjs().isSame(date, "day");
-//             const isPending = pendingDates?.some((d) =>
-//               dayjs(date).isSame(d, "day")
-//             );
-//             const isCompleted = completedDates?.some((d) =>
-//               dayjs(date).isSame(d, "day")
-//             );
-
-//             return {
-//               disabled:
-//                 isView || (isFuture && dayjs(date).isBefore(dayjs(), "day")),
-//               sx: isShowPending
-//                 ? {
-//                     backgroundColor: isToday
-//                       ? "#1976D2"
-//                       : isCompleted
-//                       ? "#0A994A"
-//                       : isPending
-//                       ? "#FECF6A"
-//                       : "transparent",
-//                     color:
-//                       isToday || isCompleted || isPending ? "#fff" : "inherit",
-//                     borderRadius: "50%",
-//                     "&:hover": {
-//                       backgroundColor:
-//                         isToday || isCompleted || isPending
-//                           ? "#1565C0"
-//                           : "#eee",
-//                     },
-//                   }
-//                 : {
-//                     borderRadius: 0,
-//                     width: 32,
-//                     height: 32,
-//                   },
-//             };
-//           },
-//         }}
-//       />
-//     </LocalizationProvider>
-//   );
-// };
 const CalendarHeaderComponent = ({
   selectedDate,
   onDateChange,
@@ -164,7 +59,7 @@ const CalendarHeaderComponent = ({
   isFuture = false,
   minDate,
 }) => {
-  const [currentView, setCurrentView] = useState("day"); // track the view
+  const [currentView, setCurrentView] = useState("day");
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -178,12 +73,10 @@ const CalendarHeaderComponent = ({
             : undefined
         }
         value={selectedDate}
-        // value={dayjs(selectedDate)}
         onChange={(newDate) => {
           if (!isView) {
             onDateChange(newDate);
 
-            // Only close the popover if the user selected a day
             if (currentView === "day") {
               onClose();
             }
@@ -238,7 +131,6 @@ const CalendarHeaderComponent = ({
   );
 };
 
-// Main custom date picker component
 const CustomDatePicker = ({
   value,
   onChange = () => {},
@@ -246,7 +138,7 @@ const CustomDatePicker = ({
   pendingDates = [],
   completedDates = [],
   isView = false,
-  isFuture = false, // <-- Add here
+  isFuture = false,
   isDisable = false,
   minDate,
   onBlur = () => {},
@@ -255,7 +147,7 @@ const CustomDatePicker = ({
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpen = (event) => {
-    if (!isDisable) setAnchorEl(event.currentTarget); // Prevent opening if disabled
+    if (!isDisable) setAnchorEl(event.currentTarget);
   };
   const handleClose = () => setAnchorEl(null);
 
@@ -307,7 +199,7 @@ const CustomDatePicker = ({
               pendingDates={pendingDates}
               completedDates={completedDates}
               isView={isView}
-              isFuture={isFuture} // <-- Pass it here
+              isFuture={isFuture}
               minDate={minDate}
             />
           </Popover>

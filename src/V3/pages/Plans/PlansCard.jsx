@@ -1,11 +1,10 @@
-import React from "react";
 import { Box } from "@mui/material";
 
 const PlansCard = ({
   title,
   description,
   price,
-  //   isCurrentPlan,
+
   isRecommended,
   features,
   buttonText,

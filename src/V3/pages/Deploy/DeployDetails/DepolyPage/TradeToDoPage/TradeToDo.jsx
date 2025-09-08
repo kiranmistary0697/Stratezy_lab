@@ -19,73 +19,22 @@ const TradeToDo = ({ data = {} }) => {
   const [csvData, setCsvData] = useState(null);
   const csvLink = useRef(null);
   const tradeTableRef = useRef(null);
-  const [startDate, setStartDate] = useState(moment().format("DD/MM/YYYY")); // init as string
+  const [startDate, setStartDate] = useState(moment().format("DD/MM/YYYY"));
 
   const [completedDates, setCompletedDates] = useState("");
   const [pendingDates, setPendingDates] = useState([]);
-  const [wasMarkedComplete, setWasMarkedComplete] = useState(false);
   const [loading, setLoading] = useState(false);
   const [tradeData, setTradeData] = useState([]);
   const triggerDownload = () => {
-    // pull the latest columns (visible/card) + rows from child
     if (tradeTableRef.current) {
       const next = tradeTableRef.current.getCSVData();
       setCsvData(next);
     }
-    // let React render <CSVLink> with updated data before clicking
     setTimeout(() => {
       csvLink.current?.link?.click();
     }, 0);
   };
 
-  const handleDateChange = (newDate) => {
-    setStartDate(newDate); // Update the start date with the selected date
-  };
-
-  // const fetchDeployAndTradeData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const { data: completedDateStr } = await getMarkData({
-  //       endpoint: `deploy/markcomplete?name=${name}&exchange=${exchange}&brokerage=${brokerage}`,
-  //       tags: [tagTypes.GET_MARKCOMPLETE],
-  //     }).unwrap();
-
-  //     const completedDate = moment(completedDateStr, "YYYY-MM-DD");
-  //     const deployMoment = moment(deployedDate, "YYYY-MM-DD");
-
-  //     const completedDatesArray = [];
-  //     let temp = deployMoment.clone();
-  //     while (temp.isSameOrBefore(completedDate)) {
-  //       completedDatesArray.push(temp.format("YYYY-MM-DD"));
-  //       temp.add(1, "day");
-  //     }
-
-  //     const today = moment();
-  //     const pendingDatesArray = [];
-  //     let nextDate = completedDate.clone();
-  //     while (nextDate.isSameOrBefore(today)) {
-  //       pendingDatesArray.push(nextDate.format("YYYY-MM-DD"));
-  //       nextDate.add(1, "day");
-  //     }
-
-  //     setCompletedDates(completedDatesArray);
-  //     setPendingDates(pendingDatesArray);
-
-  //     // Step 4: Fetch viewn only if there are pending dates
-  //     if (pendingDatesArray.length > 0) {
-  //       const { data: tradeData } = await getTradeToDoData({
-  //         endpoint: `deploy/strategy/viewn?name=${name}&days=${pendingDatesArray.length}&exchange=${exchange}&brokerage=${brokerage}`,
-  //         tags: [tagTypes.GET_TRADETODO],
-  //       }).unwrap();
-
-  //       setTradeData(tradeData);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed in fetchDeployAndTradeData:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const fetchDeployAndTradeData = async () => {
     setLoading(true);
     try {
@@ -107,7 +56,6 @@ const TradeToDo = ({ data = {} }) => {
       const today = moment();
       const pendingDatesArray = [];
 
-      // 🟢 Skip the completed date itself
       let nextDate = completedDate.clone().add(1, "day");
       while (nextDate.isSameOrBefore(today)) {
         pendingDatesArray.push(nextDate.format("YYYY-MM-DD"));
@@ -117,13 +65,11 @@ const TradeToDo = ({ data = {} }) => {
       setCompletedDates(completedDatesArray);
       setPendingDates(pendingDatesArray);
 
-      // if (pendingDatesArray.length > 0) {
-        const { data: tradeData } = await getTradeToDoData({
-          endpoint: `deploy/strategy/viewn?name=${name}&days=${pendingDatesArray.length}&exchange=${exchange}&brokerage=${brokerage}&version=${version}`,
-          tags: [tagTypes.GET_TRADETODO],
-        }).unwrap();
-        setTradeData(tradeData);
-      // }
+      const { data: tradeData } = await getTradeToDoData({
+        endpoint: `deploy/strategy/viewn?name=${name}&days=${pendingDatesArray.length}&exchange=${exchange}&brokerage=${brokerage}&version=${version}`,
+        tags: [tagTypes.GET_TRADETODO],
+      }).unwrap();
+      setTradeData(tradeData);
     } catch (error) {
       console.error("Failed in fetchDeployAndTradeData:", error);
     } finally {
@@ -143,7 +89,7 @@ const TradeToDo = ({ data = {} }) => {
     }
   };
 
-  const  handleMarkComplete = async () => {
+  const handleMarkComplete = async () => {
     const todayStr = moment().format("YYYY-MM-DD");
 
     try {
@@ -158,7 +104,6 @@ const TradeToDo = ({ data = {} }) => {
       const completedDatesArray = [completedDate.format("YYYY-MM-DD")];
       const pendingDatesArray = [];
 
-      // 🟢 Skip completed date itself to avoid re-adding today
       let nextDate = completedDate.clone().add(1, "day");
       while (nextDate.isSameOrBefore(today)) {
         pendingDatesArray.push(nextDate.format("YYYY-MM-DD"));
@@ -167,13 +112,11 @@ const TradeToDo = ({ data = {} }) => {
 
       setCompletedDates(completedDatesArray);
       setPendingDates(pendingDatesArray);
-      setWasMarkedComplete(pendingDatesArray.length > 0);
 
       await fetchDeployData();
-      await fetchDeployAndTradeData(); // helper function to rerun full pipeline
+      await fetchDeployAndTradeData();
     } catch (error) {
       console.error("Error marking date as complete:", error);
-      setWasMarkedComplete(false);
     }
   };
 

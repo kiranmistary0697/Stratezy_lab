@@ -31,31 +31,30 @@ const CapitalHeader = ({
   const [saving, setSaving] = useState(false);
   const formattedDate = moment(startDate, "DD/MM/YYYY").format("YYYY-MM-DD");
 
-const currencyFormatter = new Intl.NumberFormat("en-IN", {
-  style: "currency",
-  currency: "INR",
-  maximumFractionDigits: 2, // optional: controls decimals
-});
+  const currencyFormatter = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 2,
+  });
 
-const stats = [
-  {
-    label: "Invested Capital",
-    value: capitalAmount ? currencyFormatter.format(capitalAmount) : "₹0",
-  },
-  {
-    label: "Current Capital",
-    value: currentCapital ? currencyFormatter.format(currentCapital) : "₹0",
-  },
-  {
-    label: "Net Profit",
-    value: netProfit ? currencyFormatter.format(netProfit) : "₹0",
-  },
-  {
-    label: "Avg Annual Profit (%)",
-    value: avgAnProfit != null ? `${avgAnProfit.toFixed(2)} %` : "0.00 %",
-  },
-];
-
+  const stats = [
+    {
+      label: "Invested Capital",
+      value: capitalAmount ? currencyFormatter.format(capitalAmount) : "₹0",
+    },
+    {
+      label: "Current Capital",
+      value: currentCapital ? currencyFormatter.format(currentCapital) : "₹0",
+    },
+    {
+      label: "Net Profit",
+      value: netProfit ? currencyFormatter.format(netProfit) : "₹0",
+    },
+    {
+      label: "Avg Annual Profit (%)",
+      value: avgAnProfit != null ? `${avgAnProfit.toFixed(2)} %` : "0.00 %",
+    },
+  ];
 
   const handleSaveCapital = async () => {
     if (!amount) return;

@@ -108,14 +108,13 @@ const CreateFunction = () => {
           .map((d) => ({
             name: d.shortFuncName,
             caption: d.func,
-            description: d.desc, // this one is used for tooltip
+            description: d.desc,
             usage: d.desc,
             func: d.func,
             shortFuncName: d.shortFuncName,
           }))
           .sort((a, b) => a.name.localeCompare(b.name));
 
-        // ✅ Deduplicate by func + name to avoid duplicates in functionData
         const cleanData = Array.isArray(sanitisedData)
           ? sanitisedData.filter(
               (item, idx, arr) =>
@@ -591,7 +590,6 @@ const CreateFunction = () => {
                   />
                 </Box>
               </Box>
-              {/* <KeywordSearch keywordData={keywordData} fullHeight={false} /> */}
             </Grid>
             <Grid
               size={{
@@ -629,8 +627,6 @@ const CreateFunction = () => {
                 </Box>
               )}
             </Grid>
-
-            {/* Stock Bundle Step - Full Width on Small Screens, Half on Medium+, 6.7/12 on Large+ */}
           </Grid>
           {internalData && (
             <>
@@ -733,7 +729,6 @@ const CreateFunction = () => {
                       style={{ width: "100%", height: "100%" }}
                     />
                   </Box>
-                  {/* <CapitalChart selectedOption={"capital"} /> */}
                 </Grid>
               </Grid>
             </>

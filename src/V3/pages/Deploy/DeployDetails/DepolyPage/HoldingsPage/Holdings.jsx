@@ -1,14 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  Menu,
-  MenuItem,
-  TextField,
-} from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { Box, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import HoldingsTable from "./HoldingsTable";
 import { CSVLink } from "react-csv";
 import HeaderButton from "../../../../../common/Table/HeaderButton";
@@ -19,18 +11,12 @@ const Holdings = ({ data }) => {
   const { name, exchange, brokerage, version } = data;
   const [getHoldingsData] = useLazyGetQuery();
   const [csvData, setCsvData] = useState(null);
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [anchorEl, setAnchorEl] = useState(null);
   const [query, setQuery] = useState("");
   const [holdData, setHoldData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // const open = Boolean(anchorEl);
   const csvLink = useRef(null);
   const tradeTableRef = useRef(null);
-
-  // const handleClick = (event) => setAnchorEl(event.currentTarget);
-  // const handleClose = () => setAnchorEl(null);
 
   useEffect(() => {
     const fetchDeployData = async () => {
@@ -80,27 +66,6 @@ const Holdings = ({ data }) => {
 
         {/* Controls */}
         <Box className="flex flex-col sm:flex-row w-full sm:w-auto gap-3 sm:items-center">
-          {/* Icon + Menu */}
-          {/* <Box className="flex items-center justify-between sm:justify-start gap-2">
-            <IconButton
-              sx={{ "&:focus": { outline: "none" } }}
-              onClick={handleClick}
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-              <MenuItem
-                sx={{ color: "#666666" }}
-                onClick={() => {
-                  setIsOpen(true);
-                  handleClose();
-                }}
-              >
-                Export
-              </MenuItem>
-            </Menu>
-          </Box> */}
-
           {/* Search */}
           <TextField
             size="small"

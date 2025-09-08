@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "@mui/material/Button";
 
 const HeaderButton = ({
@@ -35,8 +34,8 @@ const HeaderButton = ({
       onClick={onClick}
       disabled={disabled}
       disableRipple
-      variant={variant === "contained" ? "contained" : "outlined"} // Use MUI variant
-      sx={variantStyles[variant]} // Apply styles
+      variant={variant === "contained" ? "contained" : "outlined"}
+      sx={variantStyles[variant]}
       className={`${className || ""} button`}
     >
       {children}

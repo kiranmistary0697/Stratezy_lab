@@ -57,7 +57,7 @@ const AddCapital = ({
             value={startDate}
             onChange={(val) => setStartDate(val)}
             isFuture
-            iDisable={!!capitalData?.date} // disable if date exists in capitalData
+            iDisable={!!capitalData?.date}
           />
 
           <label className="flex gap-2.5 items-center text-[12px] font-semibold text-[#333]">
@@ -78,7 +78,7 @@ const AddCapital = ({
             fullWidth
             value={normalized || selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            disabled={!!type} // Disable if type is passed
+            disabled={!!type}
           >
             {!type && (
               <MenuItem value="ONETIME" disabled>

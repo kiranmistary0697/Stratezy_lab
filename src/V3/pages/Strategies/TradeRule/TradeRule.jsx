@@ -192,7 +192,6 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
             {TRADE_RULE_SUB_TITLE}
           </Typography>
           <Box className="mt-2 w-full flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
-            {/* <Box className="mt-2 w-full flex justify-between items-center gap-2"> */}
             <FormGroup>
               <Autocomplete
                 options={deduplicatedOptions}
@@ -203,7 +202,6 @@ const TradeRule = ({ formik, isView, id, setIsDirty }) => {
                       opt?.shortFuncName === values.tradeRules.buyRule?.ruleName
                   ) || null
                 }
-                // value={values.tradeRules.buyRule?.ruleName || ""}
                 onChange={(e, newValue) => {
                   handleChangeStockBundle("name", newValue || "");
                 }}

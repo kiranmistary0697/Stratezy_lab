@@ -1,4 +1,3 @@
-import React from "react";
 import DetailsInfo from "./DetailsInfo";
 
 const DetailsSecation = ({ rows, addSpacing }) => {
