@@ -44,10 +44,6 @@ const useStyles = makeStyles({
 });
 
 const FunctionTable = ({ query = "" }) => {
-  const localSelectedStatus = localStorage.getItem("selectedStatus");
-  const localSelectedSubStatuses = localStorage.getItem("selectedSubStatuses");
-  const localSelectedCreatedBy = localStorage.getItem("selectedCreatedBy");
-
   const classes = useStyles();
   const navigate = useNavigate();
   const [getAllStock] = usePostMutation();
@@ -92,7 +88,6 @@ const FunctionTable = ({ query = "" }) => {
     "hiddenColumnsFunctionTable"
   );
 
-  // ------- Handlers (defined before columns so columns can use them)
   const handleTypeFilterOpen = (event) => {
     event.stopPropagation();
     setTypeAnchorEl(event.currentTarget);

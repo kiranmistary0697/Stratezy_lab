@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as _ from "lodash";
 import { Box, Tooltip, Typography } from "@mui/material";
 
@@ -22,7 +22,7 @@ const CreateStrategyHeader = ({
 }) => {
   const [isCancelStrategy, setIsCancelStrategy] = useState(false);
   const [isOpenSaveDraft, setIsOpenSaveDraft] = useState(false);
-  const [saveActionType, setSaveActionType] = useState("draft"); // 'draft' | 'create'
+  const [saveActionType, setSaveActionType] = useState("draft");
   const [isWarning, setIsWarning] = useState(false);
 
   const { values } = formik;
@@ -203,7 +203,9 @@ const CreateStrategyHeader = ({
               <span>
                 <HeaderButton
                   variant="contained"
-                  className={step === 5 ? "w-[147px] h-[40px]" : "w-[72px] h-[40px]"}
+                  className={
+                    step === 5 ? "w-[147px] h-[40px]" : "w-[72px] h-[40px]"
+                  }
                   disabled={step === 5 && !hasAllValues(values)}
                   onClick={() => {
                     setIsDirty(false);

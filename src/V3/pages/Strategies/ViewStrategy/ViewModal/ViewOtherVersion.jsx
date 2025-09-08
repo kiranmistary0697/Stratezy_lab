@@ -42,9 +42,6 @@ const ViewOtherVersion = ({
     demo
   ) => {
     const basePath = "/Strategies/edit-strategies";
-    // action === "edit"
-    //   ? "/Strategies/edit-strategies"
-    // : "/Strategies/view-strategies";
 
     const query = new URLSearchParams({
       id,
@@ -67,7 +64,6 @@ const ViewOtherVersion = ({
 
   const handleRowClick = ({ row }) => {
     setTabIndex(0);
-    // Called when user clicks a row to view the strategy
     handleStrategyNavigation(
       "view",
       row.id,
@@ -133,7 +129,6 @@ const ViewOtherVersion = ({
         headerAlign: "center",
         sortable: false,
         disableColumnMenu: true,
-        // headerName: <Settings className="!size-[12px]" />,
         minWidth: 5,
         // flex: 1,
         renderCell: (params) => (
@@ -146,13 +141,11 @@ const ViewOtherVersion = ({
               });
               setIsDeleteCase(true);
             }}
-            // variant={params.row.status.toLowerCase()}
           />
         ),
       },
     ],
     [columnWidths]
-    // []
   );
 
   const handleColumnResize = (params) => {
@@ -174,7 +167,7 @@ const ViewOtherVersion = ({
 
   const handlePageChange = (event, value) => {
     setPage(value);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const mapRowToDisplay = (row) => ({
@@ -255,7 +248,6 @@ const ViewOtherVersion = ({
             disableColumnSelector
             rows={selectedVersion}
             columns={columns}
-            // hideFooter
             getRowId={(row) => `${row.version}-${row.id}`}
             onRowClick={handleRowClick}
             onColumnResize={handleColumnResize}

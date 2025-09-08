@@ -7,10 +7,8 @@ import HeaderButton from "../../../common/Table/HeaderButton";
 import CreateDeploy from "../../Deploy/DeployModal/CreateDeploy";
 import SuccessModal from "../../../common/SuccessModal";
 import CustomizedDialogs from "../Modal/DuplicateStrategyModal";
-import _, { update } from "lodash";
+import _ from "lodash";
 import { STRATEGY_DEPLOY_BTN_TOOLTIP } from "../../../../constants/CommonText";
-import { tagTypes } from "../../../tagTypes";
-import { useLazyGetQuery } from "../../../../slices/api";
 
 const VersionDropdown = ({ anchorEl, onClose, onSelect, versionData }) => {
   const open = Boolean(anchorEl);
@@ -111,7 +109,7 @@ const StrategyHeader = ({
 
   const handleSelectVersion = (version) => {
     setAnchorEl(null);
-    onVersionChange(version); // Notify parent component
+    onVersionChange(version);
   };
 
   useEffect(() => {
@@ -132,7 +130,6 @@ const StrategyHeader = ({
             : "Save as Draft"
         }
         textButton={"Update"}
-        // title={hasAllValues(formik?.values) ? "Save Strategy" : "Save as Draft"}
         isOpen={isOpenSaveDraft}
         handleClose={() => setIsOpenSaveDraft(false)}
         id={strategyName}
@@ -162,7 +159,6 @@ const StrategyHeader = ({
           title="Run Backtest"
           isNavigate={tabIndex === 0 ? true : false}
           status={status}
-          // defaultVersion={defaultVersion}
           defaultVersion={selectedVersion ?? defaultVersion}
           demoStrategy={demoStrategy}
           handleViewData={handleViewData}
@@ -184,9 +180,7 @@ const StrategyHeader = ({
         />
       )}
       <Box className="flex flex-col md:flex-row gap-6 md:gap-10 w-full justify-between p-4 md:items-start">
-        {/* Left Section: Strategy Name + Dropdown + Description */}
         <Box className="flex flex-col gap-1">
-          {/* Top row: strategy name + version dropdown */}
           <div className="flex gap-2.5 items-center">
             <div className="text-xl font-semibold leading-tight text-neutral-950">
               {strategyName}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, MenuItem, IconButton, Box } from "@mui/material";
+import { Menu, MenuItem, IconButton } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CustomizedDialogs from "../pages/Strategies/Modal/DuplicateStrategyModal";
 import { Formik } from "formik";
@@ -42,12 +42,12 @@ const ActionMenu = ({
     <>
       <Formik
         initialValues={initialValues}
-        enableReinitialize // refresh when you load data
+        enableReinitialize
         validationSchema={Yup.object({
           name: Yup.string().required("Strategy name is required"),
           description: Yup.string().required("Description is required"),
         })}
-        onSubmit={() => {}} // you already save manually inside the dialog
+        onSubmit={() => {}}
       >
         {(formik) => (
           <CustomizedDialogs
@@ -63,12 +63,11 @@ const ActionMenu = ({
             fetchAllData={fetchAllData}
             demoStrategy={demoStrategy}
             demoData={demoData}
-            formik={formik} // ✅ This time it's real
+            formik={formik}
           />
         )}
       </Formik>
 
-      {/* Three dots button */}
       <IconButton
         sx={{
           "&:focus": {
@@ -76,14 +75,13 @@ const ActionMenu = ({
           },
         }} // Removes outline
         onClick={(event) => {
-          event.stopPropagation(); // Prevents row click
+          event.stopPropagation();
           setAnchorEl(event.currentTarget);
         }}
       >
         <MoreVertIcon className="border !border-none" />
       </IconButton>
 
-      {/* Dropdown Menu */}
       <Menu
         anchorEl={anchorEl}
         open={open}
@@ -106,7 +104,6 @@ const ActionMenu = ({
               color: "#666666",
               fontSize: "14px",
               padding: isEditButton || isDeleteButton ? "8px 12px" : "5px 12px",
-              // marginBottom: "1px",
               fontFamily: "Inter",
             }}
             onClick={() => {
@@ -155,7 +152,6 @@ const ActionMenu = ({
               color: "#666666",
               fontSize: "14px",
               padding: "5px 12px",
-              // marginBottom: "1px",
               fontFamily: "Inter",
             }}
             onClick={(e) => {

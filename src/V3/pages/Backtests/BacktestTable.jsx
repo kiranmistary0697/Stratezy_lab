@@ -128,7 +128,6 @@ const BacktestTable = ({
   const extractErrorList = (logString) => {
     let errors = [];
     try {
-      // Remove the non-JSON parts and parse the JSON
       const errorSectionMatch = logString.match(
         /Error -\s*(\[[\s\S]*?\])\s*-----------/
       );
@@ -150,7 +149,7 @@ const BacktestTable = ({
         const cleanedValue = value?.trim();
 
         if (
-          cleanedValue && // not undefined or empty
+          cleanedValue &&
           cleanedValue.toLowerCase() !== "null" &&
           cleanedValue.toLowerCase() !== "null %" &&
           cleanedValue.toLowerCase() !== "null days"
@@ -286,7 +285,6 @@ const BacktestTable = ({
     localStorage.removeItem("stockBundle-saved");
   };
   const handleStrategyRowClick = (params) => {
-    // Called when user clicks a row to view the strategy
     handleStrategyNavigation(
       "view",
       params.row.id,
@@ -312,7 +310,7 @@ const BacktestTable = ({
 
       toast.success(data?.message);
       localStorage.removeItem("localSelectedStrategies");
-      setSelectedStrategies([])
+      setSelectedStrategies([]);
       setIsDelete(false);
       fetchAllData();
     } catch (error) {
@@ -878,13 +876,13 @@ const BacktestTable = ({
     window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top on page change
   };
 
-const formatCurrency = (num) => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 2,
-  }).format(num);
-};
+  const formatCurrency = (num) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+    }).format(num);
+  };
 
   return (
     <>

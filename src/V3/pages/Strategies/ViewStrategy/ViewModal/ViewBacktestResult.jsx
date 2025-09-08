@@ -26,17 +26,13 @@ import { makeStyles } from "@mui/styles";
 import useDateTime from "../../../../hooks/useDateTime";
 import DeleteModal from "../../../../common/DeleteModal";
 import CreateDeploy from "../../../Deploy/DeployModal/CreateDeploy";
-// import FilterListIcon from "@mui/icons-material/FilterList";
-// import SettingsIcon from "@mui/icons-material/Settings";
 
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import BacktestCard from "../../../../common/Cards/BacktestCard";
 
 const useStyles = makeStyles({
-  // This targets the column and operator dropdowns in the filter modal
   filterModal: {
-    // Hide the column dropdown (the field selector) and the operator dropdown (the operator selector)
     "& .MuiDataGrid-filterPanel": {
       display: "none",
     },

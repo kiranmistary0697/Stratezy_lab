@@ -1,14 +1,10 @@
-import React from "react";
 import HeroImage from "../../../assets/HeroImage.png";
 import Button from "../../common/Button";
 import { useNavigate } from "react-router-dom";
 import routes from "../../../constants/Routes";
 import { useAuth } from "../../../contexts/AuthContext";
 
-const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-
 const HeroSection = () => {
-  
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 

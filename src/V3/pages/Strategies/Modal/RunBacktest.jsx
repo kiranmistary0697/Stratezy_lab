@@ -97,7 +97,6 @@ const RunBacktest = ({
       backtestType: "BACKTEST_TYPE_FULL",
       zeroDate: moment(endDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
       nDate: moment(startDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
-      // tradeExecutionDate: moment(startDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
       exchange: "nse",
       underlyingRule: {
         ruleType: "TRADE_UNDERLYING_RULE",
@@ -202,9 +201,6 @@ const RunBacktest = ({
                       onBlur={handleBlur}
                       name="startDate"
                     />
-                    {/* {touched?.startDate && !!errors?.startDate && (
-                      <FormHelperText error>{errors?.startDate}</FormHelperText>
-                    )} */}
                   </FormGroup>
 
                   <FormGroup
@@ -227,10 +223,6 @@ const RunBacktest = ({
                       onBlur={handleBlur}
                       name="endDate"
                     />
-
-                    {/* {touched?.endDate && !!errors?.endDate && (
-                      <FormHelperText error>{errors?.endDate}</FormHelperText>
-                    )} */}
                   </FormGroup>
 
                   <div className="flex gap-5 justify-center items-center w-full  max-sm:flex-col">

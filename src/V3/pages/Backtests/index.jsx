@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import BacktestHeader from "./BacktestHeader";
 import BacktestTable from "./BacktestTable";
@@ -18,8 +18,10 @@ const Backtest = () => {
   const [seletedRows, setSeletedRows] = useState([]);
   const [isMultideleteOpen, setIsMultideleteOpen] = useState(false);
   const [isRowSelectionEnabled, setIsRowSelectionEnabled] = useState(false);
+  const [isBacktestPending, setIsBacktestPending] = useState(false);
 
   const csvLink = useRef(null);
+  const intervalRef = useRef(null);
   const dispatch = useDispatch();
   const [deleteMultipleData] = useDeleteMutation();
 
@@ -37,18 +39,48 @@ const Backtest = () => {
     }
   }, [backtestData]);
 
-  const fetchAllData = async () => {
+  const fetchAllData = useCallback(async () => {
     try {
       const response = await getBackTestData({
         endpoint: "command/backtest/findall",
         tags: [tagTypes.BACKTEST],
       }).unwrap();
+      const isArr = Array.isArray(response?.data);
+      if (isArr) {
+        const isResultPending = response?.data.some((data) =>
+          String(data.summary).includes("still running")
+        );
+        setIsBacktestPending(isResultPending);
+        if (!isResultPending) {
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+        }
+      }
+
       setRows(response.data);
       dispatch(setBacktestData(response));
     } catch (error) {
       console.error("Failed to fetch backtest data:", error);
     }
-  };
+  }, []);
+
+  const startPolling = useCallback(() => {
+    if (intervalRef.current) return;
+    intervalRef.current = setInterval(() => {
+      setTimeout(() => {
+        fetchAllData();
+      }, 200);
+    }, 10000); // Poll every 10 seconds
+  }, [fetchAllData]);
+
+  const stopPolling = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
 
   const confirmMultiDelete = async () => {
     try {
@@ -57,7 +89,7 @@ const Backtest = () => {
         payload: seletedRows,
         tags: [tagTypes.GET_DEPLOY],
       }).unwrap();
-      
+
       toast.success(multipleDelRes);
       setSeletedRows([]);
       setIsMultideleteOpen(false);
@@ -72,6 +104,23 @@ const Backtest = () => {
 
   useEffect(() => {
     fetchAllData();
+  }, []);
+
+  useEffect(() => {
+    if (isBacktestPending) {
+      startPolling();
+    } else {
+      stopPolling();
+    }
+  }, [isBacktestPending]);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, []);
 
   const csvHeaders = [

@@ -28,7 +28,6 @@ const CapitalPage = ({ data = {}, fetchDeployData = () => {} }) => {
 
       const formattedRows = [];
 
-      // Add initial capital row
       if (deployedDate && initialCapital !== undefined) {
         formattedRows.push({
           id: `${deployedDate}-planned`,

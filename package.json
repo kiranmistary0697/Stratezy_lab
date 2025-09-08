@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
+    "dev": "node init && vite --host",
+    "build": "node init && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build-keycloak-theme": "npm run build && keycloakify build",
+    "build-keycloak-theme": "node init && npm run build && keycloakify build",
     "storybook": "storybook dev -p 6006",
     "json-server": "json-server --watch db.json --port 4000"
   },

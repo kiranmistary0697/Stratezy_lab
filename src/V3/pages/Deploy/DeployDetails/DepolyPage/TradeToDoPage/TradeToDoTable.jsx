@@ -1,5 +1,12 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import { forwardRef, useMemo, useState, useEffect, useImperativeHandle  } from "react";
+import {
+  forwardRef,
+  useMemo,
+  useState,
+  useEffect,
+  useImperativeHandle,
+} from "react";
 import {
   Box,
   Checkbox,
@@ -48,7 +55,6 @@ const useStyles = makeStyles({
   },
 });
 
-/** Generic number formatter */
 const fmt2 = (v) => {
   const n = Number(v);
   return Number.isFinite(n) ? n.toFixed(2) : "0";
@@ -62,17 +68,7 @@ const NUMERIC_FIELDS = [
   "netProfit",
   "risk1R",
 ];
-/**
- * Props:
- *  - tradeData: array
- *  - isLoading: boolean
- *  - mobileCardSchema?: [{ field, label?, format?(value,row) }]
- *  - mobileItemsPerPage?: number (default 10)
- *  - persistMobileCardSelection?: boolean (default true)
- *  - storageKey?: string (default "TradeToDoTable:cardFields")
- *  - showMobileCardSettings?: boolean (default true)
- *  - onCardFieldsChange?: (fields: string[]) => void
- */
+
 const TradeToDoTable = forwardRef(
   (
     {
@@ -115,9 +111,6 @@ const TradeToDoTable = forwardRef(
       }
     });
 
-    const hiddenColumnsFromLocalStorage = localStorage.getItem(
-      "hiddenColumnsTradeToDoTable"
-    );
     const [page, setPage] = useState(1);
 
     const rowsWithId = useMemo(
@@ -767,19 +760,6 @@ const TradeToDoTable = forwardRef(
       );
     };
 
-    // useEffect(() => {
-    //   if (hiddenColumnsFromLocalStorage) {
-    //     try {
-    //       const parsed = JSON.parse(hiddenColumnsFromLocalStorage);
-    //       if (Array.isArray(parsed)) {
-    //         setHiddenColumns(parsed);
-    //       }
-    //     } catch (error) {
-    //       console.error("Error parsing hidden columns:", error);
-    //     }
-    //   }
-    // }, [hiddenColumnsFromLocalStorage]);
-
     const visibleColumns = useMemo(
       () =>
         columns.filter(
@@ -789,7 +769,6 @@ const TradeToDoTable = forwardRef(
       [columns, hiddenColumns]
     );
 
-    /** ---------- MOBILE CARD CONFIG (defaults + persistence) ----------- */
     const defaultMobileCardSchema = useMemo(
       () => [
         { field: "symbol" },
@@ -829,9 +808,8 @@ const TradeToDoTable = forwardRef(
       () => ({
         getCSVData: () => {
           // columns to export: desktop -> visible columns; mobile -> selected card fields
-          const exportFields = (isMobile
-            ? cardFields
-            : visibleColumns.map((c) => c.field)
+          const exportFields = (
+            isMobile ? cardFields : visibleColumns.map((c) => c.field)
           ).filter((f) => f && f !== "moreaction");
 
           const headers = exportFields.map(
@@ -857,7 +835,7 @@ const TradeToDoTable = forwardRef(
       }),
       [isMobile, cardFields, visibleColumns, rowsWithId, columnsMap]
     );
-    
+
     // Load persisted selection (mobile only)
     useEffect(() => {
       if (!isMobile || !persistMobileCardSelection) return;

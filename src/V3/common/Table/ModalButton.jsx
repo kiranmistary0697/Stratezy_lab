@@ -1,5 +1,3 @@
-import React from "react";
-
 const ModalButton = ({
   variant = "primary",
   onClick,
@@ -8,7 +6,7 @@ const ModalButton = ({
   type = "button",
   endIcon,
   disabled,
-  onEndIconClick, // Separate handler for the end icon
+  onEndIconClick,
 }) => {
   const baseStyles =
     "flex-1 px-5 py-4 text-sm  min-h-10 cursor-pointer h-[49px] max-sm:w-full";
@@ -33,7 +31,7 @@ const ModalButton = ({
       {endIcon && (
         <span
           onClick={(e) => {
-            e.stopPropagation(); // Prevent triggering the main button's onClick
+            e.stopPropagation();
             if (onEndIconClick) onEndIconClick(e);
           }}
           className="cursor-pointer"

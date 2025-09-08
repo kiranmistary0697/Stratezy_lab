@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Autocomplete,
   Box,
-  Dialog,
-  DialogContent,
   TextField,
   Tooltip,
   Typography,
@@ -12,10 +10,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   PrimaryYAxis,
   SecondaryYAxis,
-  TimelineAxis,
   VERIFY_SUB_TITLE_TOOLTIP,
 } from "../../../../constants/CommonText";
-import TimelineDateRangePicker from "../../../common/TimelineDateRangePicker";
 import moment from "moment";
 import CustomDatePicker from "../../../common/CustomDatePicker";
 
@@ -37,19 +33,7 @@ const VerifyOnStock = ({
   endDate,
   setEndDate,
 }) => {
-  const [dateRangeError, setDateRangeError] = useState(false);
-
   const handlePlotGraph = () => {
-    const start = moment(startDate).startOf("day");
-    const end = moment(endDate).startOf("day");
-
-    if (start == end) {
-      setDateRangeError(true);
-      return;
-    }
-
-    setDateRangeError(false);
-
     const xAxisArray = xAxisInput
       .split(",")
       .map((s) => s.trim())
